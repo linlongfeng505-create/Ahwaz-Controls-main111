@@ -3,9 +3,9 @@
   "build": {
     "builder": "NIXPACKS",
     "installCommand": "pnpm install --frozen-lockfile",
-    "buildCommand": "pnpm --filter @workspace/ahwaz-website run build"
+    "buildCommand": "pnpm --filter @workspace/api-server run build"
   },
   "deploy": {
-    "staticDir": "artifacts/ahwaz-website/dist/public"
+    "startCommand": "node --enable-source-maps ./artifacts/api-server/dist/index.mjs"
   }
 }
