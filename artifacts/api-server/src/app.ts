@@ -48,7 +48,7 @@ if (fs.existsSync(STATIC_DIR)) {
   app.use(express.static(STATIC_DIR));
 
   // SPA fallback: all non-API routes serve index.html so frontend routing works
-  app.get("*", (_req, res) => {
+  app.get("/{*splat}", (_req, res) => {
     res.sendFile(path.join(STATIC_DIR, "index.html"));
   });
 
