@@ -62,6 +62,39 @@ const emptyForm = {
   removeImage: false,
 };
 
+/**
+ * Compress an image File using the Canvas API before upload.
+ * Resizes to maxWidth (default 1200px) and re-encodes as JPEG at the given quality (0–1).
+ * Returns a compressed Blob. No third-party libraries required.
+ */
+function compressImage(
+  file: File,
+  maxWidth = 1200,
+  quality = 0.82
+): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { URL.revokeObjectURL(objectUrl); reject(new Error("Canvas not supported")); return; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(objectUrl);
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("Compression failed")),
+        "image/jpeg",
+        quality
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("Image load failed")); };
+    img.src = objectUrl;
+  });
+}
+
 async function apiFetch(path: string, options: RequestInit = {}, pw: string) {
   const res = await fetch(path, {
     ...options,
@@ -703,18 +736,33 @@ export default function Admin() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        setForm(f => ({
-                          ...f,
-                          imageDataUrl: reader.result as string,
-                          removeImage: false,
-                        }));
-                      };
-                      reader.readAsDataURL(file);
+                      try {
+                        // Compress first (max 1200px wide, JPEG quality 0.82)
+                        const compressed = await compressImage(file);
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          setForm(f => ({
+                            ...f,
+                            imageDataUrl: reader.result as string,
+                            removeImage: false,
+                          }));
+                        };
+                        reader.readAsDataURL(compressed);
+                      } catch {
+                        // Fallback: use original file without compression
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          setForm(f => ({
+                            ...f,
+                            imageDataUrl: reader.result as string,
+                            removeImage: false,
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
                     }}
                   />
                 </label>

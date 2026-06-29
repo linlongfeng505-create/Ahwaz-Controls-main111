@@ -18,12 +18,14 @@ function requireAdmin(req: import("express").Request, res: import("express").Res
 }
 
 /** Strip imageData from a product row so it's never sent in list/detail JSON */
-function stripImage<T extends { imageData?: string | null; imageContentType?: string | null; imageObjectPath?: string | null; id: number }>(row: T) {
+function stripImage<T extends { imageData?: Buffer | Uint8Array | string | null; imageContentType?: string | null; imageObjectPath?: string | null; id: number }>(row: T) {
   const { imageData, imageContentType, ...rest } = row;
   return {
     ...rest,
-    // If image data exists, replace imageObjectPath with the serving URL
-    imageObjectPath: imageData ? `/api/products/${row.id}/image` : null,
+    // If image data exists (Buffer, Uint8Array, or legacy base64 string), expose the serving URL
+    imageObjectPath: (imageData && (typeof imageData === "string" ? imageData.length > 0 : imageData.byteLength > 0))
+      ? `/api/products/${row.id}/image`
+      : null,
   };
 }
 
@@ -74,7 +76,16 @@ router.get("/products/:id/image", async (req, res) => {
     }).from(productsTable).where(eq(productsTable.id, id));
     if (!row || !row.imageData) { res.status(404).json({ error: "No image" }); return; }
 
-    const buf = Buffer.from(row.imageData, "base64");
+    // imageData may be a Buffer (new BLOB), Uint8Array (libsql BLOB), or a legacy base64 string
+    let buf: Buffer;
+    if (typeof row.imageData === "string") {
+      // Legacy: old TEXT column stored raw base64
+      buf = Buffer.from(row.imageData, "base64");
+    } else {
+      // BLOB: Buffer or Uint8Array — both work with Buffer.from()
+      buf = Buffer.from(row.imageData);
+    }
+
     res.setHeader("Content-Type", row.imageContentType ?? "image/jpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");
     res.send(buf);
@@ -95,14 +106,14 @@ router.post("/products", requireAdmin, async (req, res) => {
       return;
     }
 
-    // Parse base64 data URL if provided
-    let imageData: string | null = null;
+    // Parse base64 data URL → raw Buffer (BLOB), never store base64 string
+    let imageData: Buffer | null = null;
     let imageContentType: string | null = null;
     if (imageDataUrl) {
       const match = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/);
       if (match) {
         imageContentType = match[1];
-        imageData = match[2];
+        imageData = Buffer.from(match[2], "base64"); // ← raw binary, 33% smaller than TEXT
       }
     }
 
@@ -110,7 +121,7 @@ router.post("/products", requireAdmin, async (req, res) => {
       ...parsed.data,
       imageData,
       imageContentType,
-      imageObjectPath: null, // always null — URL is derived on read
+      imageObjectPath: null,
     }).returning();
     res.status(201).json(stripImage(row));
   } catch (err) {
@@ -136,14 +147,17 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
       return;
     }
 
-    // Determine image update
-    let imageUpdate: { imageData?: string | null; imageContentType?: string | null } = {};
+    // Determine image update: store raw Buffer (BLOB), not base64 string
+    let imageUpdate: { imageData?: Buffer | null; imageContentType?: string | null } = {};
     if (removeImage) {
       imageUpdate = { imageData: null, imageContentType: null };
     } else if (imageDataUrl) {
       const match = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/);
       if (match) {
-        imageUpdate = { imageContentType: match[1], imageData: match[2] };
+        imageUpdate = {
+          imageContentType: match[1],
+          imageData: Buffer.from(match[2], "base64"), // ← raw binary BLOB
+        };
       }
     }
 

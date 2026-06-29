@@ -45,6 +45,9 @@ export const db = drizzle(client, { schema });
  * Safe to call on every startup — uses IF NOT EXISTS and ignores duplicate-column errors.
  */
 export async function initDb(): Promise<void> {
+  // WAL mode: better concurrent read/write performance
+  await client.execute("PRAGMA journal_mode=WAL");
+
   // Create tables
   await client.execute(`
     CREATE TABLE IF NOT EXISTS products (
@@ -56,7 +59,7 @@ export async function initDb(): Promise<void> {
       description TEXT NOT NULL,
       specs TEXT NOT NULL DEFAULT '[]',
       image_object_path TEXT,
-      image_data TEXT,
+      image_data BLOB,
       image_content_type TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -84,16 +87,38 @@ export async function initDb(): Promise<void> {
     )
   `);
 
-  // Add new image columns to existing products tables (idempotent)
-  for (const col of [
-    "ALTER TABLE products ADD COLUMN image_data TEXT",
+  // Add missing columns to existing DBs (idempotent — errors on duplicate column are ignored)
+  const alterCols = [
+    "ALTER TABLE products ADD COLUMN image_data BLOB",
     "ALTER TABLE products ADD COLUMN image_content_type TEXT",
-  ]) {
-    try {
-      await client.execute(col);
-    } catch {
-      // Column already exists — ignore
+  ];
+  for (const sql of alterCols) {
+    try { await client.execute(sql); } catch { /* already exists */ }
+  }
+
+  // Lazy migration: if any row still has a TEXT base64 string in image_data (from old schema),
+  // convert it to a proper BLOB binary in-place.
+  // SQLite stores BLOB vs TEXT differently, but libsql returns BLOB columns as Uint8Array.
+  // Old TEXT rows: SQLite type affinity means we can detect them by attempting a cast.
+  // Simplest safe approach: read rows where image_data IS NOT NULL, check if it looks like
+  // a base64 string (Uint8Array from BLOB would not match), and rewrite.
+  try {
+    const rows = await client.execute(
+      "SELECT id, image_data, image_content_type FROM products WHERE image_data IS NOT NULL"
+    );
+    for (const row of rows.rows) {
+      const raw = row["image_data"];
+      // If it's a string (old TEXT base64), convert to BLOB
+      if (typeof raw === "string") {
+        const buf = Buffer.from(raw, "base64");
+        await client.execute({
+          sql: "UPDATE products SET image_data = ? WHERE id = ?",
+          args: [buf, row["id"] as number],
+        });
+      }
     }
+  } catch {
+    // Non-critical — migration will retry next startup
   }
 }
 
