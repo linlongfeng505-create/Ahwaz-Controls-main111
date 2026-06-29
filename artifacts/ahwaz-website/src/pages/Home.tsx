@@ -52,7 +52,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link href="/products">
-                  <Button size="lg" variant="outline" className="border-primary-foreground text-primary hover:bg-primary-foreground text-lg h-14 px-8 font-bold">
+                  <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary text-lg h-14 px-8 font-bold">
                     Browse Catalog
                   </Button>
                 </Link>
