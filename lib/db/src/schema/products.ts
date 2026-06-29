@@ -11,6 +11,8 @@ export const productsTable = sqliteTable("products", {
   description: text("description").notNull(),
   specs: text("specs", { mode: "json" }).$type<string[]>().notNull().default([]),
   imageObjectPath: text("image_object_path"),
+  imageData: text("image_data"),         // base64-encoded image
+  imageContentType: text("image_content_type"), // e.g. "image/jpeg"
   createdAt: text("created_at").notNull().$default(() => new Date().toISOString()),
   updatedAt: text("updated_at").notNull().$default(() => new Date().toISOString()).$onUpdate(() => new Date().toISOString()),
 });

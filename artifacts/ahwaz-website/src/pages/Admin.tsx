@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Eye, Trash } from "lucide-react";
-import { ObjectUploader } from "@workspace/object-storage-web";
+import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Trash } from "lucide-react";
 
 interface Product {
   id: number;
@@ -59,6 +58,8 @@ const emptyForm = {
   description: "",
   specs: [""],
   imageObjectPath: null as string | null,
+  imageDataUrl: null as string | null, // local base64 preview (not yet saved)
+  removeImage: false,
 };
 
 async function apiFetch(path: string, options: RequestInit = {}, pw: string) {
@@ -90,6 +91,7 @@ export default function Admin() {
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState({ ...emptyForm });
   const [formError, setFormError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Settings form state
   const [settingsForm, setSettingsForm] = useState<SiteSettings | null>(null);
@@ -170,7 +172,9 @@ export default function Admin() {
       category: p.category,
       description: p.description,
       specs: p.specs.length ? [...p.specs] : [""],
-      imageObjectPath: p.imageObjectPath,
+      imageObjectPath: p.imageObjectPath, // existing server URL e.g. /api/products/1/image
+      imageDataUrl: null,   // no new local image yet
+      removeImage: false,
     });
     setEditId(p.id);
     setFormError("");
@@ -179,7 +183,13 @@ export default function Admin() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const body = { ...form, specs: form.specs.filter(s => s.trim()) };
+      const { imageObjectPath, imageDataUrl, removeImage, ...rest } = form;
+      const body = {
+        ...rest,
+        specs: rest.specs.filter(s => s.trim()),
+        ...(removeImage ? { removeImage: true } : {}),
+        ...(imageDataUrl ? { imageDataUrl } : {}),
+      };
       if (editId !== null) {
         return apiFetch(`/api/products/${editId}`, { method: "PUT", body: JSON.stringify(body) }, password);
       } else {
@@ -662,30 +672,53 @@ export default function Admin() {
 
               <div>
                 <label className="block text-xs font-mono text-muted-foreground mb-2 uppercase">Product Image</label>
-                {form.imageObjectPath && (
-                  <div className="mb-2 flex items-center gap-3">
-                    <img src={`/api/storage${form.imageObjectPath}`} alt="" className="w-16 h-16 object-cover rounded-sm border border-border" />
-                    <button type="button" onClick={() => setForm(f => ({ ...f, imageObjectPath: null }))}
-                      className="text-xs text-red-500 hover:underline font-mono">Remove image</button>
+
+                {/* Preview: show local data URL if just picked, else show server URL */}
+                {(form.imageDataUrl || form.imageObjectPath) && !form.removeImage && (
+                  <div className="mb-3 flex items-center gap-3">
+                    <img
+                      src={form.imageDataUrl ?? form.imageObjectPath!}
+                      alt="preview"
+                      className="w-20 h-20 object-cover rounded-sm border border-border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForm(f => ({ ...f, imageObjectPath: null, imageDataUrl: null, removeImage: true }));
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="text-xs text-red-500 hover:underline font-mono"
+                    >
+                      Remove image
+                    </button>
                   </div>
                 )}
-                <ObjectUploader
-                  onGetUploadParameters={async (file) => {
-                    const res = await fetch("/api/storage/uploads/request-url", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", "x-admin-password": password },
-                      body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
-                    });
-                    const { uploadURL, objectPath } = await res.json();
-                    setForm(f => ({ ...f, imageObjectPath: objectPath }));
-                    return { method: "PUT" as const, url: uploadURL, headers: { "Content-Type": file.type } };
-                  }}
-                  onComplete={() => {}}
-                >
-                  <div className="inline-flex items-center gap-2 border border-dashed border-border rounded-sm px-4 py-2 text-sm text-muted-foreground hover:border-accent hover:text-accent cursor-pointer transition-colors">
-                    <Upload className="w-4 h-4" /> Upload image
-                  </div>
-                </ObjectUploader>
+
+                {/* File picker */}
+                <label className="inline-flex items-center gap-2 border border-dashed border-border rounded-sm px-4 py-2 text-sm text-muted-foreground hover:border-accent hover:text-accent cursor-pointer transition-colors">
+                  <Upload className="w-4 h-4" />
+                  {form.imageDataUrl || (form.imageObjectPath && !form.removeImage) ? "Change image" : "Upload image"}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        setForm(f => ({
+                          ...f,
+                          imageDataUrl: reader.result as string,
+                          removeImage: false,
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                </label>
+                <p className="text-xs text-muted-foreground font-mono mt-1">Max 8MB. JPG, PNG, WebP.</p>
               </div>
 
               {formError && <p className="text-red-500 text-xs font-mono">{formError}</p>}

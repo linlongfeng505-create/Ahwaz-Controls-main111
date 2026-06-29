@@ -40,4 +40,61 @@ const client = createClient({ url: DB_URL });
 
 export const db = drizzle(client, { schema });
 
+/**
+ * Initialize the database: create tables and add any missing columns.
+ * Safe to call on every startup — uses IF NOT EXISTS and ignores duplicate-column errors.
+ */
+export async function initDb(): Promise<void> {
+  // Create tables
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS products (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      brand TEXT NOT NULL,
+      model TEXT NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT NOT NULL,
+      specs TEXT NOT NULL DEFAULT '[]',
+      image_object_path TEXT,
+      image_data TEXT,
+      image_content_type TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS submissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      company TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      message TEXT NOT NULL,
+      read INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
+  // Add new image columns to existing products tables (idempotent)
+  for (const col of [
+    "ALTER TABLE products ADD COLUMN image_data TEXT",
+    "ALTER TABLE products ADD COLUMN image_content_type TEXT",
+  ]) {
+    try {
+      await client.execute(col);
+    } catch {
+      // Column already exists — ignore
+    }
+  }
+}
+
 export * from "./schema";
