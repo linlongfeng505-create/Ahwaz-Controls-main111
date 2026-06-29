@@ -99,7 +99,7 @@ export default function Admin() {
 
   const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>({
     queryKey: ["admin-products"],
-    queryFn: () => fetch("/api/products").then(r => r.json()),
+    queryFn: () => fetch("/api/products?limit=1000").then(r => r.json()).then(res => res.data ?? res),
     enabled: authed,
   });
 
