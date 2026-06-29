@@ -34,9 +34,7 @@ export default function ProductDetail() {
     enabled: !!id,
   });
 
-  const imageUrl = product?.imageObjectPath
-    ? `/api/storage${product.imageObjectPath}`
-    : null;
+  const imageUrl = product?.imageObjectPath ?? null;
 
   if (isLoading) {
     return (

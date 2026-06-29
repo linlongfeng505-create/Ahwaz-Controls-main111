@@ -372,7 +372,7 @@ export default function Admin() {
                       <td className="py-3 pr-4 text-muted-foreground text-xs">{p.category}</td>
                       <td className="py-3 pr-4">
                         {p.imageObjectPath ? (
-                          <img src={`/api/storage${p.imageObjectPath}`} alt="" className="w-10 h-10 object-cover rounded-sm border border-border" />
+                          <img src={p.imageObjectPath ?? ""} alt="" className="w-10 h-10 object-cover rounded-sm border border-border" />
                         ) : (
                           <span className="text-muted-foreground/40 text-xs font-mono">—</span>
                         )}

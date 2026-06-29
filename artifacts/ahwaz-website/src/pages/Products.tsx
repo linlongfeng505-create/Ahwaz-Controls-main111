@@ -249,7 +249,7 @@ export default function Products() {
                             {product.imageObjectPath ? (
                               <div className="aspect-video rounded-sm overflow-hidden border border-border mb-4">
                                 <img
-                                  src={`/api/storage${product.imageObjectPath}`}
+                                  src={product.imageObjectPath ?? ""}
                                   alt={product.name}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
