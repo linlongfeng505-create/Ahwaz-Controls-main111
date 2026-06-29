@@ -590,11 +590,12 @@ export default function Admin() {
 
       {/* Product Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-start justify-center px-4 py-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-card border border-border rounded-sm w-full max-w-2xl my-8 relative"
+            className="bg-card border border-border rounded-sm w-full max-w-2xl relative"
           >
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">
               <h2 className="text-lg font-bold text-foreground">{editId !== null ? "Edit Product" : "Add Product"}</h2>
@@ -699,6 +700,7 @@ export default function Admin() {
               </div>
             </form>
           </motion.div>
+          </div>
         </div>
       )}
     </Layout>
