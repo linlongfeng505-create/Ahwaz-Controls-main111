@@ -452,7 +452,7 @@ export default function Admin() {
           {/* Submission detail modal */}
           {openSubmission && (
             <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
-              <div className="flex min-h-full items-start justify-center px-4 py-8">
+              <div className="flex min-h-screen items-start justify-center px-4 py-8">
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -593,7 +593,7 @@ export default function Admin() {
       {/* Product Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-start justify-center px-4 py-8">
+          <div className="flex min-h-screen items-start justify-center px-4 py-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
