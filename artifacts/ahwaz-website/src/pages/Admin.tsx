@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Trash } from "lucide-react";
+import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Trash, FileText, BookOpen, Eye, EyeOff } from "lucide-react";
 
 interface Product {
   id: number;
@@ -36,6 +36,28 @@ interface SiteSettings {
   company_subtitle: string;
   address: string;
   copyright: string;
+}
+
+interface ArticleItem {
+  id: number;
+  title: string;
+  slug: string;
+  summary: string | null;
+  content: string;
+  coverUrl: string | null;
+  published: boolean;
+  createdAt: string;
+}
+
+interface EmptyArticleForm {
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  published: boolean;
+  coverDataUrl: string | null;
+  removeCover: boolean;
+  existingCoverUrl: string | null;
 }
 
 const CATEGORIES = [
@@ -116,7 +138,7 @@ export default function Admin() {
   const [password, setPassword] = useState(() => sessionStorage.getItem(STORAGE_KEY) ?? "");
   const [authed, setAuthed] = useState(false);
   const [authError, setAuthError] = useState("");
-  const [activeTab, setActiveTab] = useState<"products" | "submissions" | "settings">("products");
+  const [activeTab, setActiveTab] = useState<"products" | "submissions" | "settings" | "articles">("products");
   const [openSubmission, setOpenSubmission] = useState<Submission | null>(null);
 
   // Product form state
@@ -129,6 +151,23 @@ export default function Admin() {
   // Settings form state
   const [settingsForm, setSettingsForm] = useState<SiteSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
+
+  // Article form state
+  const emptyArticleForm: EmptyArticleForm = {
+    title: "",
+    slug: "",
+    summary: "",
+    content: "",
+    published: false,
+    coverDataUrl: null,
+    removeCover: false,
+    existingCoverUrl: null,
+  };
+  const [showArticleForm, setShowArticleForm] = useState(false);
+  const [articleEditId, setArticleEditId] = useState<number | null>(null);
+  const [articleForm, setArticleForm] = useState<EmptyArticleForm>({ ...emptyArticleForm });
+  const [articleFormError, setArticleFormError] = useState("");
+  const articleCoverRef = useRef<HTMLInputElement>(null);
 
   const qc = useQueryClient();
 
@@ -359,6 +398,15 @@ export default function Admin() {
           >
             <Settings className="w-4 h-4" />
             Site Settings
+          </button>
+          <button
+            onClick={() => setActiveTab("articles")}
+            className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 transition-colors ${
+              activeTab === "articles" ? "border-accent text-accent" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            Articles
           </button>
         </div>
       </div>
@@ -633,6 +681,24 @@ export default function Admin() {
         </div>
       )}
 
+      {/* Articles Tab */}
+      {activeTab === "articles" && (
+        <ArticlesTab
+          password={password}
+          qc={qc}
+          showArticleForm={showArticleForm}
+          setShowArticleForm={setShowArticleForm}
+          articleEditId={articleEditId}
+          setArticleEditId={setArticleEditId}
+          articleForm={articleForm}
+          setArticleForm={setArticleForm}
+          articleFormError={articleFormError}
+          setArticleFormError={setArticleFormError}
+          articleCoverRef={articleCoverRef}
+          emptyArticleForm={emptyArticleForm}
+        />
+      )}
+
       {/* Product Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
@@ -787,5 +853,434 @@ export default function Admin() {
         </div>
       )}
     </Layout>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ArticlesTab — self-contained sub-component
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface ArticlesTabProps {
+  password: string;
+  qc: ReturnType<typeof useQueryClient>;
+  showArticleForm: boolean;
+  setShowArticleForm: (v: boolean) => void;
+  articleEditId: number | null;
+  setArticleEditId: (v: number | null) => void;
+  articleForm: EmptyArticleForm;
+  setArticleForm: React.Dispatch<React.SetStateAction<EmptyArticleForm>>;
+  articleFormError: string;
+  setArticleFormError: (v: string) => void;
+  articleCoverRef: React.RefObject<HTMLInputElement | null>;
+  emptyArticleForm: EmptyArticleForm;
+}
+
+function ArticlesTab({
+  password,
+  qc,
+  showArticleForm,
+  setShowArticleForm,
+  articleEditId,
+  setArticleEditId,
+  articleForm,
+  setArticleForm,
+  articleFormError,
+  setArticleFormError,
+  articleCoverRef,
+  emptyArticleForm,
+}: ArticlesTabProps) {
+  const { data: articles = [], isLoading } = useQuery<ArticleItem[]>({
+    queryKey: ["admin-articles"],
+    queryFn: () =>
+      fetch("/api/articles?limit=200", {
+        headers: { "x-admin-password": password },
+      })
+        .then((r) => r.json())
+        .then((res) => res.data ?? res),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (form: EmptyArticleForm) => {
+      const { coverDataUrl, removeCover, existingCoverUrl, ...rest } = form;
+      const body = { ...rest, coverDataUrl: coverDataUrl ?? undefined, removeCover };
+      const url =
+        articleEditId !== null
+          ? `/api/articles/${articleEditId}`
+          : "/api/articles";
+      const method = articleEditId !== null ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password,
+        },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? `HTTP ${res.status}`);
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-articles"] });
+      setShowArticleForm(false);
+    },
+    onError: (err: Error) => setArticleFormError(err.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) =>
+      fetch(`/api/articles/${id}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": password },
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-articles"] }),
+  });
+
+  const togglePublishMutation = useMutation({
+    mutationFn: async (article: ArticleItem) => {
+      const res = await fetch(`/api/articles/${article.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password,
+        },
+        body: JSON.stringify({
+          title: article.title,
+          slug: article.slug,
+          summary: article.summary ?? "",
+          content: article.content,
+          published: !article.published,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      return res.json();
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-articles"] }),
+  });
+
+  function openAdd() {
+    setArticleForm({ ...emptyArticleForm });
+    setArticleEditId(null);
+    setArticleFormError("");
+    setShowArticleForm(true);
+  }
+
+  function openEdit(a: ArticleItem) {
+    setArticleForm({
+      title: a.title,
+      slug: a.slug,
+      summary: a.summary ?? "",
+      content: a.content,
+      published: a.published,
+      coverDataUrl: null,
+      removeCover: false,
+      existingCoverUrl: a.coverUrl,
+    });
+    setArticleEditId(a.id);
+    setArticleFormError("");
+    setShowArticleForm(true);
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setArticleFormError("");
+    if (!articleForm.title.trim()) { setArticleFormError("Title is required"); return; }
+    if (!articleForm.slug.trim()) { setArticleFormError("Slug is required"); return; }
+    if (!articleForm.content.trim()) { setArticleFormError("Content is required"); return; }
+    saveMutation.mutate(articleForm);
+  }
+
+  // Auto-generate slug from title (only for new articles)
+  function handleTitleChange(val: string) {
+    setArticleForm((f) => {
+      const newForm = { ...f, title: val };
+      if (articleEditId === null && !f.slug) {
+        newForm.slug = val
+          .toLowerCase()
+          .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+      return newForm;
+    });
+  }
+
+  return (
+    <div className="container mx-auto px-4 md:px-8 py-10">
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={openAdd}
+          className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-5 py-2 rounded-sm font-semibold hover:bg-accent/90 transition-colors text-sm"
+        >
+          <Plus className="w-4 h-4" />
+          New Article
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="text-muted-foreground font-mono">Loading articles...</div>
+      ) : articles.length === 0 ? (
+        <div className="text-center py-24 border border-dashed border-border rounded-sm">
+          <FileText className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+          <p className="text-muted-foreground font-mono">No articles yet. Create your first article.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Title</th>
+                <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Slug</th>
+                <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Status</th>
+                <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Date</th>
+                <th className="pb-3 font-mono text-xs text-muted-foreground uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {articles.map((a) => (
+                <tr key={a.id} className="hover:bg-muted/20 transition-colors">
+                  <td className="py-3 pr-4 font-medium text-foreground max-w-xs truncate">{a.title}</td>
+                  <td className="py-3 pr-4 font-mono text-xs text-muted-foreground">{a.slug}</td>
+                  <td className="py-3 pr-4">
+                    <button
+                      onClick={() => togglePublishMutation.mutate(a)}
+                      title={a.published ? "Click to unpublish" : "Click to publish"}
+                      className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full transition-colors ${
+                        a.published
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      }`}
+                    >
+                      {a.published ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                      {a.published ? "Published" : "Draft"}
+                    </button>
+                  </td>
+                  <td className="py-3 pr-4 text-xs text-muted-foreground font-mono">
+                    {new Date(a.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-3">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEdit(a)}
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-sm transition-colors"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete "${a.title}"?`)) deleteMutation.mutate(a.id);
+                        }}
+                        className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-sm transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Article Form Modal */}
+      {showArticleForm && (
+        <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-start justify-center px-4 py-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-card border border-border rounded-sm w-full max-w-3xl relative"
+            >
+              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">
+                <h2 className="text-lg font-bold text-foreground">
+                  {articleEditId !== null ? "Edit Article" : "New Article"}
+                </h2>
+                <button
+                  onClick={() => setShowArticleForm(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                {/* Title */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Title *</label>
+                  <input
+                    value={articleForm.title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                    placeholder="Article title"
+                    required
+                  />
+                </div>
+
+                {/* Slug */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Slug (URL) *</label>
+                  <input
+                    value={articleForm.slug}
+                    onChange={(e) =>
+                      setArticleForm((f) => ({ ...f, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") }))
+                    }
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent font-mono"
+                    placeholder="my-article-slug"
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1 font-mono">
+                    URL: /articles/{articleForm.slug || "slug"}
+                  </p>
+                </div>
+
+                {/* Summary */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Summary</label>
+                  <textarea
+                    value={articleForm.summary}
+                    onChange={(e) => setArticleForm((f) => ({ ...f, summary: e.target.value }))}
+                    rows={2}
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                    placeholder="Brief article summary (shown in list cards)..."
+                  />
+                </div>
+
+                {/* Content */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Content *</label>
+                  <textarea
+                    value={articleForm.content}
+                    onChange={(e) => setArticleForm((f) => ({ ...f, content: e.target.value }))}
+                    rows={10}
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-y font-mono"
+                    placeholder="Article content (separate paragraphs with blank lines)..."
+                    required
+                  />
+                </div>
+
+                {/* Cover Image */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-2 uppercase">Cover Image</label>
+                  {(articleForm.coverDataUrl || (articleForm.existingCoverUrl && !articleForm.removeCover)) && (
+                    <div className="mb-3 flex items-center gap-3">
+                      <img
+                        src={articleForm.coverDataUrl ?? articleForm.existingCoverUrl!}
+                        alt="cover preview"
+                        className="w-24 h-16 object-cover rounded-sm border border-border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setArticleForm((f) => ({
+                            ...f,
+                            coverDataUrl: null,
+                            existingCoverUrl: null,
+                            removeCover: true,
+                          }));
+                          if (articleCoverRef.current) articleCoverRef.current.value = "";
+                        }}
+                        className="text-xs text-red-500 hover:underline font-mono"
+                      >
+                        Remove cover
+                      </button>
+                    </div>
+                  )}
+                  <label className="inline-flex items-center gap-2 border border-dashed border-border rounded-sm px-4 py-2 text-sm text-muted-foreground hover:border-accent hover:text-accent cursor-pointer transition-colors">
+                    <Upload className="w-4 h-4" />
+                    {articleForm.coverDataUrl || (articleForm.existingCoverUrl && !articleForm.removeCover)
+                      ? "Change cover"
+                      : "Upload cover"}
+                    <input
+                      ref={articleCoverRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const compressed = await compressImage(file);
+                          const reader = new FileReader();
+                          reader.onload = () =>
+                            setArticleForm((f) => ({
+                              ...f,
+                              coverDataUrl: reader.result as string,
+                              removeCover: false,
+                            }));
+                          reader.readAsDataURL(compressed);
+                        } catch {
+                          const reader = new FileReader();
+                          reader.onload = () =>
+                            setArticleForm((f) => ({
+                              ...f,
+                              coverDataUrl: reader.result as string,
+                              removeCover: false,
+                            }));
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                  <p className="text-xs text-muted-foreground font-mono mt-1">Max 8MB. JPG, PNG, WebP.</p>
+                </div>
+
+                {/* Published toggle */}
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <div
+                      onClick={() => setArticleForm((f) => ({ ...f, published: !f.published }))}
+                      className={`w-10 h-6 rounded-full transition-colors relative ${
+                        articleForm.published ? "bg-accent" : "bg-muted"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                          articleForm.published ? "translate-x-5" : "translate-x-1"
+                        }`}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">
+                      {articleForm.published ? "Published" : "Draft"}
+                    </span>
+                  </label>
+                  <span className="text-xs text-muted-foreground font-mono">
+                    {articleForm.published
+                      ? "Visible to public visitors"
+                      : "Only visible to admins"}
+                  </span>
+                </div>
+
+                {articleFormError && (
+                  <p className="text-red-500 text-xs font-mono">{articleFormError}</p>
+                )}
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={saveMutation.isPending}
+                    className="bg-primary text-primary-foreground px-6 py-2 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                  >
+                    {saveMutation.isPending
+                      ? "Saving..."
+                      : articleEditId !== null
+                      ? "Save Changes"
+                      : "Create Article"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowArticleForm(false)}
+                    className="border border-border px-6 py-2 rounded-sm font-semibold text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

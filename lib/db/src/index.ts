@@ -96,6 +96,21 @@ export async function initDb(): Promise<void> {
     try { await client.execute(sql); } catch { /* already exists */ }
   }
 
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS articles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      summary TEXT,
+      content TEXT NOT NULL,
+      cover_data BLOB,
+      cover_content_type TEXT,
+      published INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
   // Lazy migration: if any row still has a TEXT base64 string in image_data (from old schema),
   // convert it to a proper BLOB binary in-place.
   // SQLite stores BLOB vs TEXT differently, but libsql returns BLOB columns as Uint8Array.

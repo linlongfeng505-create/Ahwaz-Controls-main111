@@ -4,6 +4,7 @@ import productsRouter from "./products";
 import storageRouter from "./storage";
 import settingsRouter from "./settings";
 import submissionsRouter from "./submissions";
+import articlesRouter from "./articles";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(productsRouter);
 router.use(storageRouter);
 router.use(settingsRouter);
 router.use(submissionsRouter);
+router.use(articlesRouter);
 
 export default router;

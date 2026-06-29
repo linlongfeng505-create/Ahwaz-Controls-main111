@@ -13,6 +13,8 @@ import Industries from "@/pages/Industries";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Admin from "@/pages/Admin";
+import Articles from "@/pages/Articles";
+import ArticleDetail from "@/pages/ArticleDetail";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/admin" component={Admin} />
+      <Route path="/articles" component={Articles} />
+      <Route path="/articles/:slug" component={ArticleDetail} />
       <Route component={NotFound} />
     </Switch>
   );

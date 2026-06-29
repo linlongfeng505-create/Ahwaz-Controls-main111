@@ -20,3 +20,4 @@
 export * from "./products";
 export * from "./settings";
 export * from "./submissions";
+export * from "./articles";
