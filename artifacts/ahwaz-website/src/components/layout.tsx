@@ -27,6 +27,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { href: "/products", label: "Products" },
     { href: "/brands", label: "Brands" },
     { href: "/industries", label: "Industries" },
+    { href: "/articles", label: "Articles" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
@@ -155,6 +156,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Products Catalog</span></Link></li>
                 <li><Link href="/brands"><span className="hover:text-accent cursor-pointer transition-colors">Partner Brands</span></Link></li>
                 <li><Link href="/industries"><span className="hover:text-accent cursor-pointer transition-colors">Industries Served</span></Link></li>
+                <li><Link href="/articles"><span className="hover:text-accent cursor-pointer transition-colors">Articles &amp; News</span></Link></li>
                 <li><Link href="/about"><span className="hover:text-accent cursor-pointer transition-colors">About Us</span></Link></li>
                 <li><Link href="/contact"><span className="hover:text-accent cursor-pointer transition-colors">Contact</span></Link></li>
               </ul>
