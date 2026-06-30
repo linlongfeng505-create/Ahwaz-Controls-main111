@@ -24,11 +24,6 @@ const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micr
 export default function Home() {
   const s = useSiteSettings();
 
-  // Split company name: first word in white, remaining words in accent colour
-  const nameParts = s.company_name.toUpperCase().split(" ");
-  const nameFirst = nameParts[0];
-  const nameRest = nameParts.slice(1).join(" ");
-
   return (
     <Layout>
       {/* Hero Section */}
@@ -45,11 +40,29 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Two-color company name — matches header/footer style */}
-              <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
-                <span className="text-primary-foreground">{nameFirst} </span>
-                {nameRest && <span className="text-accent">{nameRest}</span>}
-              </div>
+              {/* Two-color company name — matches header/footer style.
+                  Multi-word: first word white, rest accent.
+                  Single-word (e.g. "Flonexis"): split at midpoint so both colours always show. */}
+              {(() => {
+                const upper = s.company_name.toUpperCase();
+                const parts = upper.split(" ");
+                if (parts.length >= 2) {
+                  return (
+                    <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
+                      <span className="text-primary-foreground">{parts[0]} </span>
+                      <span className="text-accent">{parts.slice(1).join(" ")}</span>
+                    </div>
+                  );
+                }
+                // Single word — split at midpoint
+                const mid = Math.ceil(upper.length / 2);
+                return (
+                  <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
+                    <span className="text-primary-foreground">{upper.slice(0, mid)}</span>
+                    <span className="text-accent">{upper.slice(mid)}</span>
+                  </div>
+                );
+              })()}
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
                 Alternatives &amp;<br />
                 <span className="text-accent">Surplus Stock.</span>
