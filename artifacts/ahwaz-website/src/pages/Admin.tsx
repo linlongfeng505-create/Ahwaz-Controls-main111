@@ -70,7 +70,7 @@ const CATEGORIES = [
   "Field Communicators",
 ];
 
-const STORAGE_KEY = "ahwaz_admin_pw";
+const STORAGE_KEY = "flonexis_admin_pw";
 
 const emptyForm = {
   name: "",
@@ -588,7 +588,7 @@ export default function Admin() {
                   </div>
                   <div className="flex items-center gap-3 pt-2 flex-wrap">
                     <a
-                      href={`mailto:${openSubmission.email}?subject=Re: Your enquiry at Ahwaz Controls`}
+                      href={`mailto:${openSubmission.email}?subject=Re: Your enquiry at Flonexis`}
                       className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2 rounded-sm font-semibold hover:bg-primary/90 transition-colors text-sm"
                     >
                       <Mail className="w-4 h-4" /> Reply by Email
@@ -623,7 +623,7 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {(
                   [
-                    { key: "company_name", label: "Company Name", placeholder: "Ahwaz Controls" },
+                    { key: "company_name", label: "Company Name", placeholder: "Flonexis" },
                     { key: "company_subtitle", label: "Company Subtitle", placeholder: "EHUADE Automation" },
                     { key: "email", label: "Email Address", placeholder: "sales@example.com" },
                     { key: "phone", label: "Phone Number", placeholder: "+86 131 9339 8860" },
@@ -650,7 +650,7 @@ export default function Admin() {
                   <input
                     value={currentSettings.copyright}
                     onChange={e => updateSettings("copyright", e.target.value)}
-                    placeholder="Ahwaz Controls (EHUADE Automation). All rights reserved."
+                    placeholder="Flonexis. All rights reserved."
                     className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
                   />
                   <p className="text-xs text-muted-foreground mt-1 font-mono">The year is added automatically.</p>

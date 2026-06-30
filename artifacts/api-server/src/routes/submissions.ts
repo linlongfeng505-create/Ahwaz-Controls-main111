@@ -5,7 +5,7 @@ import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 
 const router = Router();
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "ahwaz-admin-2024";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 
 function requireAdmin(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {
   if (req.headers["x-admin-password"] !== ADMIN_PASSWORD) {

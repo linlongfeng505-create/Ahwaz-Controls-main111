@@ -12,13 +12,13 @@ export interface SiteSettings {
 }
 
 const DEFAULTS: SiteSettings = {
-  email: "sales@ahwazcontrols.com",
+  email: "sales@flonexis.com",
   phone: "+86 131 9339 8860",
   whatsapp: "8613193398860",
-  company_name: "Ahwaz Controls",
-  company_subtitle: "EHUADE Automation",
+  company_name: "Flonexis",
+  company_subtitle: "Industrial Instrumentation",
   address: "China",
-  copyright: "Ahwaz Controls (EHUADE Automation). All rights reserved.",
+  copyright: "Flonexis. All rights reserved.",
 };
 
 const SiteSettingsContext = createContext<SiteSettings>(DEFAULTS);

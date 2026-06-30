@@ -8,7 +8,7 @@ export default function About() {
       <div className="bg-primary pt-24 pb-16 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Ahwaz Controls</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Flonexis</h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl font-mono">
               EHUADE Automation — Your trusted procurement partner for industrial instrumentation.
             </p>
@@ -23,7 +23,7 @@ export default function About() {
               <h2 className="text-3xl font-bold mb-6 text-foreground">Who We Are</h2>
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
                 <p>
-                  Based in China, Ahwaz Controls (EHUADE Automation) is a leading B2B wholesale exporter specializing in high-grade industrial instrumentation and automation equipment.
+                  Based in China, Flonexis is a leading B2B wholesale exporter specializing in high-grade industrial instrumentation and automation equipment.
                 </p>
                 <p>
                   For over a decade, we have served as a critical supply chain link for procurement engineers, EPC contractors, and end-users in the Oil & Gas, Chemical, Power, and Pharmaceutical sectors across 50+ countries.

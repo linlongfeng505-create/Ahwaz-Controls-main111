@@ -65,7 +65,7 @@ export default function Articles() {
               Latest <span className="text-accent">Articles</span>
             </h1>
             <p className="text-lg text-primary-foreground/70">
-              Industry news, technical guides, and company updates from Ahwaz
+              Industry news, technical guides, and company updates from Flonexis
               Controls.
             </p>
           </motion.div>

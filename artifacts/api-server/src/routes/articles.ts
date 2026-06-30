@@ -5,7 +5,7 @@ import { eq, desc, or } from "drizzle-orm";
 
 const router = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "ahwaz-admin-2024";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 const DEFAULT_PAGE_SIZE = 10;
 
 function requireAdmin(

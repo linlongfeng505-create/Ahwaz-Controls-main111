@@ -5,7 +5,7 @@ import { eq, count, asc } from "drizzle-orm";
 
 const router = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "ahwaz-admin-2024";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 const DEFAULT_PAGE_SIZE = 12;
 
 function requireAdmin(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {

@@ -5,16 +5,16 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "ahwaz-admin-2024";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 
 const DEFAULT_SETTINGS: Record<string, string> = {
-  email: "sales@ahwazcontrols.com",
+  email: "sales@flonexis.com",
   phone: "+86 131 9339 8860",
   whatsapp: "8613193398860",
-  company_name: "Ahwaz Controls",
-  company_subtitle: "EHUADE Automation",
+  company_name: "Flonexis",
+  company_subtitle: "Industrial Instrumentation",
   address: "China",
-  copyright: "Ahwaz Controls (EHUADE Automation). All rights reserved.",
+  copyright: "Flonexis. All rights reserved.",
 };
 
 function requireAdmin(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {
