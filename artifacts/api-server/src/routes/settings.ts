@@ -9,8 +9,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 
 const DEFAULT_SETTINGS: Record<string, string> = {
   email: "sales@flonexis.com",
-  phone: "+86 131 9339 8860",
-  whatsapp: "8613193398860",
+  phone: "+86 134 0065 5796",
+  whatsapp: "8613400655796",
   company_name: "Flonexis",
   company_subtitle: "Industrial Instrumentation",
   address: "China",

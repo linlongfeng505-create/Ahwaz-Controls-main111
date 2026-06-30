@@ -13,8 +13,8 @@ export interface SiteSettings {
 
 const DEFAULTS: SiteSettings = {
   email: "sales@flonexis.com",
-  phone: "+86 131 9339 8860",
-  whatsapp: "8613193398860",
+  phone: "+86 134 0065 5796",
+  whatsapp: "8613400655796",
   company_name: "Flonexis",
   company_subtitle: "Industrial Instrumentation",
   address: "China",
