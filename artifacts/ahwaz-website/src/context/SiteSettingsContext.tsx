@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 export interface SiteSettings {
@@ -30,8 +30,17 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     staleTime: 60_000,
   });
 
+  const settings = data ?? DEFAULTS;
+
+  // Dynamically update browser tab title whenever company_name changes
+  useEffect(() => {
+    if (settings.company_name) {
+      document.title = `${settings.company_name} | Industrial Instrumentation Supplier`;
+    }
+  }, [settings.company_name]);
+
   return (
-    <SiteSettingsContext.Provider value={data ?? DEFAULTS}>
+    <SiteSettingsContext.Provider value={settings}>
       {children}
     </SiteSettingsContext.Provider>
   );

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight, ShieldCheck, Clock, Globe, Award, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 
 const stats = [
   { value: "100%", label: "Tested Before Dispatch", icon: <ShieldCheck className="w-8 h-8" /> },
@@ -21,6 +22,13 @@ const categories = [
 const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micro Motion", "Azbil", "ABB"];
 
 export default function Home() {
+  const s = useSiteSettings();
+
+  // Split company name: first word in white, remaining words in accent colour
+  const nameParts = s.company_name.toUpperCase().split(" ");
+  const nameFirst = nameParts[0];
+  const nameRest = nameParts.slice(1).join(" ");
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -37,6 +45,11 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
+              {/* Two-color company name — matches header/footer style */}
+              <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
+                <span className="text-primary-foreground">{nameFirst} </span>
+                {nameRest && <span className="text-accent">{nameRest}</span>}
+              </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
                 Alternatives &amp;<br />
                 <span className="text-accent">Surplus Stock.</span>
@@ -57,6 +70,20 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
+
+              {/* Response-time guarantee — drives quote conversions */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mt-6 inline-flex items-start gap-3 bg-primary-foreground/10 border border-primary-foreground/20 rounded-sm px-4 py-3 max-w-xl"
+              >
+                <Clock className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                <p className="text-sm text-primary-foreground/80 leading-relaxed">
+                  <span className="font-bold text-primary-foreground">Reply within 30 minutes</span> when you submit a Quick Quote Request Monday–Friday, 8:30 a.m. – 6:00 p.m. CST.
+                  {" "}<span className="text-primary-foreground/60">Requests outside these hours receive a reply the next business day.</span>
+                </p>
+              </motion.div>
             </motion.div>
           </div>
         </div>
