@@ -64,11 +64,11 @@ export default function Home() {
                 );
               })()}
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
-                Alternatives &amp;<br />
-                <span className="text-accent">Surplus Stock.</span>
+                Global Industrial<br />
+                <span className="text-accent">Instrumentation.</span>
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-2xl font-mono leading-relaxed">
-                Specialist supplier of compatible alternatives and surplus stock for discontinued industrial instruments — every unit rigorously tested before dispatch.
+                Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
