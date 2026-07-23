@@ -68,7 +68,7 @@ export default function Home() {
                 <span className="text-accent">Instrumentation.</span>
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-2xl font-mono leading-relaxed">
-                Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.
+                {s.home_description}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">

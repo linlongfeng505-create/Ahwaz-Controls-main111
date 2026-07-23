@@ -9,8 +9,9 @@ export interface SiteSettings {
   company_subtitle: string;
   address: string;
   copyright: string;
-  site_description: string; // <meta name="description"> + og:description
-  og_image: string;         // og:image URL（分享卡片图片）
+  site_description: string;
+  og_image: string;
+  home_description: string;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -23,6 +24,7 @@ const DEFAULTS: SiteSettings = {
   copyright: "Flonexis. All rights reserved.",
   site_description: "",
   og_image: "",
+  home_description: "Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.",
 };
 
 const SiteSettingsContext = createContext<SiteSettings>(DEFAULTS);

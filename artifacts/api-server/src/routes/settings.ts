@@ -28,6 +28,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   enable_visitor_report: "true", // 是否开启访客日报推送
   site_description: "", // <meta name="description"> — 搜索结果摘要，建议 120-160 字符
   og_image: "",         // Open Graph 图片 URL — 微信/社媒分享卡片封面图
+  home_description: "Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.",
 };
 
 function requireAdmin(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {

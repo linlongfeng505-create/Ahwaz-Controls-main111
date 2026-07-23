@@ -791,6 +791,21 @@ export default function Admin() {
 
                 <div>
                   <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                    Homepage Description
+                    <span className="ml-1 normal-case text-muted-foreground/60">（首页大标题下方的正文描述）</span>
+                  </label>
+                  <textarea
+                    value={currentSettings.home_description ?? ""}
+                    onChange={e => updateSettings("home_description", e.target.value)}
+                    rows={4}
+                    placeholder="Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support."
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1 font-mono">这段文字将直接显示在首页大标题下方，介绍公司的核心定位。</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
                     OG Image URL
                     <span className="ml-1 normal-case text-muted-foreground/60">（微信/社媒分享封面图）</span>
                   </label>
