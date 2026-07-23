@@ -2,20 +2,11 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { productsTable, productImagesTable, insertProductSchema, settingsTable } from "@workspace/db";
 import { eq, asc, inArray } from "drizzle-orm";
+import { requireAdmin } from "./auth";
 
 const router = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 const DEFAULT_PAGE_SIZE = 12;
-
-function requireAdmin(req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) {
-  const auth = req.headers["x-admin-password"];
-  if (auth !== ADMIN_PASSWORD) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  next();
-}
 
 /** Convert a raw productImagesTable row to a serving URL */
 function imgUrl(productId: number, imgId: number) {

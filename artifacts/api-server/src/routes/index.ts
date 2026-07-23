@@ -7,10 +7,12 @@ import submissionsRouter from "./submissions";
 import articlesRouter from "./articles";
 import sitemapRouter from "./sitemap";
 import visitRouter from "./visit";
+import authRouter from "./auth";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(authRouter);
 router.use(productsRouter);
 router.use(storageRouter);
 router.use(settingsRouter);

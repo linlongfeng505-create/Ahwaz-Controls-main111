@@ -258,15 +258,23 @@ export default function Admin() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch("/api/settings", {
-      headers: { "x-admin-password": password },
-    });
-    if (res.ok) {
-      sessionStorage.setItem(STORAGE_KEY, password);
-      setAuthed(true);
-      setAuthError("");
-    } else {
-      setAuthError("Incorrect password");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      
+      if (res.ok) {
+        sessionStorage.setItem(STORAGE_KEY, password);
+        setAuthed(true);
+        setAuthError("");
+      } else {
+        setAuthError(data.error || "Incorrect password");
+      }
+    } catch (err) {
+      setAuthError("Network error. Please try again.");
     }
   }
 
