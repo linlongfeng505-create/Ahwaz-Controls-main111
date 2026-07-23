@@ -30,11 +30,16 @@ const SiteSettingsContext = createContext<SiteSettings>(DEFAULTS);
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const { data } = useQuery<SiteSettings>({
     queryKey: ["site-settings"],
-    queryFn: () => fetch("/api/settings").then(r => r.json()),
+    queryFn: () => fetch("/api/settings").then(async r => {
+      if (!r.ok) throw new Error("Failed to fetch settings");
+      const json = await r.json();
+      if (json && json.error) throw new Error(json.error);
+      return json;
+    }).catch(() => null),
     staleTime: 60_000,
   });
 
-  const settings = data ?? DEFAULTS;
+  const settings = data || DEFAULTS;
 
   // Dynamically update <title>, <meta description>, and Open Graph tags
   useEffect(() => {

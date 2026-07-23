@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { productsTable, productImagesTable, insertProductSchema } from "@workspace/db";
+import { productsTable, productImagesTable, insertProductSchema, settingsTable } from "@workspace/db";
 import { eq, asc, inArray } from "drizzle-orm";
 
 const router = Router();
@@ -59,7 +59,6 @@ async function enrichProduct<T extends {
 // Returns the official category list from the settings table.
 router.get("/products/categories", async (req, res) => {
   try {
-    const { settingsTable } = await import("@workspace/db");
     const [row] = await db
       .select({ value: settingsTable.value })
       .from(settingsTable)
