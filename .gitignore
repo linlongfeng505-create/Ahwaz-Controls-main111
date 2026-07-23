@@ -48,6 +48,3 @@ Thumbs.db
 .cache/
 .local/
 
-# Database
-*.db
-*.sqlite
