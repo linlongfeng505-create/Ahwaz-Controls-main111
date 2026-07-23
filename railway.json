@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "installCommand": "pnpm install --frozen-lockfile",
+    "buildCommand": "pnpm --filter @workspace/ahwaz-website run build && pnpm --filter @workspace/api-server run build"
+  },
+  "deploy": {
+    "startCommand": "node --enable-source-maps ./artifacts/api-server/dist/index.mjs"
+  }
+}

@@ -1,0 +1,62 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "NWZp0bqYqnyO3hziKjvOe"
+uri = "file://artifacts/ahwaz-website/public/images/hero-home.png"
+type = "image"
+title = "Refinery facility at dusk"
+
+[[generated]]
+id = "1QGTxPcpg5TbdoHlboAJD"
+uri = "file://artifacts/ahwaz-website/public/images/cat-pressure.png"
+type = "image"
+title = "Industrial pressure transmitter"
+
+[[generated]]
+id = "NUIju4UqiwZ2lojRXbPDu"
+uri = "file://artifacts/ahwaz-website/public/images/cat-temperature.png"
+type = "image"
+title = "Temperature transmitter device"
+
+[[generated]]
+id = "Z7uYK0RTOkl_AOHv2zoO-"
+uri = "file://artifacts/ahwaz-website/public/images/cat-flow.png"
+type = "image"
+title = "Coriolis flow meter"
+
+[[generated]]
+id = "eKfozus7tWITFGIVIJRTh"
+uri = "file://artifacts/ahwaz-website/public/images/cat-valves.png"
+type = "image"
+title = "Industrial valve positioner"
+
+[[generated]]
+id = "bJD6IySkvJAadi160n7Jg"
+uri = "file://artifacts/ahwaz-website/public/images/cat-safety.png"
+type = "image"
+title = "Safety ESD device"
+
+[[generated]]
+id = "Vaqsi-OAmQ-53H04Aktm7"
+uri = "file://artifacts/ahwaz-website/public/images/cat-actuators.png"
+type = "image"
+title = "Pneumatic rotary actuator"
+
+[[generated]]
+id = "Dgvxlh82hdeugluXrmlOv"
+uri = "file://artifacts/ahwaz-website/public/images/cat-communicators.png"
+type = "image"
+title = "Handheld field communicator"
+
+[[generated]]
+id = "fYU9WovVP2cnTg_yPwYXN"
+uri = "file://artifacts/ahwaz-website/public/images/ind-oilgas.png"
+type = "image"
+title = "Oil and gas platform"
+
+[[generated]]
+id = "WL9BA1pryWrb9zUncVTwE"
+uri = "file://artifacts/ahwaz-website/public/images/hero-about.png"
+type = "image"
+title = "Precision engineering gears"

@@ -1,0 +1,85 @@
+import { createContext, useContext, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+export interface SiteSettings {
+  email: string;
+  phone: string;
+  whatsapp: string;
+  company_name: string;
+  company_subtitle: string;
+  address: string;
+  copyright: string;
+  site_description: string; // <meta name="description"> + og:description
+  og_image: string;         // og:image URL（分享卡片图片）
+}
+
+const DEFAULTS: SiteSettings = {
+  email: "sales@flonexis.com",
+  phone: "+86 134 0065 5796",
+  whatsapp: "8613400655796",
+  company_name: "Flonexis",
+  company_subtitle: "Industrial Instrumentation",
+  address: "China",
+  copyright: "Flonexis. All rights reserved.",
+  site_description: "",
+  og_image: "",
+};
+
+const SiteSettingsContext = createContext<SiteSettings>(DEFAULTS);
+
+export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
+  const { data } = useQuery<SiteSettings>({
+    queryKey: ["site-settings"],
+    queryFn: () => fetch("/api/settings").then(r => r.json()),
+    staleTime: 60_000,
+  });
+
+  const settings = data ?? DEFAULTS;
+
+  // Dynamically update <title>, <meta description>, and Open Graph tags
+  useEffect(() => {
+    const name = settings.company_name || "Flonexis";
+    const desc = settings.site_description;
+    const ogImg = settings.og_image;
+
+    // Title
+    document.title = `${name} | Industrial Instrumentation Supplier`;
+
+    // Helper: upsert a <meta> tag by name or property
+    function setMeta(attr: "name" | "property", key: string, content: string) {
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    }
+
+    if (desc) {
+      setMeta("name", "description", desc);
+      setMeta("property", "og:description", desc);
+      setMeta("name", "twitter:description", desc);
+    }
+
+    setMeta("property", "og:title", name);
+    setMeta("property", "og:type", "website");
+    setMeta("name", "twitter:card", "summary_large_image");
+    setMeta("name", "twitter:title", name);
+
+    if (ogImg) {
+      setMeta("property", "og:image", ogImg);
+      setMeta("name", "twitter:image", ogImg);
+    }
+  }, [settings.company_name, settings.site_description, settings.og_image]);
+
+  return (
+    <SiteSettingsContext.Provider value={settings}>
+      {children}
+    </SiteSettingsContext.Provider>
+  );
+}
+
+export function useSiteSettings() {
+  return useContext(SiteSettingsContext);
+}
