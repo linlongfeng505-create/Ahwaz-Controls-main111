@@ -106,4 +106,42 @@ router.get("/admin/db-download", requireAdmin, async (req, res) => {
   }
 });
 
+// ── POST /api/admin/db-restore ───────────────────────────────────────────────
+// Restore database from a uploaded file buffer
+router.post("/admin/db-restore", requireAdmin, async (req, res) => {
+  try {
+    const { dbFileBase64 } = req.body;
+    if (!dbFileBase64) {
+      res.status(400).json({ error: "No database file provided" });
+      return;
+    }
+
+    const buffer = Buffer.from(dbFileBase64, "base64");
+    
+    // 1. Force close the existing DB connections if possible, or just overwrite
+    // SQLite might be locked, but in WAL mode, overwriting the main file while 
+    // the server is running might cause corruption. The safest way is to clear 
+    // WAL and overwrite.
+    await client.execute("PRAGMA wal_checkpoint(TRUNCATE)");
+    
+    // Overwrite main DB file
+    fs.writeFileSync(DB_PATH, buffer);
+    
+    // Clean up WAL and SHM files to prevent corruption with the new DB
+    if (fs.existsSync(`${DB_PATH}-wal`)) fs.unlinkSync(`${DB_PATH}-wal`);
+    if (fs.existsSync(`${DB_PATH}-shm`)) fs.unlinkSync(`${DB_PATH}-shm`);
+
+    res.json({ success: true });
+    
+    // Optional: Restart the process if using PM2/Nodemon to ensure fresh DB connection
+    setTimeout(() => {
+      process.exit(0); // Let the process manager restart it
+    }, 1000);
+
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to restore database" });
+  }
+});
+
 export default router;

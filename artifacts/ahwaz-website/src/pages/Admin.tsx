@@ -187,10 +187,13 @@ export default function Admin() {
   // Settings form state
   const [settingsForm, setSettingsForm] = useState<SiteSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<"general" | "seo" | "categories" | "database">("general");
 
   // Category management state (within settings)
   const [newCategoryInput, setNewCategoryInput] = useState("");
   const [dbDownloading, setDbDownloading] = useState(false);
+  const [dbRestoring, setDbRestoring] = useState(false);
+  const dbUploadRef = useRef<HTMLInputElement>(null);
 
   // Article form state
   const emptyArticleForm: EmptyArticleForm = {
@@ -368,6 +371,55 @@ export default function Admin() {
       URL.revokeObjectURL(url);
     } finally {
       setDbDownloading(false);
+    }
+  }
+
+  async function handleDbRestore(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!confirm("Are you sure you want to restore the database? This will overwrite ALL current data (products, settings, etc.) and the server will restart. Proceed?")) {
+      e.target.value = "";
+      return;
+    }
+
+    setDbRestoring(true);
+    try {
+      // Read file as base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          // Result is "data:application/octet-stream;base64,..."
+          resolve(result.split(",")[1]); 
+        };
+        reader.onerror = reject;
+      });
+      reader.readAsDataURL(file);
+      const base64 = await base64Promise;
+
+      const res = await fetch("/api/admin/db-restore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password,
+        },
+        body: JSON.stringify({ dbFileBase64: base64 }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(body.error ?? "Restore failed");
+        return;
+      }
+      
+      alert("Database restored successfully! The server is restarting, please wait a few seconds and then refresh the page.");
+      window.location.reload();
+    } catch (err: any) {
+      alert("Error reading file: " + err.message);
+    } finally {
+      setDbRestoring(false);
+      e.target.value = "";
     }
   }
 
@@ -711,249 +763,322 @@ export default function Admin() {
 
       {/* Settings Tab */}
       {activeTab === "settings" && (
-        <div className="container mx-auto px-4 md:px-8 py-10 max-w-2xl">
-          {!currentSettings ? (
-            <div className="text-muted-foreground font-mono">Loading settings...</div>
-          ) : (
-            <form
-              onSubmit={e => { e.preventDefault(); saveSettingsMutation.mutate(); }}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {(
-                  [
-                    { key: "company_name", label: "Company Name", placeholder: "Flonexis" },
-                    { key: "company_subtitle", label: "Company Subtitle", placeholder: "EHUADE Automation" },
-                    { key: "email", label: "Email Address", placeholder: "sales@example.com" },
-                    { key: "phone", label: "Phone Number", placeholder: "+86 131 9339 8860" },
-                    { key: "whatsapp", label: "WhatsApp Number", placeholder: "8613193398860 (digits only, no +)" },
-                    { key: "address", label: "Address / Location", placeholder: "China" },
-                  ] as { key: keyof SiteSettings; label: string; placeholder: string }[]
-                ).map(field => (
-                  <div key={field.key} className={field.key === "address" ? "md:col-span-2" : ""}>
-                    <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">{field.label}</label>
-                    <input
-                      value={currentSettings[field.key]}
-                      onChange={e => updateSettings(field.key, e.target.value)}
-                      placeholder={field.placeholder}
-                      className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
-                    />
-                    {field.key === "whatsapp" && (
-                      <p className="text-xs text-muted-foreground mt-1 font-mono">Digits only, no + sign. E.g. 8613193398860</p>
-                    )}
-                  </div>
-                ))}
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Copyright Text</label>
-                  <input
-                    value={currentSettings.copyright}
-                    onChange={e => updateSettings("copyright", e.target.value)}
-                    placeholder="Flonexis. All rights reserved."
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 font-mono">The year is added automatically.</p>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
-                    企业微信群机器人 Webhook URL
-                  </label>
-                  <input
-                    value={currentSettings.wecom_webhook ?? ""}
-                    onChange={e => updateSettings("wecom_webhook", e.target.value)}
-                    placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent font-mono"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 font-mono">
-                    填入后，每次收到询价表单时自动向企业微信群发送通知。
-                    在企业微信群中「添加机器人」即可获取 Webhook 地址。
-                  </p>
-                </div>
-
-                {/* 访客日报开关 */}
-                <div className="md:col-span-2 flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="enable_visitor_report"
-                    checked={currentSettings.enable_visitor_report === "true"}
-                    onChange={e => updateSettings("enable_visitor_report", e.target.checked ? "true" : "false")}
-                    className="w-4 h-4 text-accent border-border rounded focus:ring-accent"
-                  />
-                  <label htmlFor="enable_visitor_report" className="text-sm font-semibold text-foreground">
-                    启用访客日报推送
-                  </label>
-                  <span className="text-xs text-muted-foreground font-mono ml-2">
-                    (每天早上 8 点统计前一天的真实访客和爬虫，发送至上述 Webhook)
-                  </span>
-                </div>
-              </div>
-
-              {/* SEO */}
-              <div className="md:col-span-2 space-y-4 border border-border rounded-sm p-5">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-semibold text-foreground">SEO 配置</span>
-                  <span className="text-xs text-muted-foreground font-mono">（对搜索引擎有效）</span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
-                    Site Description
-                    <span className="ml-1 normal-case text-muted-foreground/60">(meta description)</span>
-                  </label>
-                  <textarea
-                    value={currentSettings.site_description ?? ""}
-                    onChange={e => updateSettings("site_description", e.target.value)}
-                    rows={3}
-                    placeholder="一句话介绍公司，最大 160 字符。例：Flonexis 专注于工业仪表及自动化解决方案，提供 Rosemount、Yokogawa 等品牌产品。"
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 font-mono">
-                    建议 120–160 字符，显示在搜索结果摘要中，影响点击率。
-                    <span className={`ml-1 ${(currentSettings.site_description ?? "").length > 160 ? "text-red-500" : "text-muted-foreground/50"}`}>
-                      {(currentSettings.site_description ?? "").length}/160
-                    </span>
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
-                    Homepage Description
-                    <span className="ml-1 normal-case text-muted-foreground/60">（首页大标题下方的正文描述）</span>
-                  </label>
-                  <textarea
-                    value={currentSettings.home_description ?? ""}
-                    onChange={e => updateSettings("home_description", e.target.value)}
-                    rows={4}
-                    placeholder="Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support."
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 font-mono">这段文字将直接显示在首页大标题下方，介绍公司的核心定位。</p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
-                    OG Image URL
-                    <span className="ml-1 normal-case text-muted-foreground/60">（微信/社媒分享封面图）</span>
-                  </label>
-                  <input
-                    value={currentSettings.og_image ?? ""}
-                    onChange={e => updateSettings("og_image", e.target.value)}
-                    placeholder="https://yourdomain.com/images/og-cover.jpg"
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent font-mono"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1 font-mono">
-                    建议尺寸 1200×630px。分享到微信、LinkedIn、Twitter 时显示为预览图。
-                  </p>
-                  {currentSettings.og_image && (
-                    <img src={currentSettings.og_image} alt="OG preview" className="mt-2 h-20 rounded-sm border border-border object-cover" />
-                  )}
-                </div>
-              </div>
-
-              {/* Product Categories Manager */}
-              <div className="border border-border rounded-sm p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <Tag className="w-4 h-4 text-accent" />
-                  <h3 className="text-sm font-semibold text-foreground">Product Categories</h3>
-                </div>
-
-                {/* Existing category tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {categories.map(cat => (
-                    <span
-                      key={cat}
-                      className="inline-flex items-center gap-1.5 bg-muted text-foreground text-xs font-mono px-3 py-1.5 rounded-full border border-border"
-                    >
-                      {cat}
-                      <button
-                        type="button"
-                        onClick={() => removeCategory(cat)}
-                        className="text-muted-foreground hover:text-red-500 transition-colors ml-0.5"
-                        title={`Remove "${cat}"`}
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                  {categories.length === 0 && (
-                    <p className="text-xs text-muted-foreground font-mono">No categories yet. Add one below.</p>
-                  )}
-                </div>
-
-                {/* Add new category */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newCategoryInput}
-                    onChange={e => setNewCategoryInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCategory(); } }}
-                    placeholder="New category name..."
-                    className="flex-1 border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
-                  />
-                  <button
-                    type="button"
-                    onClick={addCategory}
-                    disabled={!newCategoryInput.trim()}
-                    className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground px-4 py-2 rounded-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-40 text-sm"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add
-                  </button>
-                </div>
-                <p className="text-xs text-muted-foreground font-mono mt-2">Changes are saved when you click "Save Settings" below.</p>
-              </div>
-
-              <div className="flex items-center gap-4 pt-2">
+        <div className="container mx-auto px-4 md:px-8 py-10 max-w-3xl">
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Sub-tab Navigation */}
+            <div className="w-full md:w-48 flex-shrink-0 flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 border-b md:border-b-0 md:border-r border-border md:pr-4 scrollbar-hide">
+              {[
+                { id: "general", label: "General Config" },
+                { id: "seo", label: "SEO & Copy" },
+                { id: "categories", label: "Categories" },
+                { id: "database", label: "Database / Backup" },
+              ].map(tab => (
                 <button
-                  type="submit"
-                  disabled={saveSettingsMutation.isPending}
-                  className="bg-primary text-primary-foreground px-8 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                  key={tab.id}
+                  onClick={() => setSettingsTab(tab.id as any)}
+                  className={`text-left px-3 py-2 rounded-sm text-sm font-semibold whitespace-nowrap transition-colors ${
+                    settingsTab === tab.id
+                      ? "bg-accent/10 text-accent"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
                 >
-                  {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+                  {tab.label}
                 </button>
-                {settingsSaved && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="text-sm text-green-600 font-mono"
-                  >
-                    Saved successfully
-                  </motion.span>
-                )}
-              </div>
-            </form>
-          )}
-
-          {/* Database Backup Section */}
-          <div className="mt-8 border border-border rounded-sm p-5">
-            <div className="flex items-center gap-2 mb-1">
-              <Database className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground">Database Backup</span>
+              ))}
             </div>
-            <p className="text-xs text-muted-foreground font-mono mb-4">
-              Click the button below to export the complete database as a single <code>.db</code> file.
-              WAL data will be automatically merged before download — no need to worry about <code>-wal</code> or <code>-shm</code> files.
-            </p>
-            <button
-              type="button"
-              onClick={handleDbDownload}
-              disabled={dbDownloading}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
-            >
-              {dbDownloading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  Merging &amp; Downloading...
-                </>
+
+            {/* Sub-tab Content */}
+            <div className="flex-1">
+              {!currentSettings ? (
+                <div className="text-muted-foreground font-mono">Loading settings...</div>
               ) : (
-                <>
-                  <Download className="w-4 h-4" />
-                  Download Database (.db)
-                </>
+                <div className="space-y-6">
+                  {/* General Config Tab */}
+                  {settingsTab === "general" && (
+                    <form onSubmit={e => { e.preventDefault(); saveSettingsMutation.mutate(); }} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {(
+                          [
+                            { key: "company_name", label: "Company Name", placeholder: "Flonexis" },
+                            { key: "company_subtitle", label: "Company Subtitle", placeholder: "EHUADE Automation" },
+                            { key: "email", label: "Email Address", placeholder: "sales@example.com" },
+                            { key: "phone", label: "Phone Number", placeholder: "+86 131 9339 8860" },
+                            { key: "whatsapp", label: "WhatsApp Number", placeholder: "8613193398860 (digits only, no +)" },
+                            { key: "address", label: "Address / Location", placeholder: "China" },
+                          ] as { key: keyof SiteSettings; label: string; placeholder: string }[]
+                        ).map(field => (
+                          <div key={field.key} className={field.key === "address" ? "md:col-span-2" : ""}>
+                            <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">{field.label}</label>
+                            <input
+                              value={currentSettings[field.key]}
+                              onChange={e => updateSettings(field.key, e.target.value)}
+                              placeholder={field.placeholder}
+                              className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                            />
+                            {field.key === "whatsapp" && (
+                              <p className="text-xs text-muted-foreground mt-1 font-mono">Digits only, no + sign. E.g. 8613193398860</p>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Copyright Text</label>
+                          <input
+                            value={currentSettings.copyright}
+                            onChange={e => updateSettings("copyright", e.target.value)}
+                            placeholder="Flonexis. All rights reserved."
+                            className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1 font-mono">The year is added automatically.</p>
+                        </div>
+
+                        <div className="md:col-span-2 border-t border-border pt-5">
+                          <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                            企业微信群机器人 Webhook URL
+                          </label>
+                          <input
+                            value={currentSettings.wecom_webhook ?? ""}
+                            onChange={e => updateSettings("wecom_webhook", e.target.value)}
+                            placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"
+                            className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent font-mono"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1 font-mono">
+                            填入后，每次收到询价表单时自动向企业微信群发送通知。
+                          </p>
+                        </div>
+
+                        <div className="md:col-span-2 flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id="enable_visitor_report"
+                            checked={currentSettings.enable_visitor_report === "true"}
+                            onChange={e => updateSettings("enable_visitor_report", e.target.checked ? "true" : "false")}
+                            className="w-4 h-4 text-accent border-border rounded focus:ring-accent"
+                          />
+                          <label htmlFor="enable_visitor_report" className="text-sm font-semibold text-foreground">
+                            启用访客日报推送
+                          </label>
+                          <span className="text-xs text-muted-foreground font-mono ml-2">
+                            (每天早上 8 点统计发送至 Webhook)
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 pt-4 border-t border-border">
+                        <button
+                          type="submit"
+                          disabled={saveSettingsMutation.isPending}
+                          className="bg-primary text-primary-foreground px-8 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+                        </button>
+                        {settingsSaved && <span className="text-sm text-green-600 font-mono">Saved successfully</span>}
+                      </div>
+                    </form>
+                  )}
+
+                  {/* SEO & Copy Tab */}
+                  {settingsTab === "seo" && (
+                    <form onSubmit={e => { e.preventDefault(); saveSettingsMutation.mutate(); }} className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div>
+                        <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                          Homepage Description
+                          <span className="ml-1 normal-case text-muted-foreground/60">（首页大标题下方的正文描述）</span>
+                        </label>
+                        <textarea
+                          value={currentSettings.home_description ?? ""}
+                          onChange={e => updateSettings("home_description", e.target.value)}
+                          rows={4}
+                          placeholder="Supplying top-tier industrial control systems and precision instruments worldwide..."
+                          className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1 font-mono">这段文字将直接显示在首页大标题下方，介绍公司的核心定位。</p>
+                      </div>
+
+                      <div className="border-t border-border pt-5">
+                        <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                          Site Description
+                          <span className="ml-1 normal-case text-muted-foreground/60">(meta description)</span>
+                        </label>
+                        <textarea
+                          value={currentSettings.site_description ?? ""}
+                          onChange={e => updateSettings("site_description", e.target.value)}
+                          rows={3}
+                          placeholder="一句话介绍公司，最大 160 字符。"
+                          className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1 font-mono">
+                          建议 120–160 字符，显示在搜索结果摘要中。
+                          <span className={`ml-1 ${(currentSettings.site_description ?? "").length > 160 ? "text-red-500" : "text-muted-foreground/50"}`}>
+                            {(currentSettings.site_description ?? "").length}/160
+                          </span>
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                          OG Image URL
+                          <span className="ml-1 normal-case text-muted-foreground/60">（微信/社媒分享封面图）</span>
+                        </label>
+                        <input
+                          value={currentSettings.og_image ?? ""}
+                          onChange={e => updateSettings("og_image", e.target.value)}
+                          placeholder="https://yourdomain.com/images/og-cover.jpg"
+                          className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent font-mono"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1 font-mono">建议尺寸 1200×630px。</p>
+                        {currentSettings.og_image && (
+                          <img src={currentSettings.og_image} alt="OG preview" className="mt-2 h-20 rounded-sm border border-border object-cover" />
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-4 pt-4 border-t border-border">
+                        <button
+                          type="submit"
+                          disabled={saveSettingsMutation.isPending}
+                          className="bg-primary text-primary-foreground px-8 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+                        </button>
+                        {settingsSaved && <span className="text-sm text-green-600 font-mono">Saved successfully</span>}
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Categories Tab */}
+                  {settingsTab === "categories" && (
+                    <form onSubmit={e => { e.preventDefault(); saveSettingsMutation.mutate(); }} className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Tag className="w-4 h-4 text-accent" />
+                        <h3 className="text-sm font-semibold text-foreground">Product Categories</h3>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {categories.map(cat => (
+                          <span
+                            key={cat}
+                            className="inline-flex items-center gap-1.5 bg-muted text-foreground text-xs font-mono px-3 py-1.5 rounded-full border border-border"
+                          >
+                            {cat}
+                            <button
+                              type="button"
+                              onClick={() => removeCategory(cat)}
+                              className="text-muted-foreground hover:text-red-500 transition-colors ml-0.5"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                        {categories.length === 0 && (
+                          <p className="text-xs text-muted-foreground font-mono">No categories yet. Add one below.</p>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newCategoryInput}
+                          onChange={e => setNewCategoryInput(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCategory(); } }}
+                          placeholder="New category name..."
+                          className="flex-1 border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                        />
+                        <button
+                          type="button"
+                          onClick={addCategory}
+                          disabled={!newCategoryInput.trim()}
+                          className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground px-4 py-2 rounded-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-40 text-sm"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add
+                        </button>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-mono mt-2">Categories define the structure of your product catalog.</p>
+
+                      <div className="flex items-center gap-4 pt-4 border-t border-border mt-6">
+                        <button
+                          type="submit"
+                          disabled={saveSettingsMutation.isPending}
+                          className="bg-primary text-primary-foreground px-8 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+                        </button>
+                        {settingsSaved && <span className="text-sm text-green-600 font-mono">Saved successfully</span>}
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Database / Backup Tab */}
+                  {settingsTab === "database" && (
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div className="border border-border rounded-sm p-6 bg-background">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Database className="w-5 h-5 text-accent" />
+                          <h3 className="text-base font-semibold text-foreground">Database Export</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground font-mono mb-5">
+                          Download the complete SQLite database as a single file. WAL data will be automatically merged before download.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleDbDownload}
+                          disabled={dbDownloading}
+                          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {dbDownloading ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                              Merging &amp; Downloading...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-4 h-4" />
+                              Download Database (.db)
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      <div className="mt-8 border border-red-200 bg-red-50/50 rounded-sm p-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Upload className="w-5 h-5 text-red-600" />
+                          <h3 className="text-base font-semibold text-red-700">Restore Database (Danger Zone)</h3>
+                        </div>
+                        <p className="text-sm text-red-700/80 font-mono mb-5">
+                          Uploading a backup will overwrite all current data (products, settings, articles, submissions). 
+                          The server will automatically restart. Proceed with caution.
+                        </p>
+                        <input
+                          type="file"
+                          accept=".db,.sqlite"
+                          ref={dbUploadRef}
+                          onChange={handleDbRestore}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => dbUploadRef.current?.click()}
+                          disabled={dbRestoring}
+                          className="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {dbRestoring ? (
+                            <>
+                              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                              Restoring &amp; Restarting...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-4 h-4" />
+                              Restore Database
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
-            </button>
+            </div>
           </div>
         </div>
       )}
