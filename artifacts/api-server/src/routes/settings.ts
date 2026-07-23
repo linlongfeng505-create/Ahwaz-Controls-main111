@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
+import fs from "fs";
+import path from "path";
+import { db, client, DB_PATH } from "@workspace/db";
 import { settingsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
@@ -73,6 +75,34 @@ router.put("/settings", requireAdmin, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ── GET /api/admin/db-download ───────────────────────────────────────────────
+// Force WAL checkpoint → merge all pending writes into main .db → send as download
+router.get("/admin/db-download", requireAdmin, async (req, res) => {
+  try {
+    // 1. Force a full WAL checkpoint so ahwaz.db contains 100% of the data
+    await client.execute("PRAGMA wal_checkpoint(TRUNCATE)");
+
+    // 2. Read the main DB file from disk
+    if (!fs.existsSync(DB_PATH)) {
+      res.status(404).json({ error: "Database file not found" });
+      return;
+    }
+    const fileBuffer = fs.readFileSync(DB_PATH);
+
+    // 3. Build a date-stamped filename and stream it to the browser
+    const dateStr = new Date().toISOString().slice(0, 10); // e.g. 2025-07-23
+    const filename = `ahwaz-backup-${dateStr}.db`;
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Length", String(fileBuffer.length));
+    res.setHeader("Cache-Control", "no-store");
+    res.send(fileBuffer);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to export database" });
   }
 });
 

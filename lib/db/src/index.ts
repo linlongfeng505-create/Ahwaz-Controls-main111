@@ -36,7 +36,8 @@ if (!fs.existsSync(DB_DIR)) {
 const DB_PATH = process.env.SQLITE_PATH ?? path.join(DB_DIR, "ahwaz.db");
 const DB_URL = `file:${DB_PATH}`;
 
-const client = createClient({ url: DB_URL });
+export const client = createClient({ url: DB_URL });
+export { DB_PATH };
 
 export const db = drizzle(client, { schema });
 

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Trash, FileText, BookOpen, Eye, EyeOff, Tag } from "lucide-react";
+import { Plus, Edit, Trash2, X, Upload, Lock, LogOut, Package, Settings, Inbox, Mail, Building2, Phone, Trash, FileText, BookOpen, Eye, EyeOff, Tag, Download, Database } from "lucide-react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
@@ -190,6 +190,7 @@ export default function Admin() {
 
   // Category management state (within settings)
   const [newCategoryInput, setNewCategoryInput] = useState("");
+  const [dbDownloading, setDbDownloading] = useState(false);
 
   // Article form state
   const emptyArticleForm: EmptyArticleForm = {
@@ -343,6 +344,32 @@ export default function Admin() {
       setTimeout(() => setSettingsSaved(false), 2500);
     },
   });
+
+  async function handleDbDownload() {
+    setDbDownloading(true);
+    try {
+      const res = await fetch("/api/admin/db-download", {
+        headers: { "x-admin-password": password },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(body.error ?? "Download failed");
+        return;
+      }
+      const blob = await res.blob();
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ahwaz-backup-${dateStr}.db`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } finally {
+      setDbDownloading(false);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -898,6 +925,36 @@ export default function Admin() {
               </div>
             </form>
           )}
+
+          {/* Database Backup Section */}
+          <div className="mt-8 border border-border rounded-sm p-5">
+            <div className="flex items-center gap-2 mb-1">
+              <Database className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Database Backup</span>
+            </div>
+            <p className="text-xs text-muted-foreground font-mono mb-4">
+              Click the button below to export the complete database as a single <code>.db</code> file.
+              WAL data will be automatically merged before download — no need to worry about <code>-wal</code> or <code>-shm</code> files.
+            </p>
+            <button
+              type="button"
+              onClick={handleDbDownload}
+              disabled={dbDownloading}
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+            >
+              {dbDownloading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  Merging &amp; Downloading...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  Download Database (.db)
+                </>
+              )}
+            </button>
+          </div>
         </div>
       )}
 
