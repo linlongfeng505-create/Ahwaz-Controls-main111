@@ -1804,20 +1804,6 @@ function ArticlesTab({
                   </select>
                 </div>
 
-                {/* Category */}
-                <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Category</label>
-                  <select
-                    value={articleForm.category || ""}
-                    onChange={(e) => setArticleForm((f) => ({ ...f, category: e.target.value }))}
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent appearance-none"
-                  >
-                    <option value="">-- No Category --</option>
-                    {categories.map((c: string) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
 
                 {/* Slug */}
                 <div>
