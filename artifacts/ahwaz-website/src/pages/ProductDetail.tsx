@@ -14,7 +14,6 @@ marked.setOptions({ breaks: true, gfm: true });
 interface Product {
   id: number;
   name: string;
-  brand: string;
   model: string;
   category: string;
   description: string;
@@ -189,8 +188,7 @@ export default function ProductDetail() {
               Back to catalog
             </Link>
             <div className="flex flex-wrap gap-3 mb-4">
-              <Badge className="bg-accent text-accent-foreground font-mono text-xs px-3 py-1">{product.brand}</Badge>
-              <Badge variant="outline" className="border-primary-foreground/20 text-primary-foreground/70 font-mono text-xs px-3 py-1">{product.category}</Badge>
+              <Badge variant="outline" className="border-primary-foreground/20 text-primary-foreground/70 font-mono text-xs px-3 py-1 bg-primary-foreground/10">{product.category}</Badge>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">{product.name}</h1>
             <p className="text-xl text-primary-foreground/70 font-mono">{product.model}</p>
@@ -223,10 +221,10 @@ export default function ProductDetail() {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 border border-border rounded-sm bg-muted/30">
                 <div className="flex items-center gap-2 mb-1 text-muted-foreground text-xs font-mono uppercase">
-                  <Tag className="w-3 h-3" />
-                  Brand
+                  <Package className="w-3 h-3" />
+                  Category
                 </div>
-                <div className="font-bold text-foreground">{product.brand}</div>
+                <div className="font-bold text-foreground">{product.category}</div>
               </div>
               <div className="p-4 border border-border rounded-sm bg-muted/30">
                 <div className="flex items-center gap-2 mb-1 text-muted-foreground text-xs font-mono uppercase">

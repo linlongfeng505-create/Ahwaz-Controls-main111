@@ -10,7 +10,6 @@ import { useState } from "react";
 interface Product {
   id: number;
   name: string;
-  brand: string;
   model: string;
   category: string;
   description: string;
@@ -310,9 +309,6 @@ export default function Products() {
                                 <Package className="w-8 h-8 text-muted-foreground/30" />
                               </div>
                             )}
-                            <Badge variant="outline" className="mb-2 text-xs font-mono text-primary border-primary/20 bg-primary/5 w-fit">
-                              {product.brand}
-                            </Badge>
                             <h3 className="text-base font-bold text-foreground mb-1 leading-snug">{product.name}</h3>
                             <p className="text-xs font-mono text-muted-foreground mb-2">{product.model}</p>
                             <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 flex-1">{product.description}</p>

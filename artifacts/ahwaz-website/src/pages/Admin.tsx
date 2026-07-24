@@ -13,7 +13,6 @@ marked.setOptions({ breaks: true, gfm: true });
 interface Product {
   id: number;
   name: string;
-  brand: string;
   model: string;
   category: string;
   description: string;
@@ -110,7 +109,6 @@ const STORAGE_KEY = "flonexis_admin_pw";
 
 const emptyForm = {
   name: "",
-  brand: "",
   model: "",
   category: "",
   description: "",
@@ -307,7 +305,6 @@ export default function Admin() {
   function openEdit(p: Product) {
     setForm({
       name: p.name,
-      brand: p.brand,
       model: p.model,
       category: p.category,
       description: p.description,
@@ -332,6 +329,7 @@ export default function Admin() {
       const { imageObjectPath, imageDataUrl, removeImage, galleryUrls, galleryDataUrls, deleteImageIds, translations, ...rest } = form;
       const body = {
         ...rest,
+        brand: "",
         specs: rest.specs.filter(s => s.trim()),
         translations,
         ...(removeImage ? { removeImage: true } : {}),
@@ -609,7 +607,6 @@ export default function Admin() {
                 <thead>
                   <tr className="border-b border-border text-left">
                     <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Product</th>
-                    <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Brand</th>
                     <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Model</th>
                     <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Category</th>
                     <th className="pb-3 font-mono text-xs text-muted-foreground uppercase pr-4">Image</th>
@@ -620,7 +617,6 @@ export default function Admin() {
                   {products.map(p => (
                     <tr key={p.id} className="hover:bg-muted/20 transition-colors">
                       <td className="py-3 pr-4 font-medium text-foreground">{p.name}</td>
-                      <td className="py-3 pr-4"><Badge variant="outline" className="text-xs font-mono">{p.brand}</Badge></td>
                       <td className="py-3 pr-4 font-mono text-xs text-muted-foreground">{p.model}</td>
                       <td className="py-3 pr-4 text-muted-foreground text-xs">{p.category}</td>
                       <td className="py-3 pr-4">
@@ -1191,12 +1187,6 @@ export default function Admin() {
                   <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                     className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
                     placeholder="e.g. Pressure Transmitter" required />
-                </div>
-                <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Brand *</label>
-                  <input value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))}
-                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
-                    placeholder="e.g. Rosemount" required />
                 </div>
                 <div>
                   <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Model *</label>
@@ -1799,9 +1789,9 @@ function ArticlesTab({
                   />
                 </div>
                 
-                {/* Category / Brand */}
+                {/* Category */}
                 <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Category / Brand</label>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Category</label>
                   <select
                     value={articleForm.category || ""}
                     onChange={(e) => setArticleForm((f) => ({ ...f, category: e.target.value }))}
