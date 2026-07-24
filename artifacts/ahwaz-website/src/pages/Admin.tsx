@@ -444,7 +444,7 @@ export default function Admin() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name || !form.brand || !form.model || !form.description) {
+    if (!form.name || !form.category || !form.model || !form.description) {
       setFormError("Please fill all required fields.");
       return;
     }
