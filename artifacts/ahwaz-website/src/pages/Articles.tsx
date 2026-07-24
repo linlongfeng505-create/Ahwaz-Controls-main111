@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Layout } from "@/components/layout";
 import { motion } from "framer-motion";
 import { Calendar, ChevronRight, BookOpen, FileText } from "lucide-react";
+import { useState } from "react";
 
 interface ArticleListItem {
   id: number;
@@ -11,7 +12,6 @@ interface ArticleListItem {
   summary: string | null;
   coverUrl: string | null;
   published: boolean;
-  brand?: string | null;
   category?: string | null;
   createdAt: string;
 }
@@ -33,15 +33,13 @@ function formatDate(iso: string) {
 
 export default function Articles() {
   const [searchParams] = useState(() => new URLSearchParams(window.location.search));
-  const [selectedBrand, setSelectedBrand] = useState(searchParams.get("brand") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
 
   const { data, isLoading, isError } = useQuery<ArticlesResponse>({
-    queryKey: ["articles-public", selectedBrand, selectedCategory],
+    queryKey: ["articles-public", selectedCategory],
     queryFn: () => {
       const url = new URL("/api/articles", window.location.origin);
       url.searchParams.set("limit", "50");
-      if (selectedBrand) url.searchParams.set("brand", selectedBrand);
       if (selectedCategory) url.searchParams.set("category", selectedCategory);
       return fetch(url.toString()).then((r) => {
         if (!r.ok) throw new Error("Failed to fetch");
@@ -50,27 +48,13 @@ export default function Articles() {
     }
   });
 
-  const { data: brandsData } = useQuery<{ brands: string[] }>({
-    queryKey: ["brands-public"],
-    queryFn: () => fetch("/api/brands").then(r => r.json()),
-  });
-
   const { data: categoriesData } = useQuery<{ categories: string[] }>({
     queryKey: ["categories-public"],
     queryFn: () => fetch("/api/products/categories").then(r => r.json()),
   });
 
   const articles = data?.data ?? [];
-  const brands = brandsData?.brands ?? [];
   const categories = categoriesData?.categories ?? [];
-
-  const handleBrandChange = (b: string) => {
-    setSelectedBrand(b);
-    const url = new URL(window.location.href);
-    if (b) url.searchParams.set("brand", b);
-    else url.searchParams.delete("brand");
-    window.history.replaceState(null, "", url.pathname + url.search);
-  };
 
   const handleCategoryChange = (c: string) => {
     setSelectedCategory(c);
