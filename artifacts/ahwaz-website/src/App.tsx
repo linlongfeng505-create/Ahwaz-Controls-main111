@@ -54,27 +54,35 @@ window.fetch = async (input, init) => {
 };
 
 function LanguageWrapper({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Language>("en");
-  const [base, setBase] = useState("");
+  // Initialize synchronously to avoid first-render null returning and state bailout issues
+  const initialMatch = window.location.pathname.match(/^\/(id|vi|ar)(?:\/|$)/);
+  const initialLang = (initialMatch ? initialMatch[1] : "en") as Language;
+  const initialBase = initialMatch ? `/${initialLang}` : "";
+
+  const [lang, setLang] = useState<Language>(initialLang);
+  const [base, setBase] = useState(initialBase);
+
+  // Set global for fetch interceptor before first render
+  if ((window as any).__APP_LANG === undefined) {
+    (window as any).__APP_LANG = initialLang;
+    document.documentElement.lang = initialLang;
+    document.documentElement.dir = initialLang === "ar" ? "rtl" : "ltr";
+  }
 
   useEffect(() => {
+    // Just in case location changes without unmounting
     const path = window.location.pathname;
     const match = path.match(/^\/(id|vi|ar)(?:\/|$)/);
     const detectedLang = (match ? match[1] : "en") as Language;
     
-    setLang(detectedLang);
-    setBase(match ? `/${detectedLang}` : "");
-    
-    // Set global for fetch interceptor
-    (window as any).__APP_LANG = detectedLang;
-    
-    // Set HTML lang and dir for RTL
-    document.documentElement.lang = detectedLang;
-    document.documentElement.dir = detectedLang === "ar" ? "rtl" : "ltr";
-  }, []);
-
-  // Wait until we parse the URL on mount
-  if ((window as any).__APP_LANG === undefined) return null;
+    if (lang !== detectedLang) {
+      setLang(detectedLang);
+      setBase(match ? `/${detectedLang}` : "");
+      (window as any).__APP_LANG = detectedLang;
+      document.documentElement.lang = detectedLang;
+      document.documentElement.dir = detectedLang === "ar" ? "rtl" : "ltr";
+    }
+  }, [lang]);
 
   return (
     <LanguageContext.Provider value={{ lang }}>
