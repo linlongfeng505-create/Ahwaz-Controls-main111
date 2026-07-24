@@ -59,7 +59,7 @@ if (fs.existsSync(STATIC_DIR)) {
 
   // SPA fallback: all non-API routes serve index.html so frontend routing works
   // Supports dynamic SEO injection for /id/, /vi/, /ar/ routes
-  app.get("*", async (req, res, next) => {
+  app.get(/.*/, async (req, res, next) => {
     if (req.path.startsWith("/api/")) return next();
     
     try {
