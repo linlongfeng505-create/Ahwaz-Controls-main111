@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   site_description: "", // <meta name="description"> — 搜索结果摘要，建议 120-160 字符
   og_image: "",         // Open Graph 图片 URL — 微信/社媒分享卡片封面图
   home_description: "Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.",
+  enabled_languages: "en,id,vi,ar",
 };
 
 router.get("/settings", async (req, res) => {

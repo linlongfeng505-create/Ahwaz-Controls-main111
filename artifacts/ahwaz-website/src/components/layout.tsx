@@ -8,6 +8,10 @@ import { useLanguage, useTranslation, SUPPORTED_LANGUAGES, Language } from "@/li
 
 function LanguageSwitcher() {
   const { lang } = useLanguage();
+  const settings = useSiteSettings();
+  const enabledArray = (settings.enabled_languages || "en,id,vi,ar").split(",").map(s => s.trim());
+  const activeLanguages = SUPPORTED_LANGUAGES.filter(l => enabledArray.includes(l.code));
+  
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -46,7 +50,7 @@ function LanguageSwitcher() {
             exit={{ opacity: 0, y: -4 }}
             className="absolute top-full right-0 mt-1 bg-card border border-border rounded-sm shadow-lg min-w-[140px] z-50"
           >
-            {SUPPORTED_LANGUAGES.map(l => (
+            {activeLanguages.map(l => (
               <button
                 key={l.code}
                 onClick={() => { setOpen(false); switchLang(l.code); }}
@@ -184,7 +188,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
                 <div className="flex items-center gap-2 flex-wrap pt-2">
                   <Globe className="w-4 h-4 text-muted-foreground" />
-                  {SUPPORTED_LANGUAGES.map(l => (
+                  {SUPPORTED_LANGUAGES.filter(l => (s.enabled_languages || "en,id,vi,ar").split(",").map(x => x.trim()).includes(l.code)).map(l => (
                     <button
                       key={l.code}
                       onClick={() => {

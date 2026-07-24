@@ -877,6 +877,53 @@ export default function Admin() {
                             (每天早上 8 点统计发送至 Webhook)
                           </span>
                         </div>
+
+                        <div className="md:col-span-2 border-t border-border pt-5">
+                          <label className="block text-xs font-mono text-muted-foreground mb-3 uppercase">
+                            Enabled Languages
+                          </label>
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-2 opacity-60 cursor-not-allowed">
+                              <input type="checkbox" checked={true} readOnly className="w-4 h-4 text-accent border-border rounded" />
+                              <label className="text-sm font-semibold text-foreground">English (en) - Primary Language</label>
+                            </div>
+                            {[
+                              { code: "id", label: "Indonesian (id)" },
+                              { code: "vi", label: "Vietnamese (vi)" },
+                              { code: "ar", label: "Arabic (ar)" }
+                            ].map(lang => {
+                              const isEnabled = (currentSettings.enabled_languages || "en,id,vi,ar").includes(lang.code);
+                              return (
+                                <div key={lang.code} className="flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`enable_${lang.code}`}
+                                    checked={isEnabled}
+                                    onChange={(e) => {
+                                      const current = (currentSettings.enabled_languages || "en,id,vi,ar").split(",").map(s => s.trim()).filter(Boolean);
+                                      let updated = [];
+                                      if (e.target.checked) {
+                                        updated = Array.from(new Set([...current, lang.code]));
+                                      } else {
+                                        updated = current.filter(c => c !== lang.code);
+                                      }
+                                      // Ensure "en" is always included
+                                      if (!updated.includes("en")) updated.unshift("en");
+                                      updateSettings("enabled_languages", updated.join(","));
+                                    }}
+                                    className="w-4 h-4 text-accent border-border rounded focus:ring-accent"
+                                  />
+                                  <label htmlFor={`enable_${lang.code}`} className="text-sm font-semibold text-foreground cursor-pointer">
+                                    {lang.label}
+                                  </label>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2 font-mono">
+                            Disabled languages will be hidden from the website's language switcher, and direct links will redirect to English.
+                          </p>
+                        </div>
                       </div>
                       
                       <div className="flex items-center gap-4 pt-4 border-t border-border">

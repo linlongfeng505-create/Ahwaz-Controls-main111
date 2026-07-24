@@ -2,7 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
+import { SiteSettingsProvider, useSiteSettings } from "@/context/SiteSettingsContext";
 import { LanguageContext, Language } from "@/lib/i18n";
 import NotFound from "@/pages/not-found";
 
@@ -54,10 +54,24 @@ window.fetch = async (input, init) => {
 };
 
 function LanguageWrapper({ children }: { children: React.ReactNode }) {
+  const { enabled_languages } = useSiteSettings();
+  const enabledArray = (enabled_languages || "en,id,vi,ar").split(",").map(s => s.trim());
+
   // Initialize synchronously to avoid first-render null returning and state bailout issues
   const initialMatch = window.location.pathname.match(/^\/(id|vi|ar)(?:\/|$)/);
-  const initialLang = (initialMatch ? initialMatch[1] : "en") as Language;
-  const initialBase = initialMatch ? `/${initialLang}` : "";
+  let initialLang = (initialMatch ? initialMatch[1] : "en") as Language;
+  
+  // Enforce enabled languages setting
+  if (!enabledArray.includes(initialLang) && initialLang !== "en") {
+    initialLang = "en";
+    // Prevent redirect loop by checking if we actually need to redirect
+    const pathWithoutLang = window.location.pathname.replace(/^\/(id|vi|ar)(\/|$)/, "/");
+    if (window.location.pathname !== pathWithoutLang) {
+      window.history.replaceState(null, "", pathWithoutLang || "/");
+    }
+  }
+
+  const initialBase = initialLang !== "en" ? `/${initialLang}` : "";
 
   const [lang, setLang] = useState<Language>(initialLang);
   const [base, setBase] = useState(initialBase);
@@ -73,7 +87,16 @@ function LanguageWrapper({ children }: { children: React.ReactNode }) {
     // Just in case location changes without unmounting
     const path = window.location.pathname;
     const match = path.match(/^\/(id|vi|ar)(?:\/|$)/);
-    const detectedLang = (match ? match[1] : "en") as Language;
+    let detectedLang = (match ? match[1] : "en") as Language;
+    
+    // Enforce enabled languages setting on dynamic navigations
+    if (!enabledArray.includes(detectedLang) && detectedLang !== "en") {
+      detectedLang = "en";
+      const pathWithoutLang = path.replace(/^\/(id|vi|ar)(\/|$)/, "/");
+      if (window.location.pathname !== pathWithoutLang) {
+        window.history.replaceState(null, "", pathWithoutLang || "/");
+      }
+    }
     
     if (lang !== detectedLang) {
       setLang(detectedLang);
