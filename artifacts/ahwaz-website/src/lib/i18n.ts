@@ -106,7 +106,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "High-performance pneumatic and smart valve positioners.",
     "brands.b11": "Severe service control valves and actuators.",
     "brands.b12": "Discrete valve control and position sensing technology.",
-    "brands.b13": "Industrial testing, diagnostic tools, and field communicators.",
+    "brands.b13": "Industrial testing, diagnostic tools, and field communicators.",,
+    "footer.desc": "Your trusted global supplier of precision industrial instrumentation. We deliver major brands at competitive wholesale prices to procurement engineers worldwide.",
+    "footer.quickLinks": "Quick Links",
+    "footer.topCategories": "Top Categories",
+    "footer.warranty": "12-Month Factory Warranty • Fast Global Shipping",
+    "footer.chat": "Chat with Sales"
   },
   id: {
     "nav.home": "Beranda",
@@ -198,7 +203,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "Pengatur posisi pneumatik dan katup pintar berkinerja tinggi.",
     "brands.b11": "Katup kontrol layanan berat dan aktuator.",
     "brands.b12": "Teknologi kontrol katup diskrit dan sensor posisi.",
-    "brands.b13": "Pengujian industri, alat diagnostik, dan komunikator lapangan.",
+    "brands.b13": "Pengujian industri, alat diagnostik, dan komunikator lapangan.",,
+    "footer.desc": "Pemasok global instrumentasi industri presisi tepercaya Anda. Kami memberikan merek-merek utama dengan harga grosir yang kompetitif kepada para insinyur pengadaan di seluruh dunia.",
+    "footer.quickLinks": "Tautan Cepat",
+    "footer.topCategories": "Kategori Teratas",
+    "footer.warranty": "Garansi Pabrik 12 Bulan • Pengiriman Global Cepat",
+    "footer.chat": "Ngobrol dengan Penjualan"
   },
   vi: {
     "nav.home": "Trang Chủ",
@@ -290,7 +300,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "Bộ định vị van thông minh và khí nén hiệu suất cao.",
     "brands.b11": "Van điều khiển dịch vụ khắc nghiệt và bộ dẫn động.",
     "brands.b12": "Công nghệ cảm biến vị trí và điều khiển van rời rạc.",
-    "brands.b13": "Kiểm tra công nghiệp, công cụ chẩn đoán và máy giao tiếp hiện trường.",
+    "brands.b13": "Kiểm tra công nghiệp, công cụ chẩn đoán và máy giao tiếp hiện trường.",,
+    "footer.desc": "Nhà cung cấp toàn cầu đáng tin cậy của bạn về thiết bị đo lường công nghiệp chính xác. Chúng tôi cung cấp các thương hiệu lớn với giá bán buôn cạnh tranh cho các kỹ sư mua sắm trên toàn thế giới.",
+    "footer.quickLinks": "Liên kết nhanh",
+    "footer.topCategories": "Danh mục hàng đầu",
+    "footer.warranty": "Bảo hành nhà máy 12 tháng • Giao hàng toàn cầu nhanh chóng",
+    "footer.chat": "Trò chuyện với phòng bán hàng"
   },
   ar: {
     "nav.home": "الرئيسية",
@@ -382,7 +397,12 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "محددات مواقع هوائية وصمامات ذكية عالية الأداء.",
     "brands.b11": "صمامات تحكم ومشغلات للخدمات الشاقة.",
     "brands.b12": "التحكم في الصمامات المنفصلة وتكنولوجيا استشعار الموقع.",
-    "brands.b13": "الاختبارات الصناعية، وأدوات التشخيص، وأجهزة الاتصال الميداني.",
+    "brands.b13": "الاختبارات الصناعية، وأدوات التشخيص، وأجهزة الاتصال الميداني.",,
+    "footer.desc": "المورد العالمي الموثوق به للأجهزة الصناعية الدقيقة. نحن نقدم العلامات التجارية الكبرى بأسعار جملة تنافسية لمهندسي المشتريات في جميع أنحاء العالم.",
+    "footer.quickLinks": "روابط سريعة",
+    "footer.topCategories": "أهم الفئات",
+    "footer.warranty": "ضمان المصنع لمدة 12 شهرًا • شحن عالمي سريع",
+    "footer.chat": "الدردشة مع المبيعات"
   }
 };
 

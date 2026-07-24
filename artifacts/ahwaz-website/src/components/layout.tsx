@@ -224,34 +224,34 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </span>
               </div>
               <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
-                Your trusted global supplier of precision industrial instrumentation. We deliver major brands at competitive wholesale prices to procurement engineers worldwide.
+                {t("footer.desc")}
               </p>
             </div>
 
             <div>
-              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Quick Links</h4>
+              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">{t("footer.quickLinks")}</h4>
               <ul className="space-y-3 text-sm text-primary-foreground/70">
-                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Products Catalog</span></Link></li>
-                <li><Link href="/brands"><span className="hover:text-accent cursor-pointer transition-colors">Partner Brands</span></Link></li>
-                <li><Link href="/industries"><span className="hover:text-accent cursor-pointer transition-colors">Industries Served</span></Link></li>
-                <li><Link href="/articles"><span className="hover:text-accent cursor-pointer transition-colors">Articles &amp; News</span></Link></li>
-                <li><Link href="/about"><span className="hover:text-accent cursor-pointer transition-colors">About Us</span></Link></li>
-                <li><Link href="/contact"><span className="hover:text-accent cursor-pointer transition-colors">Contact</span></Link></li>
+                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.products")}</span></Link></li>
+                <li><Link href="/brands"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.brands")}</span></Link></li>
+                <li><Link href="/industries"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.industries")}</span></Link></li>
+                <li><Link href="/articles"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.articles")}</span></Link></li>
+                <li><Link href="/about"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.about")}</span></Link></li>
+                <li><Link href="/contact"><span className="hover:text-accent cursor-pointer transition-colors">{t("nav.contact")}</span></Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Top Categories</h4>
+              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">{t("footer.topCategories")}</h4>
               <ul className="space-y-3 text-sm text-primary-foreground/70">
-                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Pressure Transmitters</span></Link></li>
-                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Temperature Instruments</span></Link></li>
-                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Flow Meters</span></Link></li>
-                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">Valve Positioners</span></Link></li>
+                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">{t("cat.pressure.title", "Pressure Transmitters")}</span></Link></li>
+                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">{t("cat.temp.title", "Temperature Instruments")}</span></Link></li>
+                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">{t("cat.flow.title", "Flow Meters")}</span></Link></li>
+                <li><Link href="/products"><span className="hover:text-accent cursor-pointer transition-colors">{t("cat.valve.title", "Valve Positioners")}</span></Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Contact Us</h4>
+              <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">{t("contact.title", "Contact Us")}</h4>
               <ul className="space-y-4 text-sm text-primary-foreground/70">
                 <li className="flex items-start">
                   <Mail className="w-5 h-5 mr-3 text-accent shrink-0" />
@@ -271,7 +271,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="pt-8 border-t border-primary-foreground/10 text-xs text-primary-foreground/50 flex flex-col md:flex-row justify-between items-center">
             <p>&copy; {new Date().getFullYear()} {s.copyright}</p>
-            <p className="mt-2 md:mt-0">12-Month Factory Warranty • Fast Global Shipping</p>
+            <p className="mt-2 md:mt-0">{t("footer.warranty")}</p>
           </div>
         </div>
       </footer>
@@ -286,7 +286,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       >
         <MessageCircle className="w-6 h-6" />
         <span className="absolute right-full mr-4 bg-primary text-white text-xs font-bold py-1 px-2 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          Chat with Sales
+          {t("footer.chat")}
         </span>
       </a>
     </div>
