@@ -60,7 +60,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "cat.valve.desc": "Digital and smart positioners for precise valve control.",
     "home.guarantee.bold": "Reply within 30 minutes",
     "home.guarantee.text1": "when you submit a Quick Quote Request Monday–Friday, 8:30 a.m. – 6:00 p.m. CST.",
-    "home.guarantee.text2": "Requests outside these hours receive a reply the next business day."
+    "home.guarantee.text2": "Requests outside these hours receive a reply the next business day.",
     "contact.getInTouch": "Get in Touch",
     "contact.getInTouchDesc": "Whether you need a single replacement transmitter or instrumentation for a complete plant overhaul, our engineering sales team is ready to assist.",
     "contact.email": "Email",
@@ -152,7 +152,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "cat.valve.desc": "Pengatur posisi digital dan pintar untuk kontrol katup yang presisi.",
     "home.guarantee.bold": "Balasan dalam 30 menit",
     "home.guarantee.text1": "saat Anda mengirimkan Permintaan Penawaran Cepat Senin–Jumat, 8:30 pagi – 6:00 sore CST.",
-    "home.guarantee.text2": "Permintaan di luar jam ini akan dibalas pada hari kerja berikutnya."
+    "home.guarantee.text2": "Permintaan di luar jam ini akan dibalas pada hari kerja berikutnya.",
     "contact.getInTouch": "Hubungi Kami",
     "contact.getInTouchDesc": "Baik Anda memerlukan pemancar pengganti tunggal atau instrumentasi untuk perombakan pabrik lengkap, tim penjualan teknik kami siap membantu.",
     "contact.email": "Email",
@@ -244,7 +244,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "cat.valve.desc": "Bộ định vị kỹ thuật số cho điều khiển van chính xác.",
     "home.guarantee.bold": "Trả lời trong 30 phút",
     "home.guarantee.text1": "khi bạn gửi Yêu Cầu Báo Giá Nhanh Thứ Hai–Thứ Sáu, 8:30 sáng – 6:00 chiều CST.",
-    "home.guarantee.text2": "Các yêu cầu ngoài giờ này sẽ được trả lời vào ngày làm việc tiếp theo."
+    "home.guarantee.text2": "Các yêu cầu ngoài giờ này sẽ được trả lời vào ngày làm việc tiếp theo.",
     "contact.getInTouch": "Giữ liên lạc",
     "contact.getInTouchDesc": "Cho dù bạn cần một bộ truyền đơn lẻ hay thiết bị cho một cuộc đại tu toàn bộ nhà máy, đội ngũ kỹ sư bán hàng của chúng tôi luôn sẵn sàng hỗ trợ.",
     "contact.email": "Email",
@@ -336,7 +336,7 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "cat.valve.desc": "محددات مواقع رقمية وذكية للتحكم الدقيق في الصمامات.",
     "home.guarantee.bold": "الرد خلال 30 دقيقة",
     "home.guarantee.text1": "عند تقديم طلب تسعير سريع من الإثنين إلى الجمعة، 8:30 صباحًا - 6:00 مساءً بتوقيت CST.",
-    "home.guarantee.text2": "سيتم الرد على الطلبات خارج هذه الساعات في يوم العمل التالي."
+    "home.guarantee.text2": "سيتم الرد على الطلبات خارج هذه الساعات في يوم العمل التالي.",
     "contact.getInTouch": "ابق على تواصل",
     "contact.getInTouchDesc": "سواء كنت بحاجة إلى جهاز إرسال بديل واحد أو أجهزة لإصلاح كامل للمصنع، فإن فريق المبيعات الهندسية لدينا جاهز للمساعدة.",
     "contact.email": "البريد الإلكتروني",
