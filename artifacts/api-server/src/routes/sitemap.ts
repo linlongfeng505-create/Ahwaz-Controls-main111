@@ -61,38 +61,46 @@ router.get("/sitemap.xml", async (req, res) => {
       .where(eq(articlesTable.published, true))
       .orderBy(asc(articlesTable.id));
 
+    const langs = ["", "/id", "/vi", "/ar"];
+
     const urls: string[] = [];
 
-    // 静态页
+    // 静态页 (all languages)
     for (const page of staticPages) {
-      urls.push(`
+      for (const lang of langs) {
+        urls.push(`
   <url>
-    <loc>${base}${page.loc}</loc>
+    <loc>${base}${lang}${page.loc}</loc>
     <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
+    <priority>${lang === "" ? page.priority : "0.5"}</priority>
   </url>`);
+      }
     }
 
-    // 产品页
+    // 产品页 (all languages)
     for (const p of products) {
-      urls.push(`
+      for (const lang of langs) {
+        urls.push(`
   <url>
-    <loc>${base}/products/${p.id}</loc>
+    <loc>${base}${lang}/products/${p.id}</loc>
     <lastmod>${toW3CDate(p.updatedAt)}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>${lang === "" ? "0.8" : "0.5"}</priority>
   </url>`);
+      }
     }
 
-    // 文章页
+    // 文章页 (all languages)
     for (const a of articles) {
-      urls.push(`
+      for (const lang of langs) {
+        urls.push(`
   <url>
-    <loc>${base}/articles/${escapeXml(a.slug)}</loc>
+    <loc>${base}${lang}/articles/${escapeXml(a.slug)}</loc>
     <lastmod>${toW3CDate(a.updatedAt)}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>${lang === "" ? "0.7" : "0.5"}</priority>
   </url>`);
+      }
     }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

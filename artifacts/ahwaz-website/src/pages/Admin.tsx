@@ -21,6 +21,7 @@ interface Product {
   imageObjectPath: string | null;
   imageUrls: string[];  // gallery images
   recommendedProductIds?: number[];
+  translations?: Record<string, any>;
   createdAt: string;
 }
 
@@ -81,6 +82,7 @@ interface ArticleItem {
   published: boolean;
   recommendedArticleIds?: number[];
   recommendedProductIds?: number[];
+  translations?: Record<string, any>;
   createdAt: string;
 }
 
@@ -95,6 +97,7 @@ interface EmptyArticleForm {
   existingCoverUrl: string | null;
   recommendedArticleIds: number[];
   recommendedProductIds: number[];
+  translations: Record<string, any>;
 }
 
 
@@ -116,6 +119,7 @@ const emptyForm = {
   galleryDataUrls: [] as string[],  // newly picked local data URLs
   deleteImageIds: [] as number[],   // IDs to delete on save
   recommendedProductIds: [] as number[],
+  translations: {} as Record<string, any>,
 };
 
 /**
@@ -207,6 +211,7 @@ export default function Admin() {
     existingCoverUrl: null,
     recommendedArticleIds: [],
     recommendedProductIds: [],
+    translations: {},
   };
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [articleEditId, setArticleEditId] = useState<number | null>(null);
@@ -308,6 +313,7 @@ export default function Admin() {
       galleryDataUrls: [],
       deleteImageIds: [],
       recommendedProductIds: p.recommendedProductIds ?? [],
+      translations: p.translations ?? {},
     });
     setEditId(p.id);
     setFormError("");
@@ -317,10 +323,11 @@ export default function Admin() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const { imageObjectPath, imageDataUrl, removeImage, galleryUrls, galleryDataUrls, deleteImageIds, ...rest } = form;
+      const { imageObjectPath, imageDataUrl, removeImage, galleryUrls, galleryDataUrls, deleteImageIds, translations, ...rest } = form;
       const body = {
         ...rest,
         specs: rest.specs.filter(s => s.trim()),
+        translations,
         ...(removeImage ? { removeImage: true } : {}),
         ...(imageDataUrl ? { imageDataUrl } : {}),
         ...(galleryDataUrls.length > 0 ? { extraImageDataUrls: galleryDataUrls } : {}),
@@ -1382,6 +1389,60 @@ export default function Admin() {
                 )}
               </div>
 
+              {/* ── Multi-Language Translations ──────────────────────── */}
+              <div className="border-t border-border pt-5">
+                <label className="block text-xs font-mono text-muted-foreground mb-3 uppercase">
+                  🌐 Multi-Language Translations
+                  <span className="ml-2 normal-case text-muted-foreground/60">(Indonesian, Vietnamese, Arabic)</span>
+                </label>
+                {(["id", "vi", "ar"] as const).map(langCode => {
+                  const langLabels: Record<string, string> = { id: "🇮🇩 Indonesian", vi: "🇻🇳 Vietnamese", ar: "🇸🇦 Arabic" };
+                  const t = form.translations[langCode] || {};
+                  const updateT = (field: string, value: string) => {
+                    setForm(f => ({
+                      ...f,
+                      translations: {
+                        ...f.translations,
+                        [langCode]: { ...f.translations[langCode], [field]: value }
+                      }
+                    }));
+                  };
+                  return (
+                    <details key={langCode} className="mb-3 border border-border rounded-sm overflow-hidden">
+                      <summary className="px-4 py-2.5 bg-muted/30 text-sm font-semibold cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between">
+                        <span>{langLabels[langCode]}</span>
+                        <span className="text-xs font-mono text-muted-foreground">
+                          {t.name ? "✓ has translation" : "empty"}
+                        </span>
+                      </summary>
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <label className="block text-xs font-mono text-muted-foreground mb-1">Name</label>
+                          <input
+                            value={t.name || ""}
+                            onChange={e => updateT("name", e.target.value)}
+                            className="w-full border border-border rounded-sm px-3 py-1.5 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                            placeholder={`Product name in ${langLabels[langCode]}...`}
+                            dir={langCode === "ar" ? "rtl" : "ltr"}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-mono text-muted-foreground mb-1">Description</label>
+                          <textarea
+                            value={t.description || ""}
+                            onChange={e => updateT("description", e.target.value)}
+                            rows={4}
+                            className="w-full border border-border rounded-sm px-3 py-1.5 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-y font-mono"
+                            placeholder={`Product description in ${langLabels[langCode]}... (Markdown)`}
+                            dir={langCode === "ar" ? "rtl" : "ltr"}
+                          />
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+
               {formError && <p className="text-red-500 text-xs font-mono">{formError}</p>}
 
               </div>
@@ -1458,8 +1519,8 @@ function ArticlesTab({
 
   const saveMutation = useMutation({
     mutationFn: async (form: EmptyArticleForm) => {
-      const { coverDataUrl, removeCover, existingCoverUrl, ...rest } = form;
-      const body = { ...rest, coverDataUrl: coverDataUrl ?? undefined, removeCover };
+      const { coverDataUrl, removeCover, existingCoverUrl, translations, ...rest } = form;
+      const body = { ...rest, translations, coverDataUrl: coverDataUrl ?? undefined, removeCover };
       const url =
         articleEditId !== null
           ? `/api/articles/${articleEditId}`
@@ -1536,6 +1597,7 @@ function ArticlesTab({
       existingCoverUrl: a.coverUrl,
       recommendedArticleIds: a.recommendedArticleIds ?? [],
       recommendedProductIds: a.recommendedProductIds ?? [],
+      translations: a.translations ?? {},
     });
     setArticleEditId(a.id);
     setArticleFormError("");
@@ -1952,6 +2014,71 @@ function ArticlesTab({
                   )}
                 </div>
 
+
+                {/* ── Multi-Language Translations ──────────────────────── */}
+                <div className="border-t border-border pt-5">
+                  <label className="block text-xs font-mono text-muted-foreground mb-3 uppercase">
+                    🌐 Multi-Language Translations
+                    <span className="ml-2 normal-case text-muted-foreground/60">(Indonesian, Vietnamese, Arabic)</span>
+                  </label>
+                  {(["id", "vi", "ar"] as const).map(langCode => {
+                    const langLabels: Record<string, string> = { id: "🇮🇩 Indonesian", vi: "🇻🇳 Vietnamese", ar: "🇸🇦 Arabic" };
+                    const t = articleForm.translations[langCode] || {};
+                    const updateT = (field: string, value: string) => {
+                      setArticleForm(f => ({
+                        ...f,
+                        translations: {
+                          ...f.translations,
+                          [langCode]: { ...f.translations[langCode], [field]: value }
+                        }
+                      }));
+                    };
+                    return (
+                      <details key={langCode} className="mb-3 border border-border rounded-sm overflow-hidden">
+                        <summary className="px-4 py-2.5 bg-muted/30 text-sm font-semibold cursor-pointer hover:bg-muted/50 transition-colors flex items-center justify-between">
+                          <span>{langLabels[langCode]}</span>
+                          <span className="text-xs font-mono text-muted-foreground">
+                            {t.title ? "✓ has translation" : "empty"}
+                          </span>
+                        </summary>
+                        <div className="p-4 space-y-3">
+                          <div>
+                            <label className="block text-xs font-mono text-muted-foreground mb-1">Title</label>
+                            <input
+                              value={t.title || ""}
+                              onChange={e => updateT("title", e.target.value)}
+                              className="w-full border border-border rounded-sm px-3 py-1.5 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                              placeholder={`Article title in ${langLabels[langCode]}...`}
+                              dir={langCode === "ar" ? "rtl" : "ltr"}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-mono text-muted-foreground mb-1">Summary</label>
+                            <textarea
+                              value={t.summary || ""}
+                              onChange={e => updateT("summary", e.target.value)}
+                              rows={2}
+                              className="w-full border border-border rounded-sm px-3 py-1.5 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                              placeholder={`Article summary in ${langLabels[langCode]}...`}
+                              dir={langCode === "ar" ? "rtl" : "ltr"}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-mono text-muted-foreground mb-1">Content</label>
+                            <textarea
+                              value={t.content || ""}
+                              onChange={e => updateT("content", e.target.value)}
+                              rows={8}
+                              className="w-full border border-border rounded-sm px-3 py-1.5 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-y font-mono"
+                              placeholder={`Article content in ${langLabels[langCode]}... (Markdown)`}
+                              dir={langCode === "ar" ? "rtl" : "ltr"}
+                            />
+                          </div>
+                        </div>
+                      </details>
+                    );
+                  })}
+                </div>
 
                 {articleFormError && (
                   <p className="text-red-500 text-xs font-mono">{articleFormError}</p>

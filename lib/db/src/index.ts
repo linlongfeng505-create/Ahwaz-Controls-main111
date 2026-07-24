@@ -63,6 +63,7 @@ export async function initDb(): Promise<void> {
       image_data BLOB,
       image_content_type TEXT,
       recommended_product_ids TEXT NOT NULL DEFAULT '[]',
+      translations TEXT NOT NULL DEFAULT '{}',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -101,6 +102,7 @@ export async function initDb(): Promise<void> {
       published INTEGER NOT NULL DEFAULT 0,
       recommended_article_ids TEXT NOT NULL DEFAULT '[]',
       recommended_product_ids TEXT NOT NULL DEFAULT '[]',
+      translations TEXT NOT NULL DEFAULT '{}',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -136,7 +138,9 @@ export async function initDb(): Promise<void> {
     "ALTER TABLE site_visits ADD COLUMN is_bot INTEGER NOT NULL DEFAULT 0",
     "ALTER TABLE articles ADD COLUMN recommended_article_ids TEXT NOT NULL DEFAULT '[]'",
     "ALTER TABLE articles ADD COLUMN recommended_product_ids TEXT NOT NULL DEFAULT '[]'",
-    "ALTER TABLE products ADD COLUMN recommended_product_ids TEXT NOT NULL DEFAULT '[]'"
+    "ALTER TABLE products ADD COLUMN recommended_product_ids TEXT NOT NULL DEFAULT '[]'",
+    "ALTER TABLE products ADD COLUMN translations TEXT NOT NULL DEFAULT '{}'",
+    "ALTER TABLE articles ADD COLUMN translations TEXT NOT NULL DEFAULT '{}'"
   ];
   for (const sql of alterCols) {
     try { await client.execute(sql); } catch { /* already exists */ }

@@ -7,9 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Contact() {
   const s = useSiteSettings();
+  const t = useTranslation();
   const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 
@@ -42,9 +44,9 @@ export default function Contact() {
       <div className="bg-primary pt-24 pb-16 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Sales</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("contact.title")}</h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl font-mono">
-              Send us your requirements. We aim to return all quotes within 30 minutes during business hours.
+              {t("contact.desc")}
             </p>
           </motion.div>
         </div>
@@ -113,7 +115,7 @@ export default function Contact() {
             className="w-full lg:w-2/3"
           >
             <div className="bg-card p-8 border border-border shadow-sm rounded-sm">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">Request a Quote</h2>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">{t("btn.requestQuote")}</h2>
 
               {submitted ? (
                 <motion.div
@@ -140,7 +142,7 @@ export default function Contact() {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground">Full Name *</label>
+                      <label className="text-sm font-bold text-foreground">{t("label.name")} *</label>
                       <Input
                         value={form.name}
                         onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -150,7 +152,7 @@ export default function Contact() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground">Company *</label>
+                      <label className="text-sm font-bold text-foreground">{t("label.company")} *</label>
                       <Input
                         value={form.company}
                         onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
@@ -163,7 +165,7 @@ export default function Contact() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground">Email Address *</label>
+                      <label className="text-sm font-bold text-foreground">{t("label.email")} *</label>
                       <Input
                         type="email"
                         value={form.email}
@@ -174,7 +176,7 @@ export default function Contact() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground">Phone / WhatsApp</label>
+                      <label className="text-sm font-bold text-foreground">{t("label.phone")}</label>
                       <Input
                         value={form.phone}
                         onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
@@ -185,7 +187,7 @@ export default function Contact() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-foreground">Requirements / RFQ Details *</label>
+                    <label className="text-sm font-bold text-foreground">{t("label.message")} *</label>
                     <Textarea
                       value={form.message}
                       onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
@@ -205,7 +207,7 @@ export default function Contact() {
                     disabled={submitMutation.isPending}
                     className="w-full bg-accent text-accent-foreground hover:bg-accent/90 h-14 text-lg font-bold"
                   >
-                    {submitMutation.isPending ? "Sending..." : "Submit RFQ"}
+                    {submitMutation.isPending ? "Sending..." : t("btn.submit")}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center mt-4">
                     By submitting this form, you agree to our privacy policy. We will not share your data.

@@ -4,6 +4,7 @@ import { ArrowRight, ShieldCheck, Clock, Globe, Award, ChevronRight } from "luci
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
+import { useTranslation } from "@/lib/i18n";
 
 const stats = [
   { value: "100%", label: "Tested Before Dispatch", icon: <ShieldCheck className="w-8 h-8" /> },
@@ -23,6 +24,14 @@ const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micr
 
 export default function Home() {
   const s = useSiteSettings();
+  const t = useTranslation();
+
+  const translatedStats = [
+    { value: "100%", label: t("home.stats.tested"), icon: <ShieldCheck className="w-8 h-8" /> },
+    { value: "30", label: t("home.stats.response"), icon: <Clock className="w-8 h-8" /> },
+    { value: "50+", label: t("home.stats.countries"), icon: <Globe className="w-8 h-8" /> },
+    { value: "12", label: t("home.stats.warranty"), icon: <Award className="w-8 h-8" /> },
+  ];
 
   return (
     <Layout>
@@ -74,12 +83,12 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/contact">
                   <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg h-14 px-8 font-bold">
-                    Request a Quote <ArrowRight className="ml-2 w-5 h-5" />
+                    {t("btn.requestQuote")} <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/products">
                   <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary text-lg h-14 px-8 font-bold">
-                    Browse Catalog
+                    {t("btn.browseCatalog")}
                   </Button>
                 </Link>
               </div>
@@ -106,7 +115,7 @@ export default function Home() {
       <section className="py-12 bg-background border-b border-border">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
+            {translatedStats.map((stat, i) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -131,11 +140,11 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Surplus &amp; Alternative Stock</h2>
-              <p className="text-muted-foreground max-w-2xl text-lg">Tested alternatives and surplus inventory across every critical instrument category — ready to ship when OEM lead times fail you.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("home.categories.title")}</h2>
+              <p className="text-muted-foreground max-w-2xl text-lg">{t("home.categories.desc")}</p>
             </div>
             <Link href="/products" className="hidden md:flex items-center text-primary font-bold hover:text-accent transition-colors">
-              View All Products <ChevronRight className="ml-1 w-5 h-5" />
+              {t("btn.viewAll")} <ChevronRight className="ml-1 w-5 h-5" />
             </Link>
           </div>
 
@@ -172,8 +181,8 @@ export default function Home() {
       {/* Brands Marquee */}
       <section className="py-20 bg-primary text-primary-foreground overflow-hidden">
         <div className="container mx-auto px-4 md:px-8 mb-10 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Trusted Partner Brands</h2>
-          <p className="text-primary-foreground/60">We supply authentic equipment from industry leaders</p>
+          <h2 className="text-2xl font-bold text-white mb-2">{t("home.brands.title")}</h2>
+          <p className="text-primary-foreground/60">{t("home.brands.desc")}</p>
         </div>
         
         <div className="relative flex overflow-x-hidden">
@@ -199,11 +208,11 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-secondary/50 -skew-x-12 translate-x-20" />
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="max-w-3xl">
-            <h2 className="text-4xl font-bold text-foreground mb-6">Can't find a discontinued part?</h2>
-            <p className="text-lg text-muted-foreground mb-8">Send us the model number. We specialise in sourcing tested alternatives and genuine surplus stock for instruments that are no longer in production — with a quote back to you within 30 minutes.</p>
+            <h2 className="text-4xl font-bold text-foreground mb-6">{t("home.cta.title")}</h2>
+            <p className="text-lg text-muted-foreground mb-8">{t("home.cta.desc")}</p>
             <Link href="/contact">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 text-lg font-bold">
-                Contact Sales Now
+                {t("btn.contactSales")}
               </Button>
             </Link>
           </div>

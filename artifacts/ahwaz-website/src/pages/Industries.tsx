@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout";
 import { motion } from "framer-motion";
 import { Droplet, Factory, Flame, Zap, ShieldAlert } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 const industries = [
   {
@@ -32,12 +33,14 @@ const industries = [
 ];
 
 export default function Industries() {
+  const t = useTranslation();
+
   return (
     <Layout>
       <div className="bg-primary pt-24 pb-16 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Industries Served</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("industries.title")}</h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl font-mono">
               Providing critical measurement and control solutions for the world's most demanding industrial environments.
             </p>

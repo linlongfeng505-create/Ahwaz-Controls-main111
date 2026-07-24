@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
+import { LanguageContext, Language } from "@/lib/i18n";
 import NotFound from "@/pages/not-found";
 
 import Home from "@/pages/Home";
@@ -36,7 +37,53 @@ function Router() {
   );
 }
 
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
+
+// Setup global fetch interceptor for lang parameter
+const originalFetch = window.fetch;
+window.fetch = async (input, init) => {
+  if (typeof input === "string" && input.startsWith("/api/")) {
+    const url = new URL(input, window.location.origin);
+    const lang = (window as any).__APP_LANG;
+    if (lang && lang !== "en") {
+      url.searchParams.set("lang", lang);
+    }
+    input = url.toString();
+  }
+  return originalFetch(input, init);
+};
+
+function LanguageWrapper({ children }: { children: React.ReactNode }) {
+  const [lang, setLang] = useState<Language>("en");
+  const [base, setBase] = useState("");
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    const match = path.match(/^\/(id|vi|ar)(?:\/|$)/);
+    const detectedLang = (match ? match[1] : "en") as Language;
+    
+    setLang(detectedLang);
+    setBase(match ? `/${detectedLang}` : "");
+    
+    // Set global for fetch interceptor
+    (window as any).__APP_LANG = detectedLang;
+    
+    // Set HTML lang and dir for RTL
+    document.documentElement.lang = detectedLang;
+    document.documentElement.dir = detectedLang === "ar" ? "rtl" : "ltr";
+  }, []);
+
+  // Wait until we parse the URL on mount
+  if ((window as any).__APP_LANG === undefined) return null;
+
+  return (
+    <LanguageContext.Provider value={{ lang }}>
+      <WouterRouter base={base}>
+        {children}
+      </WouterRouter>
+    </LanguageContext.Provider>
+  );
+}
 
 function App() {
   useEffect(() => {
@@ -49,9 +96,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <SiteSettingsProvider>
         <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <LanguageWrapper>
             <Router />
-          </WouterRouter>
+          </LanguageWrapper>
           <Toaster />
         </TooltipProvider>
       </SiteSettingsProvider>

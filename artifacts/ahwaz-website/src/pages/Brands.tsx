@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layout";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/lib/i18n";
 
 const brands = [
   { name: "Rosemount / Emerson", desc: "Industry-standard pressure, temperature, flow, and level measurement instrumentation." },
@@ -18,14 +19,16 @@ const brands = [
 ];
 
 export default function Brands() {
+  const t = useTranslation();
+  
   return (
     <Layout>
       <div className="bg-primary pt-24 pb-16 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Partner Brands</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("brands.title")}</h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl font-mono">
-              We source and supply 100% genuine equipment from the world's most trusted industrial manufacturers.
+              {t("home.brands.desc")}
             </p>
           </motion.div>
         </div>

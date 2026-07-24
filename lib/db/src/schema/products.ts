@@ -14,6 +14,7 @@ export const productsTable = sqliteTable("products", {
   imageData: blob("image_data").$type<Buffer | null>(),        // raw binary BLOB (legacy single image)
   imageContentType: text("image_content_type"), // e.g. "image/jpeg"
   recommendedProductIds: text("recommended_product_ids", { mode: "json" }).$type<number[]>().notNull().default([]),
+  translations: text("translations", { mode: "json" }).$type<Record<string, any>>().notNull().default({}),
   createdAt: text("created_at").notNull().$default(() => new Date().toISOString()),
   updatedAt: text("updated_at").notNull().$default(() => new Date().toISOString()).$onUpdate(() => new Date().toISOString()),
 });

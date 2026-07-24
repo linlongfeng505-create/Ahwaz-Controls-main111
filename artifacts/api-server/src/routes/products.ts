@@ -13,6 +13,16 @@ function imgUrl(productId: number, imgId: number) {
   return `/api/products/${productId}/images/${imgId}`;
 }
 
+/** Apply translation to a row based on lang parameter */
+function applyTranslation<T extends { translations?: any }>(row: T, lang?: string): T {
+  if (!lang || lang === "en" || !row.translations) return row;
+  const t = typeof row.translations === "string" ? JSON.parse(row.translations) : row.translations;
+  if (t && t[lang]) {
+    return { ...row, ...t[lang], translations: row.translations };
+  }
+  return row;
+}
+
 /** Strip binary image fields from a product row; attach imageUrls array */
 async function enrichProduct<T extends {
   imageData?: Buffer | Uint8Array | string | null;
@@ -86,7 +96,7 @@ router.get("/products/categories", async (req, res) => {
 // ── GET /api/products ────────────────────────────────────────────────────────
 router.get("/products", async (req, res) => {
   try {
-    const { category, brand, q } = req.query as { category?: string; brand?: string; q?: string };
+    const { category, brand, q, lang } = req.query as { category?: string; brand?: string; q?: string; lang?: string };
     const page = Math.max(1, parseInt((req.query.page as string) ?? "1", 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
     const offset = (page - 1) * limit;
@@ -105,7 +115,7 @@ router.get("/products", async (req, res) => {
 
     const total = rows.length;
     const totalPages = Math.ceil(total / limit);
-    const data = await Promise.all(rows.slice(offset, offset + limit).map(enrichProduct));
+    const data = await Promise.all(rows.slice(offset, offset + limit).map(r => enrichProduct(applyTranslation(r, lang))));
 
     res.json({ data, total, page, limit, totalPages });
   } catch (err) {
@@ -118,6 +128,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
+    const lang = req.query.lang as string | undefined;
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
     const [row] = await db.select().from(productsTable).where(eq(productsTable.id, id));
     if (!row) { res.status(404).json({ error: "Not found" }); return; }
@@ -128,10 +139,10 @@ router.get("/products/:id", async (req, res) => {
         .select()
         .from(productsTable)
         .where(inArray(productsTable.id, row.recommendedProductIds as number[]));
-      recommendedProducts = await Promise.all(recRows.map(enrichProduct));
+      recommendedProducts = await Promise.all(recRows.map(r => enrichProduct(applyTranslation(r, lang))));
     }
 
-    const enrichedRow = await enrichProduct(row);
+    const enrichedRow = await enrichProduct(applyTranslation(row, lang));
     res.json({ ...enrichedRow, recommendedProducts });
   } catch (err) {
     req.log.error(err);
@@ -251,9 +262,10 @@ router.delete("/products/:id/images/:imgId", requireAdmin, async (req, res) => {
 // ── POST /api/products ────────────────────────────────────────────────────────
 router.post("/products", requireAdmin, async (req, res) => {
   try {
-    const { imageDataUrl, extraImageDataUrls, ...bodyRest } = req.body as {
+    const { imageDataUrl, extraImageDataUrls, translations, ...bodyRest } = req.body as {
       imageDataUrl?: string;
       extraImageDataUrls?: string[];
+      translations?: any;
       [key: string]: unknown;
     };
 
@@ -276,6 +288,7 @@ router.post("/products", requireAdmin, async (req, res) => {
 
     const [row] = await db.insert(productsTable).values({
       ...parsed.data,
+      translations: translations ?? {},
       imageData,
       imageContentType,
       imageObjectPath: null,
@@ -318,11 +331,12 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
-    const { imageDataUrl, extraImageDataUrls, removeImage, deleteImageIds, ...bodyRest } = req.body as {
+    const { imageDataUrl, extraImageDataUrls, removeImage, deleteImageIds, translations, ...bodyRest } = req.body as {
       imageDataUrl?: string;
       extraImageDataUrls?: string[];
       removeImage?: boolean;
       deleteImageIds?: number[];
+      translations?: any;
       [key: string]: unknown;
     };
 
@@ -347,7 +361,7 @@ router.put("/products/:id", requireAdmin, async (req, res) => {
     }
 
     const [row] = await db.update(productsTable)
-      .set({ ...parsed.data, imageObjectPath: null, ...imageUpdate })
+      .set({ ...parsed.data, ...(translations ? { translations } : {}), imageObjectPath: null, ...imageUpdate })
       .where(eq(productsTable.id, id))
       .returning();
     if (!row) { res.status(404).json({ error: "Not found" }); return; }

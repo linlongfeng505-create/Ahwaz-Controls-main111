@@ -1,15 +1,75 @@
 import { Link, useLocation } from "wouter";
-import { MessageCircle, Menu, X, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
-import { useState, useEffect } from "react";
+import { MessageCircle, Menu, X, ChevronRight, Mail, Phone, MapPin, Globe } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
+import { useLanguage, useTranslation, SUPPORTED_LANGUAGES, Language } from "@/lib/i18n";
+
+function LanguageSwitcher() {
+  const { lang } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  function switchLang(newLang: string) {
+    const path = window.location.pathname;
+    // Strip current lang prefix
+    const stripped = path.replace(/^\/(id|vi|ar)(\/|$)/, "$2") || "/";
+    const newPath = newLang === "en" ? stripped : `/${newLang}${stripped.startsWith("/") ? stripped : "/" + stripped}`;
+    window.location.href = newPath;
+  }
+
+  const currentLabel = SUPPORTED_LANGUAGES.find(l => l.code === lang)?.label ?? "English";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-accent transition-colors px-2 py-1 rounded-sm"
+      >
+        <Globe className="w-4 h-4" />
+        <span className="hidden sm:inline">{currentLabel}</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="absolute top-full right-0 mt-1 bg-card border border-border rounded-sm shadow-lg min-w-[140px] z-50"
+          >
+            {SUPPORTED_LANGUAGES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => { setOpen(false); switchLang(l.code); }}
+                className={`block w-full text-left px-4 py-2.5 text-sm hover:bg-muted transition-colors ${
+                  l.code === lang ? "text-accent font-semibold" : "text-foreground"
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const s = useSiteSettings();
+  const t = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,12 +84,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [location]);
 
   const navLinks = [
-    { href: "/products", label: "Products" },
-    { href: "/brands", label: "Brands" },
-    { href: "/industries", label: "Industries" },
-    { href: "/articles", label: "Articles" },
-    { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact" },
+    { href: "/products", label: t("nav.products") },
+    { href: "/brands", label: t("nav.brands") },
+    { href: "/industries", label: t("nav.industries") },
+    { href: "/articles", label: t("nav.articles") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/contact", label: t("nav.contact") },
   ];
 
   return (
@@ -80,9 +140,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             ))}
             <Link href="/contact">
               <Button className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-sm font-bold shadow-md shadow-accent/20">
-                Get a Quote
+                {t("btn.contactUs")}
               </Button>
             </Link>
+            <LanguageSwitcher />
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -115,12 +176,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </div>
                 </Link>
               ))}
-              <div className="pt-6">
+              <div className="pt-6 space-y-4">
                 <Link href="/contact">
                   <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-sm py-6 text-lg font-bold">
-                    Get a Quote
+                    {t("btn.contactUs")}
                   </Button>
                 </Link>
+                <div className="flex items-center gap-2 flex-wrap pt-2">
+                  <Globe className="w-4 h-4 text-muted-foreground" />
+                  {SUPPORTED_LANGUAGES.map(l => (
+                    <button
+                      key={l.code}
+                      onClick={() => {
+                        const path = window.location.pathname;
+                        const stripped = path.replace(/^\/(id|vi|ar)(\/|$)/, "$2") || "/";
+                        const newPath = l.code === "en" ? stripped : `/${l.code}${stripped.startsWith("/") ? stripped : "/" + stripped}`;
+                        window.location.href = newPath;
+                      }}
+                      className="text-sm px-3 py-1.5 rounded-sm border border-border hover:border-accent hover:text-accent transition-colors"
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

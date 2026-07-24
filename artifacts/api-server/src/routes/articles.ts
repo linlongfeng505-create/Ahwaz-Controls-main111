@@ -9,6 +9,16 @@ const router = Router();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "flonexis-admin-2024";
 const DEFAULT_PAGE_SIZE = 10;
 
+/** Apply translation to a row based on lang parameter */
+function applyTranslation<T extends { translations?: any }>(row: T, lang?: string): T {
+  if (!lang || lang === "en" || !row.translations) return row;
+  const t = typeof row.translations === "string" ? JSON.parse(row.translations) : row.translations;
+  if (t && t[lang]) {
+    return { ...row, ...t[lang], translations: row.translations };
+  }
+  return row;
+}
+
 /** Strip cover binary from article row — expose a URL instead */
 function stripCover<
   T extends {
@@ -35,6 +45,7 @@ function stripCover<
 router.get("/articles", async (req, res) => {
   try {
     const isAdmin = req.headers["x-admin-password"] === ADMIN_PASSWORD;
+    const lang = req.query.lang as string | undefined;
     const page = Math.max(1, parseInt((req.query.page as string) ?? "1", 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
     const offset = (page - 1) * limit;
@@ -50,7 +61,7 @@ router.get("/articles", async (req, res) => {
 
     const total = rows.length;
     const totalPages = Math.ceil(total / limit);
-    const data = rows.slice(offset, offset + limit).map(stripCover);
+    const data = rows.slice(offset, offset + limit).map(r => stripCover(applyTranslation(r, lang)));
 
     res.json({ data, total, page, limit, totalPages });
   } catch (err) {
@@ -63,6 +74,7 @@ router.get("/articles", async (req, res) => {
 router.get("/articles/:idOrSlug", async (req, res) => {
   try {
     const { idOrSlug } = req.params;
+    const lang = req.query.lang as string | undefined;
     const isAdmin = req.headers["x-admin-password"] === ADMIN_PASSWORD;
     const numId = parseInt(idOrSlug, 10);
 
@@ -99,7 +111,7 @@ router.get("/articles/:idOrSlug", async (req, res) => {
       if (!isAdmin) {
         recRows = recRows.filter((r) => r.published);
       }
-      recommendedArticles = recRows.map(stripCover);
+      recommendedArticles = recRows.map(r => stripCover(applyTranslation(r, lang)));
     }
 
     let recommendedProducts: any[] = [];
@@ -126,7 +138,7 @@ router.get("/articles/:idOrSlug", async (req, res) => {
       }
     }
 
-    res.json({ ...stripCover(row), recommendedArticles, recommendedProducts });
+    res.json({ ...stripCover(applyTranslation(row, lang)), recommendedArticles, recommendedProducts });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Internal server error" });
@@ -170,8 +182,9 @@ router.get("/articles/:id/cover", async (req, res) => {
 /** POST /api/articles — create article (admin only) */
 router.post("/articles", requireAdmin, async (req, res) => {
   try {
-    const { coverDataUrl, ...bodyRest } = req.body as {
+    const { coverDataUrl, translations, ...bodyRest } = req.body as {
       coverDataUrl?: string;
+      translations?: any;
       [key: string]: unknown;
     };
 
@@ -193,7 +206,7 @@ router.post("/articles", requireAdmin, async (req, res) => {
 
     const [row] = await db
       .insert(articlesTable)
-      .values({ ...parsed.data, coverData, coverContentType })
+      .values({ ...parsed.data, translations: translations ?? {}, coverData, coverContentType })
       .returning();
 
     res.status(201).json(stripCover(row));
@@ -216,9 +229,10 @@ router.put("/articles/:id", requireAdmin, async (req, res) => {
       return;
     }
 
-    const { coverDataUrl, removeCover, ...bodyRest } = req.body as {
+    const { coverDataUrl, removeCover, translations, ...bodyRest } = req.body as {
       coverDataUrl?: string;
       removeCover?: boolean;
+      translations?: any;
       [key: string]: unknown;
     };
 
@@ -243,7 +257,7 @@ router.put("/articles/:id", requireAdmin, async (req, res) => {
 
     const [row] = await db
       .update(articlesTable)
-      .set({ ...parsed.data, ...coverUpdate })
+      .set({ ...parsed.data, ...(translations ? { translations } : {}), ...coverUpdate })
       .where(eq(articlesTable.id, id))
       .returning();
 
