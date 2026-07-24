@@ -83,6 +83,7 @@ interface ArticleItem {
   recommendedArticleIds?: number[];
   recommendedProductIds?: number[];
   translations?: Record<string, any>;
+  brand?: string | null;
   createdAt: string;
 }
 
@@ -98,6 +99,7 @@ interface EmptyArticleForm {
   recommendedArticleIds: number[];
   recommendedProductIds: number[];
   translations: Record<string, any>;
+  brand: string;
 }
 
 
@@ -212,6 +214,7 @@ export default function Admin() {
     recommendedArticleIds: [],
     recommendedProductIds: [],
     translations: {},
+    brand: "",
   };
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [articleEditId, setArticleEditId] = useState<number | null>(null);
@@ -1645,6 +1648,7 @@ function ArticlesTab({
       recommendedArticleIds: a.recommendedArticleIds ?? [],
       recommendedProductIds: a.recommendedProductIds ?? [],
       translations: a.translations ?? {},
+      brand: a.brand ?? "",
     });
     setArticleEditId(a.id);
     setArticleFormError("");
@@ -1784,6 +1788,21 @@ function ArticlesTab({
                     placeholder="Article title"
                     required
                   />
+                </div>
+                
+                {/* Brand */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Brand</label>
+                  <select
+                    value={articleForm.brand || ""}
+                    onChange={(e) => setArticleForm((f) => ({ ...f, brand: e.target.value }))}
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent appearance-none"
+                  >
+                    <option value="">-- No Brand (General) --</option>
+                    {Array.from(new Set(products.map(p => p.brand).filter(Boolean))).sort().map(b => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Slug */}

@@ -11,6 +11,7 @@ interface ArticleListItem {
   summary: string | null;
   coverUrl: string | null;
   published: boolean;
+  brand?: string | null;
   createdAt: string;
 }
 
@@ -30,16 +31,33 @@ function formatDate(iso: string) {
 }
 
 export default function Articles() {
+  const [searchParams] = useState(() => new URLSearchParams(window.location.search));
+  const [selectedBrand, setSelectedBrand] = useState(searchParams.get("brand") || "");
+
   const { data, isLoading, isError } = useQuery<ArticlesResponse>({
-    queryKey: ["articles-public"],
+    queryKey: ["articles-public", selectedBrand],
     queryFn: () =>
-      fetch("/api/articles?limit=50").then((r) => {
+      fetch(`/api/articles?limit=50${selectedBrand ? `&brand=${encodeURIComponent(selectedBrand)}` : ""}`).then((r) => {
         if (!r.ok) throw new Error("Failed to fetch");
         return r.json();
       }),
   });
 
+  const { data: brandsData } = useQuery<{ brands: string[] }>({
+    queryKey: ["brands-public"],
+    queryFn: () => fetch("/api/brands").then(r => r.json()),
+  });
+
   const articles = data?.data ?? [];
+  const brands = brandsData?.brands ?? [];
+
+  const handleBrandChange = (b: string) => {
+    setSelectedBrand(b);
+    const url = new URL(window.location.href);
+    if (b) url.searchParams.set("brand", b);
+    else url.searchParams.delete("brand");
+    window.history.replaceState(null, "", url.pathname + url.search);
+  };
 
   return (
     <Layout>
@@ -73,8 +91,38 @@ export default function Articles() {
       </section>
 
       {/* Article Grid */}
-      <section className="py-20 bg-background min-h-[50vh]">
+      <section className="py-12 bg-background min-h-[50vh]">
         <div className="container mx-auto px-4 md:px-8">
+          {/* Brand Filter */}
+          {brands.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mb-10 pb-6 border-b border-border/50">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mr-2">Filter by Brand:</span>
+              <button
+                onClick={() => handleBrandChange("")}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
+                  selectedBrand === ""
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border hover:border-accent hover:text-accent"
+                }`}
+              >
+                All Brands
+              </button>
+              {brands.map((b) => (
+                <button
+                  key={b}
+                  onClick={() => handleBrandChange(b)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
+                    selectedBrand === b
+                      ? "bg-accent text-accent-foreground border-accent"
+                      : "bg-muted text-muted-foreground border-border hover:border-accent hover:text-accent"
+                  }`}
+                >
+                  {b}
+                </button>
+              ))}
+            </div>
+          )}
+
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, i) => (
@@ -149,11 +197,18 @@ export default function Articles() {
 
                       {/* Body */}
                       <div className="p-6 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <time dateTime={article.createdAt}>
-                            {formatDate(article.createdAt)}
-                          </time>
+                        <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground mb-3">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-3.5 h-3.5" />
+                            <time dateTime={article.createdAt}>
+                              {formatDate(article.createdAt)}
+                            </time>
+                          </div>
+                          {article.brand && (
+                            <span className="bg-accent/10 text-accent px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                              {article.brand}
+                            </span>
+                          )}
                         </div>
                         <h2 className="text-xl font-bold text-foreground mb-3 group-hover:text-accent transition-colors leading-snug line-clamp-2">
                           {article.title}

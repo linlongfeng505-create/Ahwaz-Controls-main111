@@ -93,6 +93,18 @@ router.get("/products/categories", async (req, res) => {
   }
 });
 
+// ── GET /api/brands ──────────────────────────────────────────────────────────
+router.get("/brands", async (req, res) => {
+  try {
+    const rows = await db.select({ brand: productsTable.brand }).from(productsTable);
+    const brands = Array.from(new Set(rows.map(r => r.brand).filter(Boolean))).sort();
+    res.json({ brands });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // ── GET /api/products ────────────────────────────────────────────────────────
 router.get("/products", async (req, res) => {
   try {

@@ -17,6 +17,7 @@ interface ArticleDetail {
   content: string;
   coverUrl: string | null;
   published: boolean;
+  brand?: string | null;
   recommendedArticles?: {
     id: number;
     title: string;
@@ -217,9 +218,18 @@ export default function ArticleDetail() {
                   {/* Right Content — main article */}
                   <div className={`flex-1 min-w-0 order-1 lg:order-2 ${hasRecommendations ? 'max-w-3xl' : 'max-w-3xl mx-auto'}`}>
                     {/* Meta */}
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <time dateTime={article.createdAt}>{formatDate(article.createdAt)}</time>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6 font-mono">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4" />
+                        <time dateTime={article.createdAt}>
+                          {formatDate(article.createdAt)}
+                        </time>
+                      </div>
+                      {article.brand && (
+                        <span className="bg-accent/10 text-accent px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
+                          {article.brand}
+                        </span>
+                      )}
                     </div>
 
                     {/* Title */}

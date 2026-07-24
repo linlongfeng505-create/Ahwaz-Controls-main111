@@ -46,6 +46,7 @@ router.get("/articles", async (req, res) => {
   try {
     const isAdmin = req.headers["x-admin-password"] === ADMIN_PASSWORD;
     const lang = req.query.lang as string | undefined;
+    const brand = req.query.brand as string | undefined;
     const page = Math.max(1, parseInt((req.query.page as string) ?? "1", 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) ?? String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE));
     const offset = (page - 1) * limit;
@@ -54,6 +55,10 @@ router.get("/articles", async (req, res) => {
       .select()
       .from(articlesTable)
       .orderBy(desc(articlesTable.createdAt));
+
+    if (brand) {
+      rows = rows.filter(r => r.brand && r.brand.toLowerCase() === brand.toLowerCase());
+    }
 
     if (!isAdmin) {
       rows = rows.filter((r) => r.published);
