@@ -2,24 +2,26 @@ import { Layout } from "@/components/layout";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 
-const brands = [
-  { name: "Rosemount / Emerson", desc: "Industry-standard pressure, temperature, flow, and level measurement instrumentation." },
-  { name: "Yokogawa", desc: "High-accuracy field instruments, process analyzers, and industrial automation solutions." },
-  { name: "Honeywell", desc: "Smart pressure, temperature, and multivariable transmitters." },
-  { name: "Siemens", desc: "Process instrumentation, valve positioners, and comprehensive factory automation." },
-  { name: "Fisher / Emerson", desc: "Control valves, regulators, and digital valve controllers." },
-  { name: "Micro Motion", desc: "Premium Coriolis mass flow and density measurement meters." },
-  { name: "Azbil", desc: "Smart valve positioners and advanced emergency shutdown (ESD) devices." },
-  { name: "ABB", desc: "Analytical measurement, flow meters, and electrification products." },
-  { name: "SAMSON", desc: "Control valves, regulators, and electropneumatic positioners." },
-  { name: "YTC", desc: "High-performance pneumatic and smart valve positioners." },
-  { name: "KOSO", desc: "Severe service control valves and actuators." },
-  { name: "Topworx", desc: "Discrete valve control and position sensing technology." },
-  { name: "Fluke", desc: "Industrial testing, diagnostic tools, and field communicators." },
-];
+
 
 export default function Brands() {
   const t = useTranslation();
+
+  const brands = [
+    { name: "Rosemount / Emerson", desc: t("brands.b1") },
+    { name: "Yokogawa", desc: t("brands.b2") },
+    { name: "Honeywell", desc: t("brands.b3") },
+    { name: "Siemens", desc: t("brands.b4") },
+    { name: "Fisher / Emerson", desc: t("brands.b5") },
+    { name: "Micro Motion", desc: t("brands.b6") },
+    { name: "Azbil", desc: t("brands.b7") },
+    { name: "ABB", desc: t("brands.b8") },
+    { name: "SAMSON", desc: t("brands.b9") },
+    { name: "YTC", desc: t("brands.b10") },
+    { name: "KOSO", desc: t("brands.b11") },
+    { name: "Topworx", desc: t("brands.b12") },
+    { name: "Fluke", desc: t("brands.b13") },
+  ];
   
   return (
     <Layout>

@@ -3,37 +3,39 @@ import { motion } from "framer-motion";
 import { Droplet, Factory, Flame, Zap, ShieldAlert } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 
-const industries = [
-  {
-    title: "Oil & Gas",
-    icon: <Flame className="w-10 h-10 mb-6 text-accent" />,
-    desc: "Upstream extraction, midstream transport, and downstream refining require rugged, hazardous-area certified instrumentation. We supply explosion-proof pressure transmitters, Coriolis flow meters, and severe-service control valves.",
-    image: "/images/ind-oilgas.png"
-  },
-  {
-    title: "Chemical Processing",
-    icon: <Factory className="w-10 h-10 mb-6 text-accent" />,
-    desc: "Corrosive environments demand specialized materials and extreme precision. We source chemical-resistant sensors, magnetic flow meters, and smart valve positioners to ensure batch consistency and plant safety."
-  },
-  {
-    title: "Power Generation",
-    icon: <Zap className="w-10 h-10 mb-6 text-accent" />,
-    desc: "Thermal, nuclear, and renewable power plants rely on critical steam and water cycle monitoring. We provide high-temperature transmitters, vortex flow meters, and reliable actuators for continuous operation."
-  },
-  {
-    title: "Pharmaceuticals",
-    icon: <ShieldAlert className="w-10 h-10 mb-6 text-accent" />,
-    desc: "Strict hygiene and FDA/regulatory requirements mandate sanitary instrumentation. We supply hygienic pressure and temperature sensors designed for CIP/SIP processes in clean-room environments."
-  },
-  {
-    title: "Water & Wastewater",
-    icon: <Droplet className="w-10 h-10 mb-6 text-accent" />,
-    desc: "Environmental monitoring and treatment facilities require robust flow and level measurement. We stock reliable magnetic flow meters and durable pressure transmitters for municipal and industrial water management."
-  }
-];
+
 
 export default function Industries() {
   const t = useTranslation();
+
+  const industries = [
+    {
+      title: t("ind.oil.title"),
+      icon: <Flame className="w-10 h-10 mb-6 text-accent" />,
+      desc: t("ind.oil.desc"),
+      image: "/images/ind-oilgas.png"
+    },
+    {
+      title: t("ind.chem.title"),
+      icon: <Factory className="w-10 h-10 mb-6 text-accent" />,
+      desc: t("ind.chem.desc")
+    },
+    {
+      title: t("ind.power.title"),
+      icon: <Zap className="w-10 h-10 mb-6 text-accent" />,
+      desc: t("ind.power.desc")
+    },
+    {
+      title: t("ind.pharma.title"),
+      icon: <ShieldAlert className="w-10 h-10 mb-6 text-accent" />,
+      desc: t("ind.pharma.desc")
+    },
+    {
+      title: t("ind.water.title"),
+      icon: <Droplet className="w-10 h-10 mb-6 text-accent" />,
+      desc: t("ind.water.desc")
+    }
+  ];
 
   return (
     <Layout>

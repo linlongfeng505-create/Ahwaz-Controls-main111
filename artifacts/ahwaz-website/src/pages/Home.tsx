@@ -13,12 +13,7 @@ const stats = [
   { value: "12", label: "Months Warranty", icon: <Award className="w-8 h-8" /> },
 ];
 
-const categories = [
-  { title: "Pressure Transmitters", image: "/images/cat-pressure.png", desc: "Absolute, gauge, and differential pressure measurement." },
-  { title: "Temperature Instruments", image: "/images/cat-temperature.png", desc: "Sensors, transmitters, and thermowells for extreme conditions." },
-  { title: "Flow Meters", image: "/images/cat-flow.png", desc: "Coriolis, magnetic, and vortex flow measurement systems." },
-  { title: "Valve Positioners", image: "/images/cat-valves.png", desc: "Digital and smart positioners for precise valve control." },
-];
+
 
 const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micro Motion", "Azbil", "ABB"];
 
@@ -31,6 +26,13 @@ export default function Home() {
     { value: "30", label: t("home.stats.response"), icon: <Clock className="w-8 h-8" /> },
     { value: "50+", label: t("home.stats.countries"), icon: <Globe className="w-8 h-8" /> },
     { value: "12", label: t("home.stats.warranty"), icon: <Award className="w-8 h-8" /> },
+  ];
+
+  const categories = [
+    { title: t("cat.pressure.title", "Pressure Transmitters"), image: "/images/cat-pressure.png", desc: t("cat.pressure.desc", "Absolute, gauge, and differential pressure measurement.") },
+    { title: t("cat.temp.title", "Temperature Instruments"), image: "/images/cat-temperature.png", desc: t("cat.temp.desc", "Sensors, transmitters, and thermowells for extreme conditions.") },
+    { title: t("cat.flow.title", "Flow Meters"), image: "/images/cat-flow.png", desc: t("cat.flow.desc", "Coriolis, magnetic, and vortex flow measurement systems.") },
+    { title: t("cat.valve.title", "Valve Positioners"), image: "/images/cat-valves.png", desc: t("cat.valve.desc", "Digital and smart positioners for precise valve control.") },
   ];
 
   return (
@@ -73,11 +75,11 @@ export default function Home() {
                 );
               })()}
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
-                Global Industrial<br />
-                <span className="text-accent">Instrumentation.</span>
+                {t("home.hero.title1", "Global Industrial")}<br />
+                <span className="text-accent">{t("home.hero.title2", "Instrumentation.")}</span>
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-2xl font-mono leading-relaxed">
-                {s.home_description}
+                {t("home.hero.desc", s.home_description)}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -102,8 +104,8 @@ export default function Home() {
               >
                 <Clock className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                 <p className="text-sm text-primary-foreground/80 leading-relaxed">
-                  <span className="font-bold text-primary-foreground">Reply within 30 minutes</span> when you submit a Quick Quote Request Monday–Friday, 8:30 a.m. – 6:00 p.m. CST.
-                  {" "}<span className="text-primary-foreground/60">Requests outside these hours receive a reply the next business day.</span>
+                  <span className="font-bold text-primary-foreground">{t("home.guarantee.bold", "Reply within 30 minutes")}</span> {t("home.guarantee.text1", "when you submit a Quick Quote Request Monday–Friday, 8:30 a.m. – 6:00 p.m. CST.")}
+                  {" "}<span className="text-primary-foreground/60">{t("home.guarantee.text2", "Requests outside these hours receive a reply the next business day.")}</span>
                 </p>
               </motion.div>
             </motion.div>

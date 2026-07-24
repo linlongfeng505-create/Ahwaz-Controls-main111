@@ -61,8 +61,8 @@ export default function Contact() {
             className="w-full lg:w-1/3 space-y-10"
           >
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-foreground">Get in Touch</h2>
-              <p className="text-muted-foreground mb-8">Whether you need a single replacement transmitter or instrumentation for a complete plant overhaul, our engineering sales team is ready to assist.</p>
+              <h2 className="text-2xl font-bold mb-6 text-foreground">{t("contact.getInTouch")}</h2>
+              <p className="text-muted-foreground mb-8">{t("contact.getInTouchDesc")}</p>
             </div>
 
             <div className="space-y-6">
@@ -71,7 +71,7 @@ export default function Contact() {
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground">Email</h3>
+                  <h3 className="font-bold text-foreground">{t("contact.email")}</h3>
                   <a href={`mailto:${s.email}`} className="text-primary hover:text-accent font-medium">{s.email}</a>
                 </div>
               </div>
@@ -81,7 +81,7 @@ export default function Contact() {
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground">WhatsApp / Phone</h3>
+                  <h3 className="font-bold text-foreground">{t("contact.phone")}</h3>
                   <a href={`https://wa.me/${s.whatsapp}`} className="text-primary hover:text-accent font-medium">{s.phone}</a>
                 </div>
               </div>
@@ -91,8 +91,8 @@ export default function Contact() {
                   <Clock className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground">Business Hours</h3>
-                  <p className="text-muted-foreground">Mon - Fri: 8:30am – 6:00pm (CST)</p>
+                  <h3 className="font-bold text-foreground">{t("contact.hours")}</h3>
+                  <p className="text-muted-foreground">{t("contact.hoursDesc")}</p>
                 </div>
               </div>
 
@@ -101,7 +101,7 @@ export default function Contact() {
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground">Headquarters</h3>
+                  <h3 className="font-bold text-foreground">{t("contact.hq")}</h3>
                   <p className="text-muted-foreground">{s.company_name}<br />{s.address}</p>
                 </div>
               </div>
@@ -126,16 +126,16 @@ export default function Contact() {
                   <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">Enquiry Received!</h3>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{t("contact.enquiryReceived")}</h3>
                   <p className="text-muted-foreground mb-6 max-w-sm">
-                    Thank you. Our sales team will get back to you within 30 minutes during business hours.
+                    {t("contact.enquiryDesc")}
                   </p>
                   <Button
                     variant="outline"
                     onClick={() => setSubmitted(false)}
                     className="font-semibold"
                   >
-                    Submit Another Enquiry
+                    {t("contact.submitAnother")}
                   </Button>
                 </motion.div>
               ) : (
@@ -210,7 +210,7 @@ export default function Contact() {
                     {submitMutation.isPending ? "Sending..." : t("btn.submit")}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center mt-4">
-                    By submitting this form, you agree to our privacy policy. We will not share your data.
+                    {t("contact.privacy")}
                   </p>
                 </form>
               )}

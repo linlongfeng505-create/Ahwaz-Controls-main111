@@ -1,66 +1,15 @@
-import { createContext, useContext } from "react";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-export type Language = "en" | "id" | "vi" | "ar";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export const SUPPORTED_LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "id", label: "Indonesian" },
-  { code: "vi", label: "Vietnamese" },
-  { code: "ar", label: "Arabic" },
-] as const;
+const pagesDir = path.join(__dirname, 'src', 'pages');
+const i18nPath = path.join(__dirname, 'src', 'lib', 'i18n.ts');
 
-export const LanguageContext = createContext<{ lang: Language }>({ lang: "en" });
-
-export function useLanguage() {
-  return useContext(LanguageContext);
-}
-
-const DICTIONARY: Record<Language, Record<string, string>> = {
+const NEW_KEYS = {
   en: {
-    "nav.home": "Home",
-    "nav.products": "Products",
-    "nav.brands": "Brands",
-    "nav.industries": "Industries",
-    "nav.articles": "Articles",
-    "nav.about": "About",
-    "nav.contact": "Contact",
-    "btn.readMore": "Read More",
-    "btn.contactUs": "Contact Us",
-    "btn.submit": "Submit",
-    "btn.requestQuote": "Request a Quote",
-    "btn.browseCatalog": "Browse Catalog",
-    "btn.viewAll": "View All Products",
-    "btn.contactSales": "Contact Sales Now",
-    "label.name": "Name",
-    "label.email": "Email",
-    "label.phone": "Phone",
-    "label.company": "Company",
-    "label.message": "Message",
-    "footer.copyright": "All rights reserved.",
-    "home.hero.title1": "Global Industrial",
-    "home.hero.title2": "Instrumentation.",
-    "home.stats.tested": "Tested Before Dispatch",
-    "home.stats.response": "Min Quote Response",
-    "home.stats.countries": "Countries Served",
-    "home.stats.warranty": "Months Warranty",
-    "home.brands.title": "Trusted Partner Brands",
-    "home.brands.desc": "We supply authentic equipment from industry leaders",
-    "home.cta.title": "Can't find a discontinued part?",
-    "contact.title": "Contact Us",
-    "contact.desc": "We respond to all quote requests within 30 minutes during business hours.",
-    "brands.title": "Our Partner Brands",
-    "industries.title": "Industries We Serve",
-    "cat.pressure.title": "Pressure Transmitters",
-    "cat.pressure.desc": "Absolute, gauge, and differential pressure measurement.",
-    "cat.temp.title": "Temperature Instruments",
-    "cat.temp.desc": "Sensors, transmitters, and thermowells for extreme conditions.",
-    "cat.flow.title": "Flow Meters",
-    "cat.flow.desc": "Coriolis, magnetic, and vortex flow measurement systems.",
-    "cat.valve.title": "Valve Positioners",
-    "cat.valve.desc": "Digital and smart positioners for precise valve control.",
-    "home.guarantee.bold": "Reply within 30 minutes",
-    "home.guarantee.text1": "when you submit a Quick Quote Request Monday–Friday, 8:30 a.m. – 6:00 p.m. CST.",
-    "home.guarantee.text2": "Requests outside these hours receive a reply the next business day."
     "contact.getInTouch": "Get in Touch",
     "contact.getInTouchDesc": "Whether you need a single replacement transmitter or instrumentation for a complete plant overhaul, our engineering sales team is ready to assist.",
     "contact.email": "Email",
@@ -106,53 +55,9 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "High-performance pneumatic and smart valve positioners.",
     "brands.b11": "Severe service control valves and actuators.",
     "brands.b12": "Discrete valve control and position sensing technology.",
-    "brands.b13": "Industrial testing, diagnostic tools, and field communicators.",
+    "brands.b13": "Industrial testing, diagnostic tools, and field communicators."
   },
   id: {
-    "nav.home": "Beranda",
-    "nav.products": "Produk",
-    "nav.brands": "Merek",
-    "nav.industries": "Industri",
-    "nav.articles": "Artikel",
-    "nav.about": "Tentang Kami",
-    "nav.contact": "Kontak",
-    "btn.readMore": "Baca Selengkapnya",
-    "btn.contactUs": "Hubungi Kami",
-    "btn.submit": "Kirim",
-    "btn.requestQuote": "Minta Penawaran",
-    "btn.browseCatalog": "Lihat Katalog",
-    "btn.viewAll": "Lihat Semua Produk",
-    "btn.contactSales": "Hubungi Penjualan Sekarang",
-    "label.name": "Nama",
-    "label.email": "Email",
-    "label.phone": "Telepon",
-    "label.company": "Perusahaan",
-    "label.message": "Pesan",
-    "footer.copyright": "Hak cipta dilindungi.",
-    "home.hero.title1": "Industri Global",
-    "home.hero.title2": "Instrumentasi.",
-    "home.stats.tested": "Diuji Sebelum Dikirim",
-    "home.stats.response": "Menit Respon Kuotasi",
-    "home.stats.countries": "Negara Terlayani",
-    "home.stats.warranty": "Bulan Garansi",
-    "home.brands.title": "Merek Mitra Terpercaya",
-    "home.brands.desc": "Kami menyediakan peralatan asli dari pemimpin industri",
-    "home.cta.title": "Tidak dapat menemukan suku cadang?",
-    "contact.title": "Hubungi Kami",
-    "contact.desc": "Kami merespons semua permintaan penawaran dalam 30 menit selama jam kerja.",
-    "brands.title": "Merek Mitra Kami",
-    "industries.title": "Industri yang Kami Layani",
-    "cat.pressure.title": "Pemancar Tekanan",
-    "cat.pressure.desc": "Pengukuran tekanan absolut, pengukur, dan diferensial.",
-    "cat.temp.title": "Instrumen Suhu",
-    "cat.temp.desc": "Sensor, pemancar, dan thermowell untuk kondisi ekstrem.",
-    "cat.flow.title": "Pengukur Aliran",
-    "cat.flow.desc": "Sistem pengukuran aliran Coriolis, magnetik, dan pusaran.",
-    "cat.valve.title": "Pengatur Posisi Katup",
-    "cat.valve.desc": "Pengatur posisi digital dan pintar untuk kontrol katup yang presisi.",
-    "home.guarantee.bold": "Balasan dalam 30 menit",
-    "home.guarantee.text1": "saat Anda mengirimkan Permintaan Penawaran Cepat Senin–Jumat, 8:30 pagi – 6:00 sore CST.",
-    "home.guarantee.text2": "Permintaan di luar jam ini akan dibalas pada hari kerja berikutnya."
     "contact.getInTouch": "Hubungi Kami",
     "contact.getInTouchDesc": "Baik Anda memerlukan pemancar pengganti tunggal atau instrumentasi untuk perombakan pabrik lengkap, tim penjualan teknik kami siap membantu.",
     "contact.email": "Email",
@@ -198,53 +103,9 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "Pengatur posisi pneumatik dan katup pintar berkinerja tinggi.",
     "brands.b11": "Katup kontrol layanan berat dan aktuator.",
     "brands.b12": "Teknologi kontrol katup diskrit dan sensor posisi.",
-    "brands.b13": "Pengujian industri, alat diagnostik, dan komunikator lapangan.",
+    "brands.b13": "Pengujian industri, alat diagnostik, dan komunikator lapangan."
   },
   vi: {
-    "nav.home": "Trang Chủ",
-    "nav.products": "Sản Phẩm",
-    "nav.brands": "Thương Hiệu",
-    "nav.industries": "Công Nghiệp",
-    "nav.articles": "Bài Viết",
-    "nav.about": "Về Chúng Tôi",
-    "nav.contact": "Liên Hệ",
-    "btn.readMore": "Xem Thêm",
-    "btn.contactUs": "Liên Hệ",
-    "btn.submit": "Gửi",
-    "btn.requestQuote": "Yêu Cầu Báo Giá",
-    "btn.browseCatalog": "Duyệt Danh Mục",
-    "btn.viewAll": "Xem Tất Cả Sản Phẩm",
-    "btn.contactSales": "Liên Hệ Bán Hàng Ngay",
-    "label.name": "Tên",
-    "label.email": "Email",
-    "label.phone": "Số điện thoại",
-    "label.company": "Công ty",
-    "label.message": "Tin nhắn",
-    "footer.copyright": "Đã đăng ký bản quyền.",
-    "home.hero.title1": "Công Nghiệp Toàn Cầu",
-    "home.hero.title2": "Thiết Bị Đo Lường.",
-    "home.stats.tested": "Kiểm Tra Trước Khi Giao",
-    "home.stats.response": "Phút Phản Hồi",
-    "home.stats.countries": "Quốc Gia Phục Vụ",
-    "home.stats.warranty": "Tháng Bảo Hành",
-    "home.brands.title": "Thương Hiệu Đối Tác Tin Cậy",
-    "home.brands.desc": "Chúng tôi cung cấp thiết bị chính hãng từ các công ty hàng đầu",
-    "home.cta.title": "Không tìm thấy linh kiện ngừng sản xuất?",
-    "contact.title": "Liên Hệ Với Chúng Tôi",
-    "contact.desc": "Chúng tôi phản hồi mọi yêu cầu báo giá trong vòng 30 phút trong giờ làm việc.",
-    "brands.title": "Thương Hiệu Đối Tác Của Chúng Tôi",
-    "industries.title": "Ngành Công Nghiệp Chúng Tôi Phục Vụ",
-    "cat.pressure.title": "Cảm Biến Áp Suất",
-    "cat.pressure.desc": "Đo lường áp suất tuyệt đối, tương đối và chênh lệch.",
-    "cat.temp.title": "Thiết Bị Nhiệt Độ",
-    "cat.temp.desc": "Cảm biến, bộ truyền tín hiệu cho điều kiện khắc nghiệt.",
-    "cat.flow.title": "Lưu Lượng Kế",
-    "cat.flow.desc": "Hệ thống đo lường lưu lượng Coriolis, điện từ và xoáy.",
-    "cat.valve.title": "Bộ Định Vị Van",
-    "cat.valve.desc": "Bộ định vị kỹ thuật số cho điều khiển van chính xác.",
-    "home.guarantee.bold": "Trả lời trong 30 phút",
-    "home.guarantee.text1": "khi bạn gửi Yêu Cầu Báo Giá Nhanh Thứ Hai–Thứ Sáu, 8:30 sáng – 6:00 chiều CST.",
-    "home.guarantee.text2": "Các yêu cầu ngoài giờ này sẽ được trả lời vào ngày làm việc tiếp theo."
     "contact.getInTouch": "Giữ liên lạc",
     "contact.getInTouchDesc": "Cho dù bạn cần một bộ truyền đơn lẻ hay thiết bị cho một cuộc đại tu toàn bộ nhà máy, đội ngũ kỹ sư bán hàng của chúng tôi luôn sẵn sàng hỗ trợ.",
     "contact.email": "Email",
@@ -290,53 +151,9 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "Bộ định vị van thông minh và khí nén hiệu suất cao.",
     "brands.b11": "Van điều khiển dịch vụ khắc nghiệt và bộ dẫn động.",
     "brands.b12": "Công nghệ cảm biến vị trí và điều khiển van rời rạc.",
-    "brands.b13": "Kiểm tra công nghiệp, công cụ chẩn đoán và máy giao tiếp hiện trường.",
+    "brands.b13": "Kiểm tra công nghiệp, công cụ chẩn đoán và máy giao tiếp hiện trường."
   },
   ar: {
-    "nav.home": "الرئيسية",
-    "nav.products": "المنتجات",
-    "nav.brands": "الماركات",
-    "nav.industries": "الصناعات",
-    "nav.articles": "مقالات",
-    "nav.about": "معلومات عنا",
-    "nav.contact": "اتصل بنا",
-    "btn.readMore": "اقرأ المزيد",
-    "btn.contactUs": "اتصل بنا",
-    "btn.submit": "إرسال",
-    "btn.requestQuote": "اطلب تسعيرة",
-    "btn.browseCatalog": "تصفح الكتالوج",
-    "btn.viewAll": "عرض جميع المنتجات",
-    "btn.contactSales": "اتصل بالمبيعات الآن",
-    "label.name": "الاسم",
-    "label.email": "البريد الإلكتروني",
-    "label.phone": "هاتف",
-    "label.company": "شركة",
-    "label.message": "رسالة",
-    "footer.copyright": "كل الحقوق محفوظة.",
-    "home.hero.title1": "الصناعة العالمية",
-    "home.hero.title2": "معدات القياس.",
-    "home.stats.tested": "تم اختباره قبل الإرسال",
-    "home.stats.response": "دقيقة للرد على التسعيرة",
-    "home.stats.countries": "الدول التي نخدمها",
-    "home.stats.warranty": "شهر ضمان",
-    "home.brands.title": "ماركات موثوقة",
-    "home.brands.desc": "نحن نوفر معدات أصلية من قادة الصناعة",
-    "home.cta.title": "لا يمكنك العثور على قطعة مقطوعة؟",
-    "contact.title": "اتصل بنا",
-    "contact.desc": "نرد على جميع طلبات التسعير خلال 30 دقيقة خلال ساعات العمل.",
-    "brands.title": "الماركات الشريكة لنا",
-    "industries.title": "الصناعات التي نخدمها",
-    "cat.pressure.title": "أجهزة إرسال الضغط",
-    "cat.pressure.desc": "قياس الضغط المطلق، المقياس، والتفاضلي.",
-    "cat.temp.title": "أدوات درجة الحرارة",
-    "cat.temp.desc": "مستشعرات وأجهزة إرسال للظروف القاسية.",
-    "cat.flow.title": "أجهزة قياس التدفق",
-    "cat.flow.desc": "أنظمة قياس التدفق كوريوليس، المغناطيسية، والدوامة.",
-    "cat.valve.title": "محددات مواقع الصمامات",
-    "cat.valve.desc": "محددات مواقع رقمية وذكية للتحكم الدقيق في الصمامات.",
-    "home.guarantee.bold": "الرد خلال 30 دقيقة",
-    "home.guarantee.text1": "عند تقديم طلب تسعير سريع من الإثنين إلى الجمعة، 8:30 صباحًا - 6:00 مساءً بتوقيت CST.",
-    "home.guarantee.text2": "سيتم الرد على الطلبات خارج هذه الساعات في يوم العمل التالي."
     "contact.getInTouch": "ابق على تواصل",
     "contact.getInTouchDesc": "سواء كنت بحاجة إلى جهاز إرسال بديل واحد أو أجهزة لإصلاح كامل للمصنع، فإن فريق المبيعات الهندسية لدينا جاهز للمساعدة.",
     "contact.email": "البريد الإلكتروني",
@@ -382,14 +199,184 @@ const DICTIONARY: Record<Language, Record<string, string>> = {
     "brands.b10": "محددات مواقع هوائية وصمامات ذكية عالية الأداء.",
     "brands.b11": "صمامات تحكم ومشغلات للخدمات الشاقة.",
     "brands.b12": "التحكم في الصمامات المنفصلة وتكنولوجيا استشعار الموقع.",
-    "brands.b13": "الاختبارات الصناعية، وأدوات التشخيص، وأجهزة الاتصال الميداني.",
+    "brands.b13": "الاختبارات الصناعية، وأدوات التشخيص، وأجهزة الاتصال الميداني."
   }
 };
 
-export function useTranslation() {
-  const { lang } = useLanguage();
-  
-  return function t(key: string, fallback?: string): string {
-    return DICTIONARY[lang]?.[key] || DICTIONARY.en[key] || fallback || key;
-  };
+// 1. Update i18n.ts
+let i18nContent = fs.readFileSync(i18nPath, 'utf8');
+for (const lang of Object.keys(NEW_KEYS)) {
+  const langObj = NEW_KEYS[lang];
+  for (const [k, v] of Object.entries(langObj)) {
+    // Inject right before the closing brace of the language object
+    // Find `${lang}: {`
+    const regex = new RegExp(`(${lang}: \\{)([\\s\\S]*?)(\\n\\s*\\},|\\n\\s*\\}\\n*};)`);
+    i18nContent = i18nContent.replace(regex, (match, p1, p2, p3) => {
+      // Add the new key
+      const newEntry = `\n    "${k}": ${JSON.stringify(v)},`;
+      return p1 + p2 + newEntry + p3;
+    });
+  }
 }
+fs.writeFileSync(i18nPath, i18nContent);
+
+// 2. Patch Contact.tsx
+let contactContent = fs.readFileSync(path.join(pagesDir, 'Contact.tsx'), 'utf8');
+contactContent = contactContent.replace(
+  `h2 className="text-2xl font-bold mb-6 text-foreground">Get in Touch</h2>`,
+  `h2 className="text-2xl font-bold mb-6 text-foreground">{t("contact.getInTouch")}</h2>`
+);
+contactContent = contactContent.replace(
+  `p className="text-muted-foreground mb-8">Whether you need a single replacement transmitter or instrumentation for a complete plant overhaul, our engineering sales team is ready to assist.</p>`,
+  `p className="text-muted-foreground mb-8">{t("contact.getInTouchDesc")}</p>`
+);
+contactContent = contactContent.replace(
+  `h3 className="font-bold text-foreground">Email</h3>`,
+  `h3 className="font-bold text-foreground">{t("contact.email")}</h3>`
+);
+contactContent = contactContent.replace(
+  `h3 className="font-bold text-foreground">WhatsApp / Phone</h3>`,
+  `h3 className="font-bold text-foreground">{t("contact.phone")}</h3>`
+);
+contactContent = contactContent.replace(
+  `h3 className="font-bold text-foreground">Business Hours</h3>`,
+  `h3 className="font-bold text-foreground">{t("contact.hours")}</h3>`
+);
+contactContent = contactContent.replace(
+  `p className="text-muted-foreground">Mon - Fri: 8:30am – 6:00pm (CST)</p>`,
+  `p className="text-muted-foreground">{t("contact.hoursDesc")}</p>`
+);
+contactContent = contactContent.replace(
+  `h3 className="font-bold text-foreground">Headquarters</h3>`,
+  `h3 className="font-bold text-foreground">{t("contact.hq")}</h3>`
+);
+contactContent = contactContent.replace(
+  `h3 className="text-xl font-bold text-foreground mb-2">Enquiry Received!</h3>`,
+  `h3 className="text-xl font-bold text-foreground mb-2">{t("contact.enquiryReceived")}</h3>`
+);
+contactContent = contactContent.replace(
+  `Thank you. Our sales team will get back to you within 30 minutes during business hours.`,
+  `{t("contact.enquiryDesc")}`
+);
+contactContent = contactContent.replace(
+  `Submit Another Enquiry`,
+  `{t("contact.submitAnother")}`
+);
+contactContent = contactContent.replace(
+  `By submitting this form, you agree to our privacy policy. We will not share your data.`,
+  `{t("contact.privacy")}`
+);
+fs.writeFileSync(path.join(pagesDir, 'Contact.tsx'), contactContent);
+
+// 3. Patch About.tsx
+let aboutContent = fs.readFileSync(path.join(pagesDir, 'About.tsx'), 'utf8');
+// Add import useTranslation
+aboutContent = aboutContent.replace(
+  `import { CheckCircle2 } from "lucide-react";`,
+  `import { CheckCircle2 } from "lucide-react";\nimport { useTranslation } from "@/lib/i18n";`
+);
+// Add hook
+aboutContent = aboutContent.replace(
+  `export default function About() {\n  return (`,
+  `export default function About() {\n  const t = useTranslation();\n  return (`
+);
+aboutContent = aboutContent.replace(
+  `h1 className="text-4xl md:text-5xl font-bold mb-4">About Flonexis</h1>`,
+  `h1 className="text-4xl md:text-5xl font-bold mb-4">{t("about.title")}</h1>`
+);
+aboutContent = aboutContent.replace(
+  `EHUADE Automation — Your trusted procurement partner for industrial instrumentation.`,
+  `{t("about.subtitle")}`
+);
+aboutContent = aboutContent.replace(
+  `h2 className="text-3xl font-bold mb-6 text-foreground">Who We Are</h2>`,
+  `h2 className="text-3xl font-bold mb-6 text-foreground">{t("about.whoWeAre")}</h2>`
+);
+aboutContent = aboutContent.replace(
+  `<p>\n                  Based in China, Flonexis is a leading B2B wholesale exporter specializing in high-grade industrial instrumentation and automation equipment.\n                </p>`,
+  `<p>{t("about.desc1")}</p>`
+);
+aboutContent = aboutContent.replace(
+  `<p>\n                  For over a decade, we have served as a critical supply chain link for procurement engineers, EPC contractors, and end-users in the Oil & Gas, Chemical, Power, and Pharmaceutical sectors across 50+ countries.\n                </p>`,
+  `<p>{t("about.desc2")}</p>`
+);
+aboutContent = aboutContent.replace(
+  `<p>\n                  Our mission is simple: provide authentic, major-brand equipment with faster lead times and competitive pricing, backed by uncompromising technical support.\n                </p>`,
+  `<p>{t("about.desc3")}</p>`
+);
+aboutContent = aboutContent.replace(
+  `h3 className="text-xl font-bold text-foreground mb-6">Our Commitment</h3>`,
+  `h3 className="text-xl font-bold text-foreground mb-6">{t("about.commitment")}</h3>`
+);
+aboutContent = aboutContent.replace(
+  `"100% Genuine factory-new equipment",\n                "12-Month standard factory warranty on all products",\n                "30-Minute quote response time during business hours",\n                "Strict quality control and pre-shipment inspection",\n                "Global logistics and customs clearance support"`,
+  `t("about.commit1"),\n                t("about.commit2"),\n                t("about.commit3"),\n                t("about.commit4"),\n                t("about.commit5")`
+);
+fs.writeFileSync(path.join(pagesDir, 'About.tsx'), aboutContent);
+
+// 4. Patch Industries.tsx
+let indContent = fs.readFileSync(path.join(pagesDir, 'Industries.tsx'), 'utf8');
+indContent = indContent.replace(
+  `title: "Oil & Gas",`,
+  `title: t("ind.oil.title", "Oil & Gas"),`
+);
+indContent = indContent.replace(
+  `desc: "Upstream extraction, midstream transport, and downstream refining require rugged, hazardous-area certified instrumentation. We supply explosion-proof pressure transmitters, Coriolis flow meters, and severe-service control valves.",`,
+  `desc: t("ind.oil.desc", "Upstream extraction, midstream transport, and downstream refining require rugged, hazardous-area certified instrumentation. We supply explosion-proof pressure transmitters, Coriolis flow meters, and severe-service control valves."),`
+);
+indContent = indContent.replace(
+  `title: "Chemical Processing",`,
+  `title: t("ind.chem.title", "Chemical Processing"),`
+);
+indContent = indContent.replace(
+  `desc: "Corrosive environments demand specialized materials and extreme precision. We source chemical-resistant sensors, magnetic flow meters, and smart valve positioners to ensure batch consistency and plant safety."`,
+  `desc: t("ind.chem.desc", "Corrosive environments demand specialized materials and extreme precision. We source chemical-resistant sensors, magnetic flow meters, and smart valve positioners to ensure batch consistency and plant safety.")`
+);
+indContent = indContent.replace(
+  `title: "Power Generation",`,
+  `title: t("ind.power.title", "Power Generation"),`
+);
+indContent = indContent.replace(
+  `desc: "Thermal, nuclear, and renewable power plants rely on critical steam and water cycle monitoring. We provide high-temperature transmitters, vortex flow meters, and reliable actuators for continuous operation."`,
+  `desc: t("ind.power.desc", "Thermal, nuclear, and renewable power plants rely on critical steam and water cycle monitoring. We provide high-temperature transmitters, vortex flow meters, and reliable actuators for continuous operation.")`
+);
+indContent = indContent.replace(
+  `title: "Pharmaceuticals",`,
+  `title: t("ind.pharma.title", "Pharmaceuticals"),`
+);
+indContent = indContent.replace(
+  `desc: "Strict hygiene and FDA/regulatory requirements mandate sanitary instrumentation. We supply hygienic pressure and temperature sensors designed for CIP/SIP processes in clean-room environments."`,
+  `desc: t("ind.pharma.desc", "Strict hygiene and FDA/regulatory requirements mandate sanitary instrumentation. We supply hygienic pressure and temperature sensors designed for CIP/SIP processes in clean-room environments.")`
+);
+indContent = indContent.replace(
+  `title: "Water & Wastewater",`,
+  `title: t("ind.water.title", "Water & Wastewater"),`
+);
+indContent = indContent.replace(
+  `desc: "Environmental monitoring and treatment facilities require robust flow and level measurement. We stock reliable magnetic flow meters and durable pressure transmitters for municipal and industrial water management."`,
+  `desc: t("ind.water.desc", "Environmental monitoring and treatment facilities require robust flow and level measurement. We stock reliable magnetic flow meters and durable pressure transmitters for municipal and industrial water management.")`
+);
+// To use t() outside component, we need to move the industries array inside the component.
+indContent = indContent.replace(
+  /const industries = \[[\s\S]*?\];/,
+  ``
+);
+indContent = indContent.replace(
+  `export default function Industries() {\n  const t = useTranslation();\n`,
+  `export default function Industries() {\n  const t = useTranslation();\n\n  const industries = [\n    {\n      title: t("ind.oil.title"),\n      icon: <Flame className="w-10 h-10 mb-6 text-accent" />,\n      desc: t("ind.oil.desc"),\n      image: "/images/ind-oilgas.png"\n    },\n    {\n      title: t("ind.chem.title"),\n      icon: <Factory className="w-10 h-10 mb-6 text-accent" />,\n      desc: t("ind.chem.desc")\n    },\n    {\n      title: t("ind.power.title"),\n      icon: <Zap className="w-10 h-10 mb-6 text-accent" />,\n      desc: t("ind.power.desc")\n    },\n    {\n      title: t("ind.pharma.title"),\n      icon: <ShieldAlert className="w-10 h-10 mb-6 text-accent" />,\n      desc: t("ind.pharma.desc")\n    },\n    {\n      title: t("ind.water.title"),\n      icon: <Droplet className="w-10 h-10 mb-6 text-accent" />,\n      desc: t("ind.water.desc")\n    }\n  ];\n`
+);
+fs.writeFileSync(path.join(pagesDir, 'Industries.tsx'), indContent);
+
+// 5. Patch Brands.tsx
+let brandsContent = fs.readFileSync(path.join(pagesDir, 'Brands.tsx'), 'utf8');
+brandsContent = brandsContent.replace(
+  /const brands = \[[\s\S]*?\];/,
+  ``
+);
+brandsContent = brandsContent.replace(
+  `export default function Brands() {\n  const t = useTranslation();\n`,
+  `export default function Brands() {\n  const t = useTranslation();\n\n  const brands = [\n    { name: "Rosemount / Emerson", desc: t("brands.b1") },\n    { name: "Yokogawa", desc: t("brands.b2") },\n    { name: "Honeywell", desc: t("brands.b3") },\n    { name: "Siemens", desc: t("brands.b4") },\n    { name: "Fisher / Emerson", desc: t("brands.b5") },\n    { name: "Micro Motion", desc: t("brands.b6") },\n    { name: "Azbil", desc: t("brands.b7") },\n    { name: "ABB", desc: t("brands.b8") },\n    { name: "SAMSON", desc: t("brands.b9") },\n    { name: "YTC", desc: t("brands.b10") },\n    { name: "KOSO", desc: t("brands.b11") },\n    { name: "Topworx", desc: t("brands.b12") },\n    { name: "Fluke", desc: t("brands.b13") },\n  ];\n`
+);
+fs.writeFileSync(path.join(pagesDir, 'Brands.tsx'), brandsContent);
+
+console.log("Translation complete!");
