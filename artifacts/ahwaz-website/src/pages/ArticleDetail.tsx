@@ -17,7 +17,7 @@ interface ArticleDetail {
   content: string;
   coverUrl: string | null;
   published: boolean;
-  brand?: string | null;
+  category?: string | null;
   recommendedArticles?: {
     id: number;
     title: string;
@@ -225,9 +225,9 @@ export default function ArticleDetail() {
                           {formatDate(article.createdAt)}
                         </time>
                       </div>
-                      {article.brand && (
-                        <span className="bg-accent/10 text-accent px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
-                          {article.brand}
+                      {article.category && (
+                        <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
+                          {article.category}
                         </span>
                       )}
                     </div>

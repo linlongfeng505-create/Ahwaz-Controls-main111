@@ -84,6 +84,7 @@ interface ArticleItem {
   recommendedProductIds?: number[];
   translations?: Record<string, any>;
   brand?: string | null;
+  category?: string | null;
   createdAt: string;
 }
 
@@ -100,6 +101,7 @@ interface EmptyArticleForm {
   recommendedProductIds: number[];
   translations: Record<string, any>;
   brand: string;
+  category: string;
 }
 
 
@@ -215,6 +217,7 @@ export default function Admin() {
     recommendedProductIds: [],
     translations: {},
     brand: "",
+    category: "",
   };
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [articleEditId, setArticleEditId] = useState<number | null>(null);
@@ -1567,6 +1570,11 @@ function ArticlesTab({
     queryFn: () => fetch("/api/products?limit=1000").then(r => r.json()).then(res => res.data ?? res),
   });
 
+  const { data: categories = [] } = useQuery<string[]>({
+    queryKey: ["admin-categories"],
+    queryFn: () => fetch("/api/products/categories").then(r => r.json()).then(res => res.categories ?? []),
+  });
+
   const saveMutation = useMutation({
     mutationFn: async (form: EmptyArticleForm) => {
       const { coverDataUrl, removeCover, existingCoverUrl, translations, ...rest } = form;
@@ -1649,6 +1657,7 @@ function ArticlesTab({
       recommendedProductIds: a.recommendedProductIds ?? [],
       translations: a.translations ?? {},
       brand: a.brand ?? "",
+      category: a.category ?? "",
     });
     setArticleEditId(a.id);
     setArticleFormError("");
@@ -1790,17 +1799,32 @@ function ArticlesTab({
                   />
                 </div>
                 
-                {/* Brand */}
+                {/* Category / Brand */}
                 <div>
-                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Brand</label>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Category / Brand</label>
                   <select
-                    value={articleForm.brand || ""}
-                    onChange={(e) => setArticleForm((f) => ({ ...f, brand: e.target.value }))}
+                    value={articleForm.category || ""}
+                    onChange={(e) => setArticleForm((f) => ({ ...f, category: e.target.value }))}
                     className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent appearance-none"
                   >
-                    <option value="">-- No Brand (General) --</option>
-                    {Array.from(new Set(products.map(p => p.brand).filter(Boolean))).sort().map(b => (
-                      <option key={b} value={b}>{b}</option>
+                    <option value="">-- No Category --</option>
+                    {categories.map((c: string) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">Category</label>
+                  <select
+                    value={articleForm.category || ""}
+                    onChange={(e) => setArticleForm((f) => ({ ...f, category: e.target.value }))}
+                    className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent appearance-none"
+                  >
+                    <option value="">-- No Category --</option>
+                    {categories.map((c: string) => (
+                      <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
                 </div>

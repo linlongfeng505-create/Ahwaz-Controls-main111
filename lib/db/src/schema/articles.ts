@@ -9,6 +9,7 @@ export const articlesTable = sqliteTable("articles", {
   summary: text("summary"),
   content: text("content").notNull(),
   brand: text("brand"),
+  category: text("category"),
   coverData: blob("cover_data").$type<Buffer | null>(),          // raw binary BLOB
   coverContentType: text("cover_content_type"),                  // e.g. "image/jpeg"
   published: integer("published", { mode: "boolean" }).notNull().default(false),

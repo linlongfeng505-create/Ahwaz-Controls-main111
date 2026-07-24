@@ -141,7 +141,8 @@ export async function initDb(): Promise<void> {
     "ALTER TABLE products ADD COLUMN recommended_product_ids TEXT NOT NULL DEFAULT '[]'",
     "ALTER TABLE products ADD COLUMN translations TEXT NOT NULL DEFAULT '{}'",
     "ALTER TABLE articles ADD COLUMN translations TEXT NOT NULL DEFAULT '{}'",
-    "ALTER TABLE articles ADD COLUMN brand TEXT"
+    "ALTER TABLE articles ADD COLUMN brand TEXT",
+    "ALTER TABLE articles ADD COLUMN category TEXT"
   ];
   for (const sql of alterCols) {
     try { await client.execute(sql); } catch { /* already exists */ }

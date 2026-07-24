@@ -12,6 +12,7 @@ interface ArticleListItem {
   coverUrl: string | null;
   published: boolean;
   brand?: string | null;
+  category?: string | null;
   createdAt: string;
 }
 
@@ -33,14 +34,20 @@ function formatDate(iso: string) {
 export default function Articles() {
   const [searchParams] = useState(() => new URLSearchParams(window.location.search));
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get("brand") || "");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
 
   const { data, isLoading, isError } = useQuery<ArticlesResponse>({
-    queryKey: ["articles-public", selectedBrand],
-    queryFn: () =>
-      fetch(`/api/articles?limit=50${selectedBrand ? `&brand=${encodeURIComponent(selectedBrand)}` : ""}`).then((r) => {
+    queryKey: ["articles-public", selectedBrand, selectedCategory],
+    queryFn: () => {
+      const url = new URL("/api/articles", window.location.origin);
+      url.searchParams.set("limit", "50");
+      if (selectedBrand) url.searchParams.set("brand", selectedBrand);
+      if (selectedCategory) url.searchParams.set("category", selectedCategory);
+      return fetch(url.toString()).then((r) => {
         if (!r.ok) throw new Error("Failed to fetch");
         return r.json();
-      }),
+      });
+    }
   });
 
   const { data: brandsData } = useQuery<{ brands: string[] }>({
@@ -48,14 +55,28 @@ export default function Articles() {
     queryFn: () => fetch("/api/brands").then(r => r.json()),
   });
 
+  const { data: categoriesData } = useQuery<{ categories: string[] }>({
+    queryKey: ["categories-public"],
+    queryFn: () => fetch("/api/products/categories").then(r => r.json()),
+  });
+
   const articles = data?.data ?? [];
   const brands = brandsData?.brands ?? [];
+  const categories = categoriesData?.categories ?? [];
 
   const handleBrandChange = (b: string) => {
     setSelectedBrand(b);
     const url = new URL(window.location.href);
     if (b) url.searchParams.set("brand", b);
     else url.searchParams.delete("brand");
+    window.history.replaceState(null, "", url.pathname + url.search);
+  };
+
+  const handleCategoryChange = (c: string) => {
+    setSelectedCategory(c);
+    const url = new URL(window.location.href);
+    if (c) url.searchParams.set("category", c);
+    else url.searchParams.delete("category");
     window.history.replaceState(null, "", url.pathname + url.search);
   };
 
@@ -93,35 +114,37 @@ export default function Articles() {
       {/* Article Grid */}
       <section className="py-12 bg-background min-h-[50vh]">
         <div className="container mx-auto px-4 md:px-8">
-          {/* Brand Filter */}
-          {brands.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mb-10 pb-6 border-b border-border/50">
-              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mr-2">Filter by Brand:</span>
-              <button
-                onClick={() => handleBrandChange("")}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
-                  selectedBrand === ""
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border hover:border-accent hover:text-accent"
-                }`}
-              >
-                All Brands
-              </button>
-              {brands.map((b) => (
+          {/* Filters */}
+          <div className="mb-10 pb-6 border-b border-border/50 flex flex-col gap-6">
+            {categories.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mr-2">Category:</span>
                 <button
-                  key={b}
-                  onClick={() => handleBrandChange(b)}
+                  onClick={() => handleCategoryChange("")}
                   className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
-                    selectedBrand === b
-                      ? "bg-accent text-accent-foreground border-accent"
+                    selectedCategory === ""
+                      ? "bg-primary text-primary-foreground border-primary"
                       : "bg-muted text-muted-foreground border-border hover:border-accent hover:text-accent"
                   }`}
                 >
-                  {b}
+                  All
                 </button>
-              ))}
-            </div>
-          )}
+                {categories.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => handleCategoryChange(c)}
+                    className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
+                      selectedCategory === c
+                        ? "bg-accent text-accent-foreground border-accent"
+                        : "bg-muted text-muted-foreground border-border hover:border-accent hover:text-accent"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -204,9 +227,9 @@ export default function Articles() {
                               {formatDate(article.createdAt)}
                             </time>
                           </div>
-                          {article.brand && (
-                            <span className="bg-accent/10 text-accent px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
-                              {article.brand}
+                          {article.category && (
+                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                              {article.category}
                             </span>
                           )}
                         </div>
