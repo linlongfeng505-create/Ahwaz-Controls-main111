@@ -1,0 +1,1282 @@
+<!doctype html>
+        <html lang="tr">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="csrf-token" content="tXyfNUWtTPVPJAwtE9UR4WInSZ0PUPDeNCiQTEp3">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <title></title>
+        <meta name="description" content="">
+
+        
+        <meta name="author"
+              content="ÖZHAT İÇ VE DIŞ TİC. LTD.ŞTİ. Türkiye">
+        
+        <style>.modal{display:none}#page-loader{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:999999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.25s ease,visibility 0.25s ease;pointer-events:none}#page-loader.page-loader--visible{opacity:1;visibility:visible;pointer-events:all}.page-loader__spinner{width:52px;height:52px;border-radius:50%;border:4px solid rgba(255,255,255,0.25);border-top-color:#fff;animation:page-loader-spin 0.75s linear infinite}@keyframes page-loader-spin{to{transform:rotate(360deg)}}</style>
+
+                <link rel="preload" as="style" href="https://www.ozhat.com/css/all-css.min.css">
+        <link rel="stylesheet" media="print" onload="this.media='all'" href="https://www.ozhat.com/css/all-css.min.css">
+        <noscript><link rel="stylesheet" href="https://www.ozhat.com/css/all-css.min.css"></noscript>
+        <link rel="preload" as="style" href="https://www.ozhat.com/css/cart-modal.min.css">
+        <link rel="stylesheet" media="print" onload="this.media='all'" href="https://www.ozhat.com/css/cart-modal.min.css">
+        <noscript><link rel="stylesheet" href="https://www.ozhat.com/css/cart-modal.min.css"></noscript>
+                <link rel="stylesheet" href="https://www.ozhat.com/css/ix-homepage.min.css">
+        
+                            <link rel="stylesheet" media="print" onload="this.media='all'"
+                  href="https://www.ozhat.com/css/template5.min.css">
+                
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preload" as="style"
+              href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional">
+        <link rel="stylesheet" media="print" onload="this.media='all'"
+              href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional">
+        <noscript><link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional"></noscript>
+        <link rel="preload" href="https://www.ozhat.com/fonts/Flaticon.woff2" as="font" type="font/woff2" crossorigin>
+                                    <link rel="canonical" href="https://www.ozhat.com/images/products/clyde-bergemann-a1011.jpg">
+            <link rel="alternate" href="https://www.ozhat.com/images/products/clyde-bergemann-a1011.jpg" hreflang="x-default">
+        
+                            
+        
+        
+        
+        
+        
+
+                        
+        
+                
+                                    <link rel="stylesheet"
+                  href="https://www.ozhat.com/css/template5.min.css">
+                                                        <script defer src="https://www.ozhat.com/jquery/dist/jquery.min.js"></script>
+        <script defer rel="preconnect" src="https://www.ozhat.com/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script defer rel="preconnect" src="https://www.ozhat.com/js/axios.min.js"></script>
+
+                                <link rel="preload" as="style"
+                  href="https://www.ozhat.com/css/template5-error.min.css"/>
+            <link rel="stylesheet"
+                  href="https://www.ozhat.com/css/template5-error.min.css"/>
+                    
+        <style>
+            #cc--main .title {
+                font-size: 17px !important;
+                margin-bottom: 15px !important;
+            }
+
+            #cc--main .title:after {
+                background: none !important;
+            }
+
+            .cookie-banner {
+                position: fixed;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 32px);
+                max-width: 1180px;
+                background: #ffffff;
+                color: #1f2937;
+                padding: 14px 20px;
+                border-radius: 14px;
+                border: 1px solid rgba(15, 23, 42, 0.08);
+                box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
+                z-index: 9999;
+                animation: fadeInUp 0.35s ease;
+                backdrop-filter: saturate(180%) blur(8px);
+            }
+
+            .cookie-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                flex-wrap: nowrap;
+            }
+
+            .cookie-banner p {
+                margin: 0;
+                font-size: 13.5px;
+                line-height: 1.5;
+                color: #4b5563;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .cookie-banner a {
+                color: #2563eb;
+                text-decoration: none;
+                font-weight: 500;
+                border-bottom: 1px solid rgba(37, 99, 235, 0.25);
+                transition: border-color 0.2s ease, color 0.2s ease;
+            }
+
+            .cookie-banner a:hover {
+                color: #1d4ed8;
+                border-bottom-color: #1d4ed8;
+            }
+
+            .cookie-banner .buttons {
+                display: flex;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+
+            .cookie-btn {
+                border: none;
+                padding: 9px 18px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13.5px;
+                font-weight: 600;
+                letter-spacing: 0.1px;
+                transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+                white-space: nowrap;
+                line-height: 1.2;
+            }
+
+            .cookie-btn:active {
+                transform: translateY(1px);
+            }
+
+            #cookie_consent {
+                background: #2563eb;
+                color: #fff;
+                box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+            }
+
+            #cookie_consent:hover {
+                background: #1d4ed8;
+            }
+
+            #cookie_decline {
+                background: transparent;
+                color: #4b5563;
+                border: 1px solid #d1d5db;
+            }
+
+            #cookie_decline:hover {
+                background: #f3f4f6;
+                color: #111827;
+                border-color: #9ca3af;
+            }
+
+            [data-clipboard-email] {
+                position: relative;
+            }
+
+            [data-clipboard-email] .email-copied-tip {
+                position: absolute;
+                bottom: calc(100% + 6px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: #1f2937;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 500;
+                padding: 4px 10px;
+                border-radius: 6px;
+                white-space: nowrap;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+                z-index: 9999;
+            }
+
+            [data-clipboard-email] .email-copied-tip.visible {
+                opacity: 1;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, 20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, 0);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .cookie-banner {
+                    padding: 14px 16px;
+                    border-radius: 12px;
+                }
+
+                .cookie-content {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 12px;
+                }
+
+                .cookie-banner .buttons {
+                    width: 100%;
+                }
+
+                .cookie-btn {
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 14px;
+                }
+            }
+        </style>
+        <style>
+            .ix-header__contacts [class^="flaticon-"]:before,
+            .ix-header__contacts [class*=" flaticon-"]:before {
+                font-size: 12px !important;
+            }
+
+            .ix-header__inner {
+                padding: 6px 8px 6px 20px !important;
+            }
+
+            .ix-header__brand {
+                margin-right: auto !important;
+            }
+
+            .ix-header__brand img {
+                height: 44px !important;
+                width: auto !important;
+            }
+
+            .navbar-header-wrapper {
+                margin-left: 0 !important;
+            }
+
+            .ix-header__search-wrap {
+                order: 3;
+                flex: none;
+            }
+
+            
+            .ix-header__contacts {
+                order: 4;
+            }
+
+            .ix-header__search-inline {
+                position: relative;
+                display: inline-flex;
+                flex: none;
+            }
+
+            .ix-header__search-inline__btn,
+            .ix-header__search-wrap #search_glass,
+            .ix-header__search-wrap button[type="submit"] {
+                width: 34px !important;
+                height: 34px !important;
+                border-radius: 50% !important;
+                background: #e60000 !important;
+                border: 0 !important;
+                color: #fff !important;
+                display: grid !important;
+                place-items: center !important;
+                cursor: pointer !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                outline: none !important;
+                transition: background .15s ease !important;
+            }
+
+            .ix-header__search-inline__btn:hover,
+            .ix-header__search-wrap #search_glass:hover,
+            .ix-header__search-wrap button[type="submit"]:hover,
+            .ix-header__search-inline[data-state="open"] .ix-header__search-inline__btn {
+                background: #c40000 !important;
+            }
+
+            .ix-header__search-inline__btn [class^="flaticon-"]:before,
+            .ix-header__search-inline__btn [class*=" flaticon-"]:before,
+            .ix-header__search-wrap #search_glass [class^="flaticon-"]:before,
+            .ix-header__search-wrap #search_glass [class*=" flaticon-"]:before {
+                font-size: 13px !important;
+                color: #fff !important;
+            }
+
+            .ix-header__search-inline__panel {
+                position: absolute !important;
+                top: calc(100% + 12px) !important;
+                right: 0 !important;
+                width: min(360px, 80vw) !important;
+                background: #ffffff !important;
+                border: 1px solid #e8e4d8 !important;
+                border-radius: 999px !important;
+                padding: 4px 4px 4px 16px !important;
+                box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 2px 6px rgba(20, 17, 13, .05), 0 18px 44px -18px rgba(20, 17, 13, .22) !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                opacity: 0;
+                transform: translateY(-6px);
+                pointer-events: none;
+                visibility: hidden;
+                transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+                z-index: 200 !important;
+                margin: 0 !important;
+            }
+
+            .ix-header__search-inline[data-state="open"] .ix-header__search-inline__panel {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+                pointer-events: auto !important;
+                visibility: visible !important;
+                transition: opacity .2s ease, transform .2s ease, visibility 0s linear 0s;
+            }
+
+            .ix-header__search-inline__panel-icon {
+                flex: none !important;
+                width: 15px !important;
+                height: 15px !important;
+                color: #8a8479 !important;
+            }
+
+            .ix-header__search-inline__panel input {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                visibility: visible !important;
+                flex: 1 !important;
+                background: transparent !important;
+                border: 0 !important;
+                outline: none !important;
+                color: #14110d !important;
+                font-family: inherit !important;
+                font-size: 13px !important;
+                padding: 8px 4px !important;
+                min-width: 0 !important;
+                box-shadow: none !important;
+                width: auto !important;
+                max-width: none !important;
+                border-radius: 0 !important;
+                height: auto !important;
+            }
+
+            .ix-header__search-inline__panel input::placeholder {
+                color: #8a8479 !important;
+            }
+
+            .ix-header__search-inline__panel-submit {
+                flex: none !important;
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 50% !important;
+                background: #e60000 !important;
+                border: 0 !important;
+                color: #fff !important;
+                display: grid !important;
+                place-items: center !important;
+                cursor: pointer !important;
+                padding: 0 !important;
+                transition: background .15s ease !important;
+            }
+
+            .ix-header__search-inline__panel-submit:hover {
+                background: #c40000 !important;
+            }
+
+            .ix-header__search-inline__panel-submit svg {
+                width: 14px !important;
+                height: 14px !important;
+            }
+
+            /* burger open: wrap nav to new row, left-align items */
+            .ix-header--nav-open .ix-header__inner {
+                flex-wrap: wrap !important;
+            }
+
+            .ix-header--nav-open .ix-header__nav {
+                align-items: flex-start !important;
+            }
+
+            .ix-header--nav-open .ix-header__nav a,
+            .ix-header--nav-open .ix-header__nav .nav-link {
+                text-align: left !important;
+            }
+
+            /* drawer contacts */
+            .ix-header__drawer-contacts {
+                display: none;
+                width: 100%;
+                margin-top: 10px;
+                padding: 12px 0 4px;
+                border-top: 1px solid #e8e4d8;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .ix-header--nav-open .ix-header__drawer-contacts {
+                display: flex !important;
+            }
+
+            .ix-header__drawer-contacts a {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                font-size: 13px;
+                color: #5a564f;
+                text-decoration: none;
+                border-radius: 8px;
+                transition: background .15s ease, color .15s ease;
+            }
+
+            .ix-header__drawer-contacts a:hover {
+                background: #f3f2ec;
+                color: #e60000;
+            }
+
+            .ix-header__drawer-contacts svg {
+                width: 14px;
+                height: 14px;
+                color: #8a8479;
+                flex: none;
+            }
+
+            .ix-header__drawer-contacts a:hover svg {
+                color: #e60000;
+            }
+
+            /* ix-hero layout fixes */
+            .ix-hero__body {
+                display: block !important;
+                padding-top: clamp(32px, 4vh, 56px) !important;
+                padding-bottom: clamp(16px, 1.6vh, 24px) !important;
+                width: 100% !important;
+            }
+
+            .ix-hero__layout {
+                display: grid !important;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+                gap: clamp(40px, 5vw, 72px) !important;
+                align-items: center !important;
+            }
+
+            .ix-hero__aside {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                width: 100% !important;
+            }
+
+            .ix-hero-image {
+                position: relative !important;
+                width: 100% !important;
+                max-width: 560px !important;
+                aspect-ratio: 4/3 !important;
+            }
+
+            .ix-hero-image__img {
+                position: absolute !important;
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                display: block !important;
+                object-fit: contain !important;
+            }
+
+            .ix-hero-facts {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: stretch !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+                gap: clamp(20px, 4vw, 56px) !important;
+                margin-top: clamp(40px, 6vw, 64px) !important;
+                padding-top: clamp(28px, 3.5vw, 40px) !important;
+                border-top: 1px solid #e8e4d8 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .ix-hero-fact__sep {
+                width: 1px !important;
+                min-height: 40px !important;
+                align-self: stretch !important;
+                background: #e8e4d8 !important;
+                flex-shrink: 0 !important;
+                display: block !important;
+            }
+
+            @media (max-width: 900px) {
+                .ix-hero__layout {
+                    grid-template-columns: 1fr !important;
+                }
+
+                .ix-hero__aside {
+                    display: flex !important;
+                    justify-content: center !important;
+                    margin-top: 24px !important;
+                }
+
+                .ix-hero-image {
+                    max-width: min(460px, 92vw) !important;
+                    margin: 0 auto !important;
+                }
+
+                .ix-hero-facts {
+                    display: grid !important;
+                    grid-template-columns: 1fr 1fr !important;
+                    gap: 0 !important;
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    border-top: 1px solid #e8e4d8 !important;
+                }
+
+                .ix-hero-fact {
+                    padding: 16px 8px !important;
+                    border-bottom: 1px solid #e8e4d8 !important;
+                    min-width: 0 !important;
+                    align-items: center !important;
+                }
+
+                .ix-hero-fact:nth-child(odd) {
+                    border-right: 1px solid #e8e4d8 !important;
+                }
+
+                .ix-hero-fact__sep {
+                    display: none !important;
+                }
+
+                .ix-hero-scroll {
+                    display: flex !important;
+                }
+            }
+
+            @media (max-width: 760px) {
+                .template5.main #mob_menu_label_bottom.ix-header__burger,
+                #mob_menu_label_bottom.ix-header__burger {
+                    display: flex !important;
+                }
+
+                .ix-container {
+                    padding-inline: 16px !important;
+                }
+
+                .ix-hero__body {
+                    padding-left: 16px !important;
+                    padding-right: 16px !important;
+                }
+
+                .ix-pdf-section__inner {
+                    padding-inline: 16px !important;
+                }
+
+                .ix-section {
+                    padding-inline: 0 !important;
+                }
+
+                .ix-hero-image {
+                    margin-bottom: 24px !important;
+                }
+            }
+        </style>
+    </head>
+        <body           class="template5 contact  ">
+        <div id="page-loader" role="status" aria-label="Loading">
+        <div class="page-loader__spinner"></div>
+    </div>
+        <div class="cookie-banner d-none" id="cookie">
+        <div class="cookie-content">
+            <p>
+                Bu web sitesi, gezinmenize ve en iyi kullanıcı deneyimini sunmanıza, ürün ve hizmetlerimizin kullanımını analiz etmenize ve reklam ve pazarlama faaliyetlerimizin kalitesini iyileştirmenize yardımcı olmak için çerezleri ve diğer teknolojileri kullanır.
+                <a href="https://www.ozhat.com/cookies">
+                    Bunlar nedir
+                </a>
+            </p>
+            <div class="buttons flex">
+                <button class="cookie-btn" id="cookie_consent">
+                    Çerezlere izin ver
+                </button>
+                <button class="cookie-btn" id="cookie_decline">
+                    Reddet
+                </button>
+            </div>
+        </div>
+    </div>
+            <div class="header-pannel">
+        
+        <header>
+                                                    
+                    <div class="ix-header" id="second-header-menu">
+                        <div class="ix-header__inner">
+
+                                                                                                <a class="ix-header__brand navbar-brand"
+                                       href="https://www.ozhat.com">
+                                        <img loading="lazy"
+                                             src="https://www.ozhat.com/images/logo/1003/logo.png"
+                                             alt="logo" height="44px">
+                                    </a>
+                                                            
+                                                            <div class="ix-header__search-wrap">
+                                    <div class="ix-header__search-inline" data-state="closed">
+    <button class="ix-header__search-inline__btn" type="button" id="search_glass"
+            aria-label="Search" aria-expanded="false" aria-controls="ix-header-search-panel">
+        <i class="flaticon-magnifying-glass"></i>
+    </button>
+    <form class="ix-header__search-inline__panel" id="ix-header-search-panel"
+          action="https://www.ozhat.com/search_top" method="post" autocomplete="off">
+        <input type="hidden" name="_token" value="tXyfNUWtTPVPJAwtE9UR4WInSZ0PUPDeNCiQTEp3" autocomplete="off">        <input type="hidden" name="website_id" value="1003">
+        <div id="bars6" class="preloader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+                <svg class="ix-header__search-inline__panel-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 3.5 3.5"/>
+        </svg>
+                <label for="search_top"></label>
+        <input type="text"
+               placeholder="Ara"
+               aria-label="Ara"
+               id="search_top" name="search_top"
+               autocomplete="off"
+               data-action="https://www.ozhat.com/search_top"
+               data-website="1003"
+               data-page="5">
+        <button class="ix-header__search-inline__panel-submit" type="submit" aria-label="Search">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 10h12M10 4l6 6-6 6"/>
+            </svg>
+        </button>
+    </form>
+    <div id="search_res_top" class="search_res_top"></div>
+</div>
+                                </div>
+                            
+                                                            <nav class="navbar navbar-expand-lg navbar-light navbar-header-wrapper"
+                                     id="hamburger_menu">
+                                                                            <div id="navbarSupportedContent">
+                                            <ul class="ix-header__nav navbar-nav mr-auto">
+                                                                                                                                                                                                                                                                                                                <li class="nav-item ">
+                                                        <a class="nav-link"                                                                href="https://www.ozhat.com"
+                                                            >
+                                                                                                                            Ana Sayfa
+                                                                                                                    </a>
+                                                    </li>
+                                                                                                                                                                                                                                                                <li class="nav-item ">
+                                                        <a class="nav-link"                                                                href="https://www.ozhat.com/about"
+                                                            >
+                                                                                                                            hakkında
+                                                                                                                    </a>
+                                                    </li>
+                                                                                                                                                                                                                                                                <li class="nav-item ">
+                                                        <a class="nav-link"                                                                href="https://www.ozhat.com/search"
+                                                            >
+                                                                                                                            Markalar
+                                                                                                                    </a>
+                                                    </li>
+                                                                                                                                                                                                                                                                <li class="nav-item ">
+                                                        <a class="nav-link"                                                                href="https://www.ozhat.com/customer"
+                                                            >
+                                                                                                                            Müşteriler
+                                                                                                                    </a>
+                                                    </li>
+                                                                                                                                                                                                                                                                        <li class="nav-item ml-2">
+                                                                <a class="btn btn-sm btn-outline-danger nav-link text-white"
+                                                                   style="font-size: 8px; padding: 2px 8px; line-height: 1.3;"
+                                                                   href="https://www.ozhat.com/certificate">
+                                                                    KALİTE
+                                                                </a>
+                                                            </li>
+                                                                                                        <li class="nav-item ">
+                                                        <a class="nav-link"                                                                href="https://www.ozhat.com/contact"
+                                                            >
+                                                                                                                            İletişim
+                                                                                                                    </a>
+                                                    </li>
+                                                                                                                                                                                                                                            </ul>
+                                        </div>
+                                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                </nav>
+                            
+                                                            <div class="ix-header__contacts">
+                                                                            <a href="mailto:info@ozhat.com.tr" data-clipboard-email="info@ozhat.com.tr"
+                                           title="info@ozhat.com.tr">
+                                            <i class="flaticon-email"></i>
+                                            <span class="ix-contact-label">info@ozhat.com.tr</span>
+                                        </a>
+                                                                                    <a href="tel:+90 224 211 22 41" title="+90 224 211 22 41">
+                                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                                                     stroke-width="1.6" aria-hidden="true"
+                                                     style="width:14px;height:14px;flex-shrink:0;">
+                                                    <path
+                                                        d="M14 11.3v2a1.3 1.3 0 0 1-1.4 1.3 13 13 0 0 1-5.7-2 13 13 0 0 1-4-4A13 13 0 0 1 1 2.8 1.3 1.3 0 0 1 2.3 1.4h2a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.7.6 2.4a1.3 1.3 0 0 1-.3 1.4l-.9.8a10.7 10.7 0 0 0 4 4l.8-.9a1.3 1.3 0 0 1 1.4-.3c.7.3 1.5.5 2.4.6A1.3 1.3 0 0 1 14 11.3z"/>
+                                                </svg>
+                                                <span class="ix-contact-label">+90 224 211 22 41</span>
+                                            </a>
+                                                                                                            </div>
+                            
+                            
+                            <label id="mob_menu_label_bottom" for="mob_menu_bottom" class="ix-header__burger"
+                                   onclick="var h=document.getElementById('second-header-menu');if(h)h.classList.toggle('ix-header--nav-open')">
+                                <i class="flaticon-menu"></i>
+                            </label>
+                            <input type="checkbox" id="mob_menu"/>
+                            <input type="checkbox" id="mob_menu_bottom"/>
+
+                                                            <form class="ix-header__search-mobile" action="https://www.ozhat.com/search_top" method="get"
+                                      autocomplete="off" role="search">
+                                    <svg class="ix-header__search-mobile__icon" viewBox="0 0 20 20" fill="none"
+                                         stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <circle cx="8.5" cy="8.5" r="5.5"/>
+                                        <path d="m13 13 3.5 3.5"/>
+                                    </svg>
+                                    <input type="text"
+                                           name="search_top"
+                                           placeholder="Ara"
+                                           autocomplete="off"
+                                           aria-label="Ara"
+                                           data-action="https://www.ozhat.com/search_top"
+                                           data-website="1003"
+                                           data-page="5">
+                                    <input type="hidden" name="website_id" value="1003">
+                                    <button type="submit" aria-label="Search">
+                                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
+                                             aria-hidden="true">
+                                            <path d="M4 10h12M10 4l6 6-6 6"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            
+                        </div>
+
+                                                    <div class="ix-header__drawer-contacts">
+                                                                    <a href="mailto:info@ozhat.com.tr">
+                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"
+                                             aria-hidden="true">
+                                            <path
+                                                d="M2 4h12a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+                                            <path d="m15 5-7 5L1 5"/>
+                                        </svg>
+                                        info@ozhat.com.tr
+                                    </a>
+                                                                                                    <a href="tel:+90 224 211 22 41">
+                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"
+                                             aria-hidden="true">
+                                            <path
+                                                d="M14 11.3v2a1.3 1.3 0 0 1-1.4 1.3 13 13 0 0 1-5.7-2 13 13 0 0 1-4-4A13 13 0 0 1 1 2.8 1.3 1.3 0 0 1 2.3 1.4h2a1.3 1.3 0 0 1 1.3 1.1c.1.9.3 1.7.6 2.4a1.3 1.3 0 0 1-.3 1.4l-.9.8a10.7 10.7 0 0 0 4 4l.8-.9a1.3 1.3 0 0 1 1.4-.3c.7.3 1.5.5 2.4.6A1.3 1.3 0 0 1 14 11.3z"/>
+                                        </svg>
+                                        +90 224 211 22 41
+                                    </a>
+                                                            </div>
+                        
+                        <div class="ix-header__accent"></div>
+                    </div>
+                            </header>
+        <script>
+            (function () {
+                document.addEventListener('DOMContentLoaded', function () {
+                    var search = document.querySelector('.ix-header__search-inline');
+                    if (!search) return;
+                    var sBtn = search.querySelector('.ix-header__search-inline__btn');
+                    var panel = search.querySelector('.ix-header__search-inline__panel');
+                    var icon = search.querySelector('.ix-header__search-inline__panel-icon');
+                    var sInput = panel && panel.querySelector('input');
+                    var submit = panel && panel.querySelector('.ix-header__search-inline__panel-submit');
+
+                    function applyPanelBaseStyles() {
+                        if (!panel) return;
+                        panel.style.position = 'absolute';
+                        panel.style.top = 'calc(100% + 12px)';
+                        panel.style.right = '0';
+                        panel.style.width = '360px';
+                        panel.style.maxWidth = '80vw';
+                        panel.style.background = '#ffffff';
+                        panel.style.border = '1px solid #e8e4d8';
+                        panel.style.borderRadius = '999px';
+                        panel.style.padding = '4px 4px 4px 16px';
+                        panel.style.boxShadow = '0 2px 6px rgba(20,17,13,.06), 0 18px 44px -18px rgba(20,17,13,.22)';
+                        panel.style.display = 'flex';
+                        panel.style.alignItems = 'center';
+                        panel.style.gap = '8px';
+                        panel.style.zIndex = '200';
+                        panel.style.margin = '0';
+                        panel.style.boxSizing = 'border-box';
+                    }
+
+                    function applyInputStyles() {
+                        if (!sInput) return;
+                        sInput.style.flex = '1';
+                        sInput.style.minWidth = '0';
+                        sInput.style.width = 'auto';
+                        sInput.style.maxWidth = 'none';
+                        sInput.style.background = 'transparent';
+                        sInput.style.border = '0';
+                        sInput.style.outline = 'none';
+                        sInput.style.boxShadow = 'none';
+                        sInput.style.color = '#14110d';
+                        sInput.style.fontSize = '13px';
+                        sInput.style.lineHeight = '1.5';
+                        sInput.style.padding = '8px 4px';
+                        sInput.style.height = 'auto';
+                        sInput.style.borderRadius = '0';
+                        sInput.style.position = 'static';
+                        sInput.style.visibility = 'visible';
+                        sInput.style.display = 'block';
+                    }
+
+                    function applySubmitStyles() {
+                        if (!submit) return;
+                        submit.style.flexShrink = '0';
+                        submit.style.width = '32px';
+                        submit.style.height = '32px';
+                        submit.style.borderRadius = '50%';
+                        submit.style.background = '#e60000';
+                        submit.style.border = '0';
+                        submit.style.color = '#fff';
+                        submit.style.display = 'grid';
+                        submit.style.placeItems = 'center';
+                        submit.style.cursor = 'pointer';
+                        submit.style.padding = '0';
+                        submit.style.flexShrink = '0';
+                    }
+
+                    function applyIconStyles() {
+                        if (!icon) return;
+                        icon.style.flexShrink = '0';
+                        icon.style.width = '15px';
+                        icon.style.height = '15px';
+                        icon.style.color = '#8a8479';
+                        icon.style.display = 'block';
+                    }
+
+                    applyPanelBaseStyles();
+                    applyInputStyles();
+                    applySubmitStyles();
+                    applyIconStyles();
+
+                    function setSearch(open) {
+                        search.dataset.state = open ? 'open' : 'closed';
+                        if (sBtn) sBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                        if (panel) {
+                            if (open) {
+                                panel.style.opacity = '1';
+                                panel.style.visibility = 'visible';
+                                panel.style.transform = 'translateY(0)';
+                                panel.style.pointerEvents = 'auto';
+                                panel.style.transition = 'opacity .2s ease, transform .2s ease, visibility 0s linear 0s';
+                            } else {
+                                panel.style.opacity = '0';
+                                panel.style.visibility = 'hidden';
+                                panel.style.transform = 'translateY(-6px)';
+                                panel.style.pointerEvents = 'none';
+                                panel.style.transition = 'opacity .2s ease, transform .2s ease, visibility 0s linear .2s';
+                            }
+                        }
+                        if (open && sInput) setTimeout(function () {
+                            sInput.focus();
+                        }, 160);
+                    }
+
+                    setSearch(false);
+
+                    if (sBtn) {
+                        sBtn.addEventListener('click', function () {
+                            setSearch(search.dataset.state !== 'open');
+                        });
+                    }
+                    if (sInput) {
+                        sInput.addEventListener('keydown', function (e) {
+                            if (e.key === 'Escape') {
+                                setSearch(false);
+                                if (sBtn) sBtn.focus();
+                            }
+                        });
+                    }
+                    document.addEventListener('click', function (e) {
+                        if (search.dataset.state === 'open' && !search.contains(e.target)) {
+                            setSearch(false);
+                        }
+                    });
+                });
+            })();
+        </script>
+    </div>
+        
+
+            <div class="shop-area">
+            <style>
+        .error > .container-fluid{max-width:880px;margin:0 auto;padding-left:20px;padding-right:20px;}
+        .error .ground-color{float:none;width:100%;padding:0;}
+        .error .container-error-404{margin-bottom:6px;}
+        .error .container-error-404 .msg{display:block;line-height:1;letter-spacing:-.03em;}
+        .ground-color .h1{line-height:1.3;}
+        .ground-color p{max-width:620px;margin-left:auto;margin-right:auto;line-height:1.7;}
+        .error .error-form{float:none;width:100%;padding:0;margin-top:34px;}
+        .error .error-search-form{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:100%;max-width:620px;margin:0 auto;float:none;padding:0;}
+        .error .error-search-form label{flex:1 1 200px;min-width:0;margin:0;}
+        .error-search-form .form-control{width:100%;height:40px;padding:8px 14px;border:1px solid #dcdfe4;border-radius:4px;}
+        .error-search-form .send-request-btn-error{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;min-width:40px;height:40px;padding:0;border:0;border-radius:4px;cursor:pointer;}
+        .error-search-form .send-request-btn-error [class^="flaticon-"]:before,
+        .error-search-form .send-request-btn-error [class*=" flaticon-"]:before{margin-left:0;font-size:15px;line-height:1;}
+        #search_res_404{max-width:620px;margin:0 auto;}
+        .error .error-home-btn{text-align:center;}
+        @media (max-width:600px){
+            .error .container-error-404 .msg{font-size:76px !important;}
+            .error .error-search-form label{flex:1 1 100%;}
+            .error .error-search-form .send-request-btn-error{width:100%;}
+        }
+        </style>
+        <div class="error">
+            <div class="container-fluid">
+                <div class="col-xs-12 ground-color text-center">
+                    <div class="container-error-404">
+                        <div class="clip">
+                            <div class="shadow"><span class="digit thirdDigit"></span></div>
+                        </div>
+                        <div class="clip">
+                            <div class="shadow"><span class="digit secondDigit"></span></div>
+                        </div>
+                        <div class="clip">
+                            <div class="shadow"><span class="digit firstDigit"></span></div>
+                        </div>
+                        <div class="msg">OH!<span class="triangle"></span></div>
+                    </div>
+                    <h2 class="h1">Hata! İsteğinizde hiçbir şey bulunamadı</h2>
+                    <p>
+                        Aradığınız sayfa kaldırılmış veya yeniden adlandırılmış veya geçici olarak kullanılamıyor olabilir.
+                    </p>
+                    <p>
+                        Aşağıdaki bağlantılardan herhangi birini deneyin veya arayın?
+                    </p>
+                </div>
+
+                                <div class="col-lg-12 error-form">
+                    <form method="get" class="error-search-form form col-lg-8 d-flex flex-row"
+                          id="search" action="https://www.ozhat.com/search">
+                        <input type="hidden" id="website_id" name="website_id" value="1003"/>
+                        <input type="hidden" id="page_id" name="page_id" value="5"/>
+                        <label for="brand_Search">
+                            <input type="text" name="brand" class="form-control"
+                                   id="brand_search" placeholder="Marka">
+                        </label>
+                        <label for="product_search">
+                            <input type="text" name="product" class="form-control"
+                                   id="product_search" placeholder="Ürün">
+                        </label>
+                        <input type="hidden" name="_token" value="tXyfNUWtTPVPJAwtE9UR4WInSZ0PUPDeNCiQTEp3" autocomplete="off">
+                        <button class="btn send-request-btn-error" aria-label="search"><span
+                                    style="color:white!important;"
+                                    class="flaticon-magnifying-glass"></span>
+                        </button>
+                    </form>
+
+                    <div id="search_res_404"></div>
+
+                    <div class="error-home-btn message-box">
+                        <a href="https://www.ozhat.com"
+                           class="error-home hover-btn-new"><span>Ana sayfaya dön</span></a>
+                    </div>
+                </div>
+                            </div>
+        </div>
+        </div>
+    
+
+
+
+
+        <style>
+    .ix-footer__list a,
+    .ix-footer__list span,
+    .ix-footer__list li { color: #8a8479 !important; }
+    .ix-footer__list a:hover { color: #e8e4d8 !important; }
+    @media (min-width: 901px) {
+        .ix-footer--data .ix-footer__main .ix-footer__container {
+            grid-template-columns: 1.4fr repeat(4, 1fr);
+        }
+    }
+</style>
+<footer class="ix-footer ">
+    <div class="ix-footer__main">
+        <div class="ix-footer__container">
+
+            <div class="ix-footer__brand-col">
+                <div class="ix-footer__brand-name">
+                    <span class="ix-footer__brand-primary">ÖZHAT İÇ VE DIŞ TİC. LTD.ŞTİ.</span>
+                </div>
+                <p class="ix-footer__brand-desc">
+                    Endüstriyel B2B ticaret ortağı. Yetkili kanallar aracılığıyla tedarik edilen orijinal tahrik teknolojisi, otomasyon ve hareket bileşenleri.
+                </p>
+            </div>
+
+            <div class="ix-footer__col">
+                <p class="ix-footer__col-title">İletişim</p>
+                <ul class="ix-footer__list">
+                    <li>
+                        <span>
+                                                            Buttim İşmerkezi A Blok Kat:2 No:2044  Osmangazi Bursa, 16090 BURSA, Turkey
+                                                    </span>
+                                                    <span> BURSA</span>
+                                            </li>
+                                            <li>Türkiye</li>
+                                                                <li><a href="tel:+90 224 211 22 41">+90 224 211 22 41</a></li>
+                                                                                    <li><a href="mailto:info@ozhat.com.tr">info@ozhat.com.tr</a></li>
+                                                                <li><a href="https://www.ozhat.com">www.ozhat.com</a></li>
+                                    </ul>
+            </div>
+
+            <div class="ix-footer__col">
+                <p class="ix-footer__col-title">Navigasyon</p>
+                <ul class="ix-footer__list">
+                    <li>
+                        <a href="https://www.ozhat.com/privacy">
+                            gizililik politikamız
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.ozhat.com/cookies">
+                            Çerezler
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.ozhat.com/term_of_use">
+                            kullanım koşulları
+                        </a>
+                    </li>
+                                    </ul>
+            </div>
+
+            <div class="ix-footer__col">
+                <p class="ix-footer__col-title">Navigasyon</p>
+                <ul class="ix-footer__list">
+                    <li>
+                        <a href="https://www.ozhat.com/return_and_refund">
+                            İade ve geri ödeme
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.ozhat.com/shipping_and_delivery">
+                            Kargo ve Teslimat
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.ozhat.com/warranty">
+                            Garanti
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.ozhat.com/sitemap/sitemap.xml">
+                            sitemaplar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div class="ix-footer__bottom">
+        <div class="ix-footer__container ix-footer__bottom-inner">
+            <span class="ix-footer__copy">
+                &copy; 2026 ÖZHAT İÇ VE DIŞ TİC. LTD.ŞTİ.. All rights reserved
+            </span>
+            <span class="ix-footer__location">
+                BURSA, Türkiye
+            </span>
+        </div>
+    </div>
+</footer>
+    
+        
+    <script>
+        (function () {
+            function swap(img) {
+                var ds = img.getAttribute('data-src');
+                if (ds) {
+                    img.setAttribute('src', ds);
+                    img.removeAttribute('data-src');
+                }
+            }
+            function run() {
+                var imgs = [].slice.call(document.querySelectorAll('img[data-src]'));
+                if (!imgs.length) return;
+                if (!('IntersectionObserver' in window)) {
+                    imgs.forEach(swap);
+                    return;
+                }
+                var io = new IntersectionObserver(function (entries, obs) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            swap(e.target);
+                            obs.unobserve(e.target);
+                        }
+                    });
+                }, { rootMargin: '200px 0px' });
+                imgs.forEach(function (img) { io.observe(img); });
+            }
+            if (document.readyState === 'complete') {
+                run();
+            } else {
+                window.addEventListener('load', run);
+            }
+        })();
+    </script>
+
+    <script defer src="https://www.ozhat.com/js/cart.min.js" type="text/javascript"></script>
+    <script defer src="https://www.ozhat.com/js/base.min.js"></script>
+    <script defer src="https://www.ozhat.com/js/project/shop_cart_modal.min.js"></script>
+    <script>
+        (function () {
+            var loaded = false;
+            function loadRecaptcha() {
+                if (loaded || document.getElementById('recaptcha-api-js')) return;
+                loaded = true;
+                var s = document.createElement('script');
+                s.id = 'recaptcha-api-js';
+                s.src = 'https://www.google.com/recaptcha/api.js';
+                s.async = true;
+                s.defer = true;
+                document.head.appendChild(s);
+                remove();
+            }
+            var events = ['pointerdown', 'touchstart', 'keydown', 'scroll', 'focusin', 'mousemove'];
+            function remove() {
+                events.forEach(function (ev) {
+                    window.removeEventListener(ev, loadRecaptcha, opts);
+                });
+            }
+            var opts = { once: true, passive: true, capture: true };
+            events.forEach(function (ev) {
+                window.addEventListener(ev, loadRecaptcha, opts);
+            });
+            window.loadRecaptcha = loadRecaptcha;
+        })();
+    </script>
+        
+            <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.cookie.indexOf('cookie-consent') === -1) {
+                setTimeout(function () {
+                    document.getElementById('cookie').classList.remove(('d-none'));
+                }, 5000);
+            }
+            const buttons = ['cookie_consent', 'cookie_decline'];
+
+            function setCookies() {
+                return axios.get('/set_cookies')
+                    .then(({data}) => {
+                        if (data === 'ok') {
+                            document.getElementById('cookie').classList.add('d-none');
+                        }
+                    })
+            }
+
+            function hideCookieConsent() {
+                buttons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.addEventListener('click', setCookies);
+                    }
+                });
+            }
+
+            hideCookieConsent();
+        })
+    </script>
+            <script>
+        document.querySelectorAll('[data-clipboard-email]').forEach(function (link) {
+            var tip = document.createElement('span');
+            tip.className = 'email-copied-tip';
+            tip.textContent = 'Email copied!';
+            link.appendChild(tip);
+
+            link.addEventListener('click', function (e) {
+                var email = link.getAttribute('data-clipboard-email');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(email).then(function () {
+                        tip.classList.add('visible');
+                        setTimeout(function () {
+                            tip.classList.remove('visible');
+                        }, 2000);
+                    });
+                }
+            });
+        });
+    </script>
+        <script>
+        (function () {
+            var loader = document.getElementById('page-loader');
+
+            function hideLoader() {
+                if (loader) loader.classList.remove('page-loader--visible');
+            }
+
+            function showLoader() {
+                if (loader) loader.classList.add('page-loader--visible');
+            }
+
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) hideLoader();
+            });
+            document.addEventListener('click', function (e) {
+                var link = e.target.closest('a');
+                if (!link) return;
+                if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                var href = link.getAttribute('href');
+                if (!href) return;
+                if (href === '' || href.charAt(0) === '#') return;
+                if (/^(javascript:|mailto:|tel:)/i.test(href)) return;
+                if (link.target === '_blank') return;
+                if (link.hasAttribute('data-no-loader')) return;
+                showLoader();
+            });
+        })();
+    </script>
+        <script type="application/ld+json">
+        {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "\u00d6ZHAT \u0130\u00c7 VE DI\u015e T\u0130C. LTD.\u015eT\u0130. T\u00fcrkiye",
+    "url": "https://www.ozhat.com",
+    "logo": "https://www.ozhat.com/images/logo/1003/logo.png",
+    "foundingDate": "2006",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Buttim \u0130\u015fmerkezi A Blok Kat:2 No:2044  Osmangazi Bursa, 16090 BURSA, Turkey",
+        "addressLocality": "BURSA / Turkey",
+        "addressRegion": "TR",
+        "postalCode": null,
+        "addressCountry": "Turkey"
+    },
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "telephone": "+90 224 211 22 41",
+        "email": "info@ozhat.com.tr"
+    }
+}
+    </script>
+
+    
+        </body>
+    </html>

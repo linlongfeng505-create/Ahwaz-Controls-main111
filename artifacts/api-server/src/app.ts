@@ -59,6 +59,7 @@ if (fs.existsSync(STATIC_DIR)) {
 
   // SPA fallback: all non-API routes serve index.html so frontend routing works
   // Supports dynamic SEO injection for /id/, /vi/, /ar/ routes
+  // Returns HTTP 404 for deleted products/articles so search engines de-index them
   app.get(/.*/, async (req, res, next) => {
     if (req.path.startsWith("/api/")) return next();
     
@@ -67,6 +68,8 @@ if (fs.existsSync(STATIC_DIR)) {
       const pathParts = req.path.split("/").filter(Boolean);
       let lang = "en";
       let isRtl = false;
+      // Track whether a detail page resource was found (null = not a detail page)
+      let resourceFound: boolean | null = null;
       
       // Detect language prefix
       if (["id", "vi", "ar"].includes(pathParts[0])) {
@@ -90,6 +93,7 @@ if (fs.existsSync(STATIC_DIR)) {
         if (!isNaN(id)) {
           const [prod] = await db.select().from(productsTable).where(eq(productsTable.id, id));
           if (prod) {
+            resourceFound = true;
             let pName = prod.name;
             let pDesc = prod.description;
             if (lang !== "en" && prod.translations) {
@@ -101,12 +105,17 @@ if (fs.existsSync(STATIC_DIR)) {
             }
             title = `${pName} | Ahwaz Controls`;
             description = pDesc.slice(0, 160).replace(/<[^>]*>?/gm, '');
+          } else {
+            resourceFound = false;
+            title = "Product Not Found | Ahwaz Controls";
+            description = "The product you are looking for does not exist or has been removed.";
           }
         }
       } else if (pathParts[0] === "articles" && pathParts[1]) {
         const slug = pathParts[1];
         const [art] = await db.select().from(articlesTable).where(eq(articlesTable.slug, slug));
         if (art) {
+          resourceFound = true;
           let aTitle = art.title;
           let aSummary = art.summary || art.content;
           if (lang !== "en" && art.translations) {
@@ -118,6 +127,10 @@ if (fs.existsSync(STATIC_DIR)) {
           }
           title = `${aTitle} | Ahwaz Controls`;
           description = aSummary.slice(0, 160).replace(/<[^>]*>?/gm, '');
+        } else {
+          resourceFound = false;
+          title = "Article Not Found | Ahwaz Controls";
+          description = "The article you are looking for does not exist or has been removed.";
         }
       }
       
@@ -131,22 +144,27 @@ if (fs.existsSync(STATIC_DIR)) {
         `<meta name="description" content="${description.replace(/"/g, '&quot;')}" />`
       );
       
-      // Inject Hreflang
-      const host = req.get('host') || 'flonexis.com';
-      const proto = req.protocol;
-      const baseUri = `${proto}://${host}`;
-      const pathNoLang = "/" + pathParts.join("/");
-      
-      const hreflangs = `
+      // Inject Hreflang (only for pages that exist)
+      if (resourceFound !== false) {
+        const host = req.get('host') || 'flonexis.com';
+        const proto = req.protocol;
+        const baseUri = `${proto}://${host}`;
+        const pathNoLang = "/" + pathParts.join("/");
+        
+        const hreflangs = `
     <link rel="alternate" hreflang="en" href="${baseUri}${pathNoLang}" />
     <link rel="alternate" hreflang="id" href="${baseUri}/id${pathNoLang}" />
     <link rel="alternate" hreflang="vi" href="${baseUri}/vi${pathNoLang}" />
     <link rel="alternate" hreflang="ar" href="${baseUri}/ar${pathNoLang}" />
     <link rel="alternate" hreflang="x-default" href="${baseUri}${pathNoLang}" />`;
-      
-      modifiedHtml = modifiedHtml.replace("</title>", `</title>${hreflangs}`);
+        
+        modifiedHtml = modifiedHtml.replace("</title>", `</title>${hreflangs}`);
+      }
 
-      res.send(modifiedHtml);
+      // Return 404 status for deleted/missing products and articles
+      // The SPA still renders so users see a friendly "not found" UI
+      const statusCode = resourceFound === false ? 404 : 200;
+      res.status(statusCode).send(modifiedHtml);
     } catch (err) {
       logger.error(err);
       res.sendFile(path.join(STATIC_DIR, "index.html"));
