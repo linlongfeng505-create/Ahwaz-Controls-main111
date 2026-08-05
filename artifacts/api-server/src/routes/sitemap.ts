@@ -50,7 +50,7 @@ router.get("/sitemap.xml", async (req, res) => {
 
     // 动态：所有产品
     const products = await db
-      .select({ id: productsTable.id, updatedAt: productsTable.updatedAt })
+      .select({ id: productsTable.id, name: productsTable.name, category: productsTable.category, updatedAt: productsTable.updatedAt })
       .from(productsTable)
       .orderBy(asc(productsTable.id));
 
@@ -77,12 +77,14 @@ router.get("/sitemap.xml", async (req, res) => {
       }
     }
 
-    // 产品页 (all languages)
+    // 产品页 (all languages) — use /:category/:name URL format
     for (const p of products) {
+      const catSlug = encodeURIComponent(p.category.replace(/\s+/g, '-'));
+      const nameSlug = encodeURIComponent(p.name.replace(/\s+/g, '-'));
       for (const lang of langs) {
         urls.push(`
   <url>
-    <loc>${base}${lang}/products/${p.id}</loc>
+    <loc>${base}${lang}/${catSlug}/${nameSlug}</loc>
     <lastmod>${toW3CDate(p.updatedAt)}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>${lang === "" ? "0.8" : "0.5"}</priority>

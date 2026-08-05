@@ -91,20 +91,15 @@ if (fs.existsSync(STATIC_DIR)) {
       if (pathParts[0] === "products" && pathParts[1]) {
         const id = parseInt(pathParts[1], 10);
         if (!isNaN(id)) {
+          // 301 redirect from old /products/:id to new /:category/:name URL
           const [prod] = await db.select().from(productsTable).where(eq(productsTable.id, id));
           if (prod) {
-            resourceFound = true;
-            let pName = prod.name;
-            let pDesc = prod.description;
-            if (lang !== "en" && prod.translations) {
-              const t = typeof prod.translations === "string" ? JSON.parse(prod.translations) : prod.translations;
-              if (t && t[lang]) {
-                pName = t[lang].name || pName;
-                pDesc = t[lang].description || pDesc;
-              }
-            }
-            title = `${pName} | Ahwaz Controls`;
-            description = pDesc.slice(0, 160).replace(/<[^>]*>?/gm, '');
+            const catSlug = encodeURIComponent(prod.category.replace(/\s+/g, '-'));
+            const nameSlug = encodeURIComponent(prod.name.replace(/\s+/g, '-'));
+            const langPrefix = lang !== "en" ? `/${lang}` : "";
+            const newUrl = `${langPrefix}/${catSlug}/${nameSlug}`;
+            res.redirect(301, newUrl);
+            return;
           } else {
             resourceFound = false;
             title = "Product Not Found | Ahwaz Controls";
@@ -131,6 +126,33 @@ if (fs.existsSync(STATIC_DIR)) {
           resourceFound = false;
           title = "Article Not Found | Ahwaz Controls";
           description = "The article you are looking for does not exist or has been removed.";
+        }
+      } else if (pathParts.length >= 2 && pathParts[0] !== "products" && pathParts[0] !== "articles" && pathParts[0] !== "brands" && pathParts[0] !== "industries" && pathParts[0] !== "about" && pathParts[0] !== "contact" && pathParts[0] !== "admin") {
+        // New /:category/:name URL pattern — SEO injection
+        const urlCategory = decodeURIComponent(pathParts[0]).toLowerCase();
+        const urlName = decodeURIComponent(pathParts[1]).toLowerCase();
+        const allProducts = await db.select().from(productsTable);
+        const prod = allProducts.find(r =>
+          r.category.toLowerCase().replace(/\s+/g, '-') === urlCategory &&
+          r.name.toLowerCase().replace(/\s+/g, '-') === urlName
+        );
+        if (prod) {
+          resourceFound = true;
+          let pName = prod.name;
+          let pDesc = prod.description;
+          if (lang !== "en" && prod.translations) {
+            const t = typeof prod.translations === "string" ? JSON.parse(prod.translations) : prod.translations;
+            if (t && t[lang]) {
+              pName = t[lang].name || pName;
+              pDesc = t[lang].description || pDesc;
+            }
+          }
+          title = `${pName} | Ahwaz Controls`;
+          description = pDesc.slice(0, 160).replace(/<[^>]*>?/gm, '');
+        } else {
+          resourceFound = false;
+          title = "Product Not Found | Ahwaz Controls";
+          description = "The product you are looking for does not exist or has been removed.";
         }
       }
       
