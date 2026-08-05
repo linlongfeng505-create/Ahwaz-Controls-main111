@@ -136,18 +136,18 @@ router.get("/products", async (req, res) => {
   }
 });
 
-// ── GET /api/products/slug/:brand/:name ──────────────────────────────────────
-router.get("/products/slug/:brand/:name", async (req, res) => {
+// ── GET /api/products/slug/:category/:name ──────────────────────────────────────
+router.get("/products/slug/:category/:name", async (req, res) => {
   try {
-    const { brand, name } = req.params;
+    const { category, name } = req.params;
     const lang = req.query.lang as string | undefined;
 
-    const urlBrand = brand.toLowerCase();
+    const urlCategory = category.toLowerCase();
     const urlName = name.toLowerCase();
 
     const rows = await db.select().from(productsTable);
     const row = rows.find(r => 
-      r.brand.toLowerCase().replace(/\s+/g, '-') === urlBrand && 
+      r.category.toLowerCase().replace(/\s+/g, '-') === urlCategory && 
       r.name.toLowerCase().replace(/\s+/g, '-') === urlName
     );
 
