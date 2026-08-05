@@ -25,8 +25,13 @@ interface Product {
   updatedAt: string;
 }
 
-async function fetchProduct(id: string): Promise<Product> {
-  const res = await fetch(`/api/products/${id}`);
+async function fetchProduct(id?: string, brand?: string, name?: string): Promise<Product> {
+  let url = '';
+  if (id) url = `/api/products/${id}`;
+  else if (brand && name) url = `/api/products/slug/${encodeURIComponent(brand.replace(/\s+/g, '-'))}/${encodeURIComponent(name.replace(/\s+/g, '-'))}`;
+  else throw new Error("Invalid parameters");
+
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Product not found");
   return res.json();
 }
@@ -142,12 +147,12 @@ function ImageCarousel({ urls, name }: { urls: string[]; name: string }) {
 }
 
 export default function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id, brand, name } = useParams<{ id?: string, brand?: string, name?: string }>();
   const s = useSiteSettings();
   const { data: product, isLoading, error } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => fetchProduct(id!),
-    enabled: !!id,
+    queryKey: ["product", id, brand, name],
+    queryFn: () => fetchProduct(id, brand, name),
+    enabled: !!id || (!!brand && !!name),
   });
 
   if (isLoading) {
@@ -280,7 +285,7 @@ export default function ProductDetail() {
                 <h3 className="text-2xl font-bold mb-6">Recommended Products</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {product.recommendedProducts.map(rec => (
-                    <Link key={rec.id} href={`/products/${rec.id}`}>
+                    <Link key={rec.id} href={rec.brand ? `/${encodeURIComponent(rec.brand.replace(/\s+/g, '-'))}/${encodeURIComponent(rec.name.replace(/\s+/g, '-'))}` : `/products/${rec.id}`}>
                       <div className="group cursor-pointer border border-border rounded-sm p-4 hover:border-accent transition-colors flex items-center gap-4 bg-card h-full">
                         {rec.imageObjectPath ? (
                           <div className="w-16 h-16 bg-secondary overflow-hidden shrink-0 border border-border rounded-sm">

@@ -15,7 +15,7 @@ const stats = [
 
 
 
-const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micro Motion", "Azbil", "ABB"];
+const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micro Motion", "Azbil", "ABB", "Clyde", "Kinetrol"];
 
 export default function Home() {
   const s = useSiteSettings();

@@ -294,7 +294,7 @@ export default function Products() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.04 }}
                       >
-                        <Link href={`/products/${product.id}`}>
+                        <Link href={product.brand ? `/${encodeURIComponent(product.brand.replace(/\s+/g, '-'))}/${encodeURIComponent(product.name.replace(/\s+/g, '-'))}` : `/products/${product.id}`}>
                           <Card className="h-full p-5 border-border hover:border-accent transition-colors cursor-pointer group flex flex-col">
                             {product.imageObjectPath ? (
                               <div className="aspect-video rounded-sm overflow-hidden border border-border mb-4">

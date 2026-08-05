@@ -161,6 +161,23 @@ if (fs.existsSync(STATIC_DIR)) {
         modifiedHtml = modifiedHtml.replace("</title>", `</title>${hreflangs}`);
       }
 
+      // Inject custom favicon if set in settings
+      try {
+        const { db: settingsDb, settingsTable: st } = await import("@workspace/db");
+        const { eq: eqFav } = await import("drizzle-orm");
+        const rows = await settingsDb.select().from(st).where(eqFav(st.key, "favicon_url"));
+        if (rows.length > 0 && rows[0].value) {
+          const favUrl = rows[0].value;
+          const favType = favUrl.endsWith(".ico") ? "image/x-icon"
+            : favUrl.endsWith(".svg") ? "image/svg+xml"
+            : "image/png";
+          modifiedHtml = modifiedHtml.replace(
+            /<link rel="icon"[^>]*>/,
+            `<link rel="icon" type="${favType}" href="${favUrl}" />`
+          );
+        }
+      } catch (_) { /* ignore — fall back to default favicon */ }
+
       // Return 404 status for deleted/missing products and articles
       // The SPA still renders so users see a friendly "not found" UI
       const statusCode = resourceFound === false ? 404 : 200;

@@ -201,6 +201,12 @@ export default function Admin() {
   const [dbRestoring, setDbRestoring] = useState(false);
   const dbUploadRef = useRef<HTMLInputElement>(null);
 
+  // Favicon upload state
+  const faviconInputRef = useRef<HTMLInputElement>(null);
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
+  const [faviconUploading, setFaviconUploading] = useState(false);
+  const [faviconSaved, setFaviconSaved] = useState(false);
+
   // Article form state
   const emptyArticleForm: EmptyArticleForm = {
     title: "",
@@ -366,6 +372,38 @@ export default function Admin() {
       setTimeout(() => setSettingsSaved(false), 2500);
     },
   });
+
+  async function handleFaviconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Preview
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      setFaviconPreview(dataUrl);
+      // Upload
+      setFaviconUploading(true);
+      try {
+        const base64 = dataUrl.split(",")[1];
+        const res = await fetch("/api/admin/favicon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-password": password },
+          body: JSON.stringify({ imageBase64: base64, mimeType: file.type }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          alert(body.error ?? "Favicon upload failed");
+        } else {
+          setFaviconSaved(true);
+          setTimeout(() => setFaviconSaved(false), 2500);
+        }
+      } finally {
+        setFaviconUploading(false);
+        e.target.value = "";
+      }
+    };
+    reader.readAsDataURL(file);
+  }
 
   async function handleDbDownload() {
     setDbDownloading(true);
@@ -994,6 +1032,45 @@ export default function Admin() {
                         {currentSettings.og_image && (
                           <img src={currentSettings.og_image} alt="OG preview" className="mt-2 h-20 rounded-sm border border-border object-cover" />
                         )}
+                      </div>
+
+                      {/* Favicon Upload */}
+                      <div className="border-t border-border pt-5">
+                        <label className="block text-xs font-mono text-muted-foreground mb-1 uppercase">
+                          Favicon
+                          <span className="ml-1 normal-case text-muted-foreground/60">（网站标签页图标）</span>
+                        </label>
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 border border-dashed border-border rounded-sm flex items-center justify-center bg-muted overflow-hidden shrink-0">
+                            {faviconPreview ? (
+                              <img src={faviconPreview} alt="favicon preview" className="w-full h-full object-contain" />
+                            ) : (
+                              <span className="text-muted-foreground/40 text-xl">🔲</span>
+                            )}
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => faviconInputRef.current?.click()}
+                              disabled={faviconUploading}
+                              className="inline-flex items-center gap-2 border border-border text-foreground px-4 py-2 rounded-sm text-sm font-semibold hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+                            >
+                              <Upload className="w-4 h-4" />
+                              {faviconUploading ? "Uploading..." : "Upload Favicon"}
+                            </button>
+                            {faviconSaved && <span className="text-xs text-green-600 font-mono">Favicon updated ✓</span>}
+                          </div>
+                          <input
+                            ref={faviconInputRef}
+                            type="file"
+                            accept="image/png,image/x-icon,image/svg+xml,image/jpeg"
+                            className="hidden"
+                            onChange={handleFaviconUpload}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2 font-mono">
+                          支持 PNG / ICO / SVG，推荐尺寸 32×32 或 64×64px。上传后即时生效，无需重启。
+                        </p>
                       </div>
 
                       <div className="flex items-center gap-4 pt-4 border-t border-border">

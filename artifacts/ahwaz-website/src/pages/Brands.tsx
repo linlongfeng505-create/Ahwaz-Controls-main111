@@ -21,6 +21,8 @@ export default function Brands() {
     { name: "KOSO", desc: t("brands.b11") },
     { name: "Topworx", desc: t("brands.b12") },
     { name: "Fluke", desc: t("brands.b13") },
+    { name: "Clyde", desc: t("brands.b14") },
+    { name: "Kinetrol", desc: t("brands.b15") },
   ];
   
   return (

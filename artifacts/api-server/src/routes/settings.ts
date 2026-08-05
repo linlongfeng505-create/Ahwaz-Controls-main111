@@ -127,4 +127,57 @@ router.post("/admin/db-restore", requireAdmin, async (req, res) => {
   }
 });
 
+// ── POST /api/admin/favicon ───────────────────────────────────────────────────
+// Upload a favicon image (base64). Writes it to the static public dir and saves
+// the URL in settings so the server can inject it into SSR HTML.
+router.post("/admin/favicon", requireAdmin, async (req, res) => {
+  try {
+    const { imageBase64, mimeType } = req.body as { imageBase64?: string; mimeType?: string };
+    if (!imageBase64) {
+      res.status(400).json({ error: "No image data provided" });
+      return;
+    }
+
+    const buffer = Buffer.from(imageBase64, "base64");
+
+    // Determine extension from mime type
+    const ext = mimeType === "image/x-icon" || mimeType === "image/vnd.microsoft.icon"
+      ? "ico"
+      : mimeType === "image/svg+xml"
+      ? "svg"
+      : "png";
+
+    const faviconFileName = `favicon-custom.${ext}`;
+
+    // Write to static dir so browser can fetch it at /favicon-custom.<ext>
+    const _dirname2 = typeof __dirname !== "undefined"
+      ? __dirname
+      : path.dirname(new URL(import.meta.url).pathname);
+    const staticDir = path.resolve(_dirname2, "../../ahwaz-website/dist/public");
+
+    if (fs.existsSync(staticDir)) {
+      fs.writeFileSync(path.join(staticDir, faviconFileName), buffer);
+    }
+
+    // Also write alongside the source public folder (for dev)
+    const devPublicDir = path.resolve(_dirname2, "../../ahwaz-website/public");
+    if (fs.existsSync(devPublicDir)) {
+      fs.writeFileSync(path.join(devPublicDir, faviconFileName), buffer);
+    }
+
+    const faviconUrl = `/${faviconFileName}`;
+
+    // Persist the favicon URL in settings DB
+    await db
+      .insert(settingsTable)
+      .values({ key: "favicon_url", value: faviconUrl })
+      .onConflictDoUpdate({ target: settingsTable.key, set: { value: faviconUrl, updatedAt: new Date() } });
+
+    res.json({ ok: true, faviconUrl });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to upload favicon" });
+  }
+});
+
 export default router;

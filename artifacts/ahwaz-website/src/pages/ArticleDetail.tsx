@@ -183,7 +183,7 @@ export default function ArticleDetail() {
                             </h4>
                             <div className="space-y-3">
                               {article.recommendedProducts.map(rec => (
-                                <Link key={rec.id} href={`/products/${rec.id}`}>
+                                <Link key={rec.id} href={rec.brand ? `/${encodeURIComponent(rec.brand.replace(/\s+/g, '-'))}/${encodeURIComponent(rec.name.replace(/\s+/g, '-'))}` : `/products/${rec.id}`}>
                                   <div className="group cursor-pointer border border-border rounded-sm overflow-hidden hover:border-accent hover:shadow-md transition-all bg-card">
                                     {rec.imageUrl ? (
                                       <div className="h-32 bg-secondary overflow-hidden">

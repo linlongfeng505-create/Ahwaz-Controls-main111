@@ -136,6 +136,40 @@ router.get("/products", async (req, res) => {
   }
 });
 
+// ── GET /api/products/slug/:brand/:name ──────────────────────────────────────
+router.get("/products/slug/:brand/:name", async (req, res) => {
+  try {
+    const { brand, name } = req.params;
+    const lang = req.query.lang as string | undefined;
+
+    const urlBrand = brand.toLowerCase();
+    const urlName = name.toLowerCase();
+
+    const rows = await db.select().from(productsTable);
+    const row = rows.find(r => 
+      r.brand.toLowerCase().replace(/\s+/g, '-') === urlBrand && 
+      r.name.toLowerCase().replace(/\s+/g, '-') === urlName
+    );
+
+    if (!row) { res.status(404).json({ error: "Not found" }); return; }
+
+    let recommendedProducts: any[] = [];
+    if (row.recommendedProductIds && Array.isArray(row.recommendedProductIds) && row.recommendedProductIds.length > 0) {
+      const recRows = await db
+        .select()
+        .from(productsTable)
+        .where(inArray(productsTable.id, row.recommendedProductIds as number[]));
+      recommendedProducts = await Promise.all(recRows.map(r => enrichProduct(applyTranslation(r, lang))));
+    }
+
+    const enrichedRow = await enrichProduct(applyTranslation(row, lang));
+    res.json({ ...enrichedRow, recommendedProducts });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // ── GET /api/products/:id ────────────────────────────────────────────────────
 router.get("/products/:id", async (req, res) => {
   try {

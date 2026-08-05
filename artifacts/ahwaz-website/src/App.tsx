@@ -32,6 +32,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/articles" component={Articles} />
       <Route path="/articles/:slug" component={ArticleDetail} />
+      <Route path="/:brand/:name" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -118,9 +119,22 @@ function LanguageWrapper({ children }: { children: React.ReactNode }) {
 
 function App() {
   useEffect(() => {
-    fetch("/api/visit", { method: "POST" }).catch(() => {
-      // ignore
-    });
+    let sent = false;
+    const sendVisit = () => {
+      if (sent) return;
+      sent = true;
+      // Clean up all listeners once triggered
+      events.forEach(e => document.removeEventListener(e, sendVisit));
+      fetch("/api/visit", { method: "POST" }).catch(() => {
+        // ignore
+      });
+    };
+    // Human interaction signals — bots don't produce these
+    const events: string[] = ["mousemove", "scroll", "touchstart", "click", "keydown"];
+    events.forEach(e => document.addEventListener(e, sendVisit, { once: true, passive: true }));
+    return () => {
+      events.forEach(e => document.removeEventListener(e, sendVisit));
+    };
   }, []);
 
   return (
