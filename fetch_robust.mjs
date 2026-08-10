@@ -1,12 +1,12 @@
 import fs from 'fs';
 
 async function main() {
-  const query = "限位开关 实拍 工业";
+  const query = "限位开关 实拍 工业1";
   // 尝试使用必应国内版 cn.bing.com 避免墙
   const searchUrl = `https://cn.bing.com/images/search?q=${encodeURIComponent(query)}`;
 
   console.log("Searching cn.bing.com for:", searchUrl);
-  
+
   try {
     const res = await fetch(searchUrl, {
       headers: {
@@ -15,7 +15,7 @@ async function main() {
       }
     });
     const html = await res.text();
-    
+
     // Bing images MURL
     const regex = /murl&quot;:&quot;(https:\/\/[^&"]+\.(?:jpg|jpeg|png))/gi;
     let match;
@@ -35,29 +35,29 @@ async function main() {
 
     for (let i = 0; i < imgUrls.length; i++) {
       const url = imgUrls[i];
-      console.log(`[${i+1}] Trying to fetch: ${url}`);
+      console.log(`[${i + 1}] Trying to fetch: ${url}`);
       try {
         const imgRes = await fetch(url, {
-            signal: AbortSignal.timeout(5000),
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-            }
+          signal: AbortSignal.timeout(5000),
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+          }
         });
-        
+
         if (!imgRes.ok) continue;
 
         const arrayBuffer = await imgRes.arrayBuffer();
-        
+
         if (arrayBuffer.byteLength > 15000) {
           console.log(`Success! Downloaded image of size ${arrayBuffer.byteLength} bytes.`);
-          
+
           const buffer = Buffer.from(arrayBuffer);
           const base64Image = buffer.toString('base64');
           const ext = url.toLowerCase().endsWith('png') ? 'png' : 'jpeg';
           validImageDataUrl = `data:image/${ext};base64,${base64Image}`;
           break;
         } else {
-            console.log(`Image too small (${arrayBuffer.byteLength} bytes), skipping...`);
+          console.log(`Image too small (${arrayBuffer.byteLength} bytes), skipping...`);
         }
       } catch (err) {
         console.log(`Failed to fetch ${url} (Network/Timeout)`);
