@@ -15,11 +15,20 @@ const stats = [
 
 
 
-const brands = ["Rosemount", "Yokogawa", "Honeywell", "Siemens", "Fisher", "Micro Motion", "Azbil", "ABB", "Clyde", "Kinetrol"];
+
 
 export default function Home() {
   const s = useSiteSettings();
   const t = useTranslation();
+
+  // Parse brands from settings (dynamic, backend-managed)
+  const brands: string[] = (() => {
+    try {
+      const parsed = JSON.parse(s.brands || "[]");
+      return Array.isArray(parsed) ? parsed.map((b: any) => b.name || b).filter(Boolean) : [];
+    } catch { return []; }
+  })();
+
 
   const translatedStats = [
     { value: "100%", label: t("home.stats.tested"), icon: <ShieldCheck className="w-8 h-8" /> },

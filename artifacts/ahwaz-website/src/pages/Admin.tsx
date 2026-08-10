@@ -48,6 +48,20 @@ interface SiteSettings {
   enable_visitor_report: string;
   site_description: string;
   og_image: string;
+  brands: string;
+}
+
+interface BrandItem {
+  name: string;
+  desc: string;
+}
+
+function parseBrands(raw: string | undefined): BrandItem[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((b: any) => b.name) : [];
+  } catch { return []; }
 }
 
 
@@ -193,10 +207,14 @@ export default function Admin() {
   // Settings form state
   const [settingsForm, setSettingsForm] = useState<SiteSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<"general" | "seo" | "categories" | "database">("general");
+  const [settingsTab, setSettingsTab] = useState<"general" | "seo" | "categories" | "brands" | "database">("general");
 
   // Category management state (within settings)
   const [newCategoryInput, setNewCategoryInput] = useState("");
+
+  // Brand management state (within settings)
+  const [newBrandName, setNewBrandName] = useState("");
+  const [newBrandDesc, setNewBrandDesc] = useState("");
   const [dbDownloading, setDbDownloading] = useState(false);
   const [dbRestoring, setDbRestoring] = useState(false);
   const dbUploadRef = useRef<HTMLInputElement>(null);
@@ -519,6 +537,27 @@ export default function Admin() {
     }
   }
 
+  // Derive the live brand list from settings
+  const brandsList = parseBrands(currentSettings?.brands);
+
+  function addBrand() {
+    const name = newBrandName.trim();
+    const desc = newBrandDesc.trim();
+    if (!name) return;
+    const current = parseBrands(currentSettings?.brands);
+    if (current.some(b => b.name === name)) return;
+    const updated = [...current, { name, desc }];
+    updateSettings("brands", JSON.stringify(updated));
+    setNewBrandName("");
+    setNewBrandDesc("");
+  }
+
+  function removeBrand(brandName: string) {
+    const current = parseBrands(currentSettings?.brands);
+    const updated = current.filter(b => b.name !== brandName);
+    updateSettings("brands", JSON.stringify(updated));
+  }
+
   if (!authed) {
     return (
       <Layout>
@@ -826,6 +865,7 @@ export default function Admin() {
                 { id: "general", label: "General Config" },
                 { id: "seo", label: "SEO & Copy" },
                 { id: "categories", label: "Categories" },
+                { id: "brands", label: "Brands" },
                 { id: "database", label: "Database / Backup" },
               ].map(tab => (
                 <button
@@ -1135,6 +1175,85 @@ export default function Admin() {
                         </button>
                       </div>
                       <p className="text-xs text-muted-foreground font-mono mt-2">Categories define the structure of your product catalog.</p>
+
+                      <div className="flex items-center gap-4 pt-4 border-t border-border mt-6">
+                        <button
+                          type="submit"
+                          disabled={saveSettingsMutation.isPending}
+                          className="bg-primary text-primary-foreground px-8 py-2.5 rounded-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
+                        >
+                          {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+                        </button>
+                        {settingsSaved && <span className="text-sm text-green-600 font-mono">Saved successfully</span>}
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Brands Tab */}
+                  {settingsTab === "brands" && (
+                    <form onSubmit={e => { e.preventDefault(); saveSettingsMutation.mutate(); }} className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Tag className="w-4 h-4 text-accent" />
+                        <h3 className="text-sm font-semibold text-foreground">Partner Brands</h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-mono">管理首页和品牌页显示的合作品牌。添加或删除后点击 Save 保存。</p>
+                      
+                      <div className="space-y-3 mb-4">
+                        {brandsList.length === 0 && (
+                          <p className="text-xs text-muted-foreground font-mono">No brands yet. Add one below.</p>
+                        )}
+                        {brandsList.map((brand, i) => (
+                          <div
+                            key={i}
+                            className="flex items-start gap-3 p-4 border border-border rounded-sm bg-muted/30 group"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-foreground text-sm">{brand.name}</p>
+                              {brand.desc && (
+                                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{brand.desc}</p>
+                              )}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeBrand(brand.name)}
+                              className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-sm transition-colors shrink-0"
+                              title="Remove brand"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="border-t border-border pt-4 space-y-3">
+                        <p className="text-xs font-mono text-muted-foreground uppercase">Add New Brand</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newBrandName}
+                            onChange={e => setNewBrandName(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addBrand(); } }}
+                            placeholder="Brand name..."
+                            className="flex-1 border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent"
+                          />
+                        </div>
+                        <textarea
+                          value={newBrandDesc}
+                          onChange={e => setNewBrandDesc(e.target.value)}
+                          placeholder="Brand description (optional)..."
+                          rows={2}
+                          className="w-full border border-border rounded-sm px-3 py-2 bg-background text-foreground text-sm focus:outline-none focus:border-accent resize-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={addBrand}
+                          disabled={!newBrandName.trim()}
+                          className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground px-4 py-2 rounded-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-40 text-sm"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Brand
+                        </button>
+                      </div>
 
                       <div className="flex items-center gap-4 pt-4 border-t border-border mt-6">
                         <button

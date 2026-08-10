@@ -23,6 +23,23 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   og_image: "",         // Open Graph 图片 URL — 微信/社媒分享卡片封面图
   home_description: "Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.",
   enabled_languages: "en,id,vi,ar",
+  brands: JSON.stringify([
+    { name: "Rosemount / Emerson", desc: "Industry-standard pressure, temperature, flow, and level measurement instrumentation." },
+    { name: "Yokogawa", desc: "High-accuracy field instruments, process analyzers, and industrial automation solutions." },
+    { name: "Honeywell", desc: "Smart pressure, temperature, and multivariable transmitters." },
+    { name: "Siemens", desc: "Process instrumentation, valve positioners, and comprehensive factory automation." },
+    { name: "Fisher / Emerson", desc: "Control valves, regulators, and digital valve controllers." },
+    { name: "Micro Motion", desc: "Premium Coriolis mass flow and density measurement meters." },
+    { name: "Azbil", desc: "Smart valve positioners and advanced emergency shutdown (ESD) devices." },
+    { name: "ABB", desc: "Analytical measurement, flow meters, and electrification products." },
+    { name: "SAMSON", desc: "Control valves, regulators, and electropneumatic positioners." },
+    { name: "YTC", desc: "High-performance pneumatic and smart valve positioners." },
+    { name: "KOSO", desc: "Severe service control valves and actuators." },
+    { name: "Topworx", desc: "Discrete valve control and position sensing technology." },
+    { name: "Fluke", desc: "Industrial testing, diagnostic tools, and field communicators." },
+    { name: "Clyde", desc: "Clyde Bergemann Dome Valves — specialist isolation valves for bulk solids, powder, fly ash, and granule conveying systems in power, cement, and petrochemical industries." },
+    { name: "Kinetrol", desc: "Precision rack-and-pinion pneumatic actuators for quarter-turn valve automation." },
+  ]),
 };
 
 router.get("/settings", async (req, res) => {

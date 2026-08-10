@@ -13,6 +13,7 @@ export interface SiteSettings {
   og_image: string;
   home_description: string;
   enabled_languages: string;
+  brands: string;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -27,6 +28,7 @@ const DEFAULTS: SiteSettings = {
   og_image: "",
   home_description: "Supplying top-tier industrial control systems and precision instruments worldwide. Fast sourcing, competitive pricing, and expert technical support.",
   enabled_languages: "en,id,vi,ar",
+  brands: "[]",
 };
 
 const SiteSettingsContext = createContext<SiteSettings>(DEFAULTS);

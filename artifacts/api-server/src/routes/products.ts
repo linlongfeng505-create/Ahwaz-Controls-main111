@@ -118,9 +118,9 @@ router.get("/products", async (req, res) => {
     if (brand) rows = rows.filter(r => r.brand.toLowerCase() === brand.toLowerCase());
     if (q) {
       const query = q.toLowerCase();
-      rows = rows.filter(r => 
-        r.name.toLowerCase().includes(query) || 
-        r.brand.toLowerCase().includes(query) || 
+      rows = rows.filter(r =>
+        r.name.toLowerCase().includes(query) ||
+        r.brand.toLowerCase().includes(query) ||
         r.model.toLowerCase().includes(query)
       );
     }
@@ -146,8 +146,8 @@ router.get("/products/slug/:category/:name", async (req, res) => {
     const urlName = name.toLowerCase();
 
     const rows = await db.select().from(productsTable);
-    const row = rows.find(r => 
-      r.category.toLowerCase().replace(/\s+/g, '-') === urlCategory && 
+    const row = rows.find(r =>
+      r.category.toLowerCase().replace(/\s+/g, '-') === urlCategory &&
       r.name.toLowerCase().replace(/\s+/g, '-') === urlName
     );
 
@@ -178,7 +178,7 @@ router.get("/products/:id", async (req, res) => {
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
     const [row] = await db.select().from(productsTable).where(eq(productsTable.id, id));
     if (!row) { res.status(404).json({ error: "Not found" }); return; }
-    
+
     let recommendedProducts: any[] = [];
     if (row.recommendedProductIds && Array.isArray(row.recommendedProductIds) && row.recommendedProductIds.length > 0) {
       const recRows = await db

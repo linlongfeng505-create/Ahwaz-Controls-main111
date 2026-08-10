@@ -6,7 +6,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import router from "./routes";
 import { logger } from "./lib/logger";
-import { initDb, db, productsTable, articlesTable } from "@workspace/db";
+import { initDb, db, productsTable, articlesTable, settingsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
 const app: Express = express();
@@ -62,7 +62,7 @@ if (fs.existsSync(STATIC_DIR)) {
   // Returns HTTP 404 for deleted products/articles so search engines de-index them
   app.get(/.*/, async (req, res, next) => {
     if (req.path.startsWith("/api/")) return next();
-    
+
     try {
       let modifiedHtml = indexHtml;
       const pathParts = req.path.split("/").filter(Boolean);
@@ -70,13 +70,13 @@ if (fs.existsSync(STATIC_DIR)) {
       let isRtl = false;
       // Track whether a detail page resource was found (null = not a detail page)
       let resourceFound: boolean | null = null;
-      
+
       // Detect language prefix
       if (["id", "vi", "ar"].includes(pathParts[0])) {
         lang = pathParts[0];
         pathParts.shift(); // remove lang from parts
       }
-      
+
       if (lang === "ar") {
         isRtl = true;
         modifiedHtml = modifiedHtml.replace('<html lang="en">', '<html lang="ar" dir="rtl">');
@@ -87,7 +87,7 @@ if (fs.existsSync(STATIC_DIR)) {
       // Dynamic SEO
       let title = "Ahwaz Controls | Industrial Instrumentation Supplier";
       let description = "B2B wholesale supplier of compatible alternatives and surplus stock for discontinued industrial instruments.";
-      
+
       if (pathParts[0] === "products" && pathParts[1]) {
         const id = parseInt(pathParts[1], 10);
         if (!isNaN(id)) {
@@ -155,7 +155,7 @@ if (fs.existsSync(STATIC_DIR)) {
           description = "The product you are looking for does not exist or has been removed.";
         }
       }
-      
+
       // Inject Meta Tags
       modifiedHtml = modifiedHtml.replace(
         /<title>.*?<\/title>/,
@@ -165,40 +165,38 @@ if (fs.existsSync(STATIC_DIR)) {
         /<meta name="description" content=".*?" \/>/,
         `<meta name="description" content="${description.replace(/"/g, '&quot;')}" />`
       );
-      
+
       // Inject Hreflang (only for pages that exist)
       if (resourceFound !== false) {
         const host = req.get('host') || 'flonexis.com';
         const proto = req.protocol;
         const baseUri = `${proto}://${host}`;
         const pathNoLang = "/" + pathParts.join("/");
-        
+
         const hreflangs = `
     <link rel="alternate" hreflang="en" href="${baseUri}${pathNoLang}" />
     <link rel="alternate" hreflang="id" href="${baseUri}/id${pathNoLang}" />
     <link rel="alternate" hreflang="vi" href="${baseUri}/vi${pathNoLang}" />
     <link rel="alternate" hreflang="ar" href="${baseUri}/ar${pathNoLang}" />
     <link rel="alternate" hreflang="x-default" href="${baseUri}${pathNoLang}" />`;
-        
+
         modifiedHtml = modifiedHtml.replace("</title>", `</title>${hreflangs}`);
       }
 
       // Inject custom favicon if set in settings
       try {
-        const { db: settingsDb, settingsTable: st } = await import("@workspace/db");
-        const { eq: eqFav } = await import("drizzle-orm");
-        const rows = await settingsDb.select().from(st).where(eqFav(st.key, "favicon_url"));
+        const rows = await db.select().from(settingsTable).where(eq(settingsTable.key, "favicon_url"));
         if (rows.length > 0 && rows[0].value) {
           const favUrl = rows[0].value;
           const favType = favUrl.endsWith(".ico") ? "image/x-icon"
             : favUrl.endsWith(".svg") ? "image/svg+xml"
-            : "image/png";
+              : "image/png";
           modifiedHtml = modifiedHtml.replace(
             /<link rel="icon"[^>]*>/,
             `<link rel="icon" type="${favType}" href="${favUrl}" />`
           );
         }
-      } catch (_) { /* ignore — fall back to default favicon */ }
+      } catch (favErr) { logger.warn({ err: favErr }, "Favicon injection failed, using default"); }
 
       // Return 404 status for deleted/missing products and articles
       // The SPA still renders so users see a friendly "not found" UI

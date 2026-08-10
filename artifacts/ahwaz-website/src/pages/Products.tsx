@@ -176,11 +176,10 @@ export default function Products() {
                 <p className="text-xs font-mono text-muted-foreground uppercase mb-3">Filter by Category</p>
                 <button
                   onClick={() => handleCategoryChange("")}
-                  className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${
-                    selectedCategory === ""
+                  className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${selectedCategory === ""
                       ? "bg-primary text-primary-foreground font-semibold"
                       : "hover:bg-muted text-foreground"
-                  }`}
+                    }`}
                 >
                   All Categories
                   {total > 0 && !selectedCategory && (
@@ -189,21 +188,20 @@ export default function Products() {
                 </button>
                 {categoriesLoading
                   ? Array.from({ length: 5 }).map((_, i) => (
-                      <div key={i} className="h-8 bg-muted animate-pulse rounded-sm" />
-                    ))
+                    <div key={i} className="h-8 bg-muted animate-pulse rounded-sm" />
+                  ))
                   : dynamicCategories.map(cat => (
-                      <button
-                        key={cat}
-                        onClick={() => handleCategoryChange(cat)}
-                        className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${
-                          selectedCategory === cat
-                            ? "bg-primary text-primary-foreground font-semibold"
-                            : "hover:bg-muted text-foreground"
+                    <button
+                      key={cat}
+                      onClick={() => handleCategoryChange(cat)}
+                      className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${selectedCategory === cat
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "hover:bg-muted text-foreground"
                         }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
+                    >
+                      {cat}
+                    </button>
+                  ))}
               </div>
             </aside>
 
@@ -361,11 +359,10 @@ export default function Products() {
                           <button
                             key={p}
                             onClick={() => handlePageChange(p)}
-                            className={`w-9 h-9 rounded-sm text-sm font-mono border transition-colors ${
-                              p === page
+                            className={`w-9 h-9 rounded-sm text-sm font-mono border transition-colors ${p === page
                                 ? "bg-primary text-primary-foreground border-primary font-bold"
                                 : "border-border hover:border-accent hover:text-accent"
-                            }`}
+                              }`}
                           >
                             {p}
                           </button>

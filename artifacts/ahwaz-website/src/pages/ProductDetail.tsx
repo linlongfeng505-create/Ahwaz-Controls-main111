@@ -120,9 +120,8 @@ function ImageCarousel({ urls, name }: { urls: string[]; name: string }) {
           <button
             key={i}
             onClick={() => go(i, i > current ? 1 : -1)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              i === current ? "bg-accent w-4" : "bg-border hover:bg-muted-foreground"
-            }`}
+            className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-accent w-4" : "bg-border hover:bg-muted-foreground"
+              }`}
             aria-label={`Go to image ${i + 1}`}
           />
         ))}
@@ -134,9 +133,8 @@ function ImageCarousel({ urls, name }: { urls: string[]; name: string }) {
           <button
             key={i}
             onClick={() => go(i, i > current ? 1 : -1)}
-            className={`flex-shrink-0 w-16 h-16 rounded-sm overflow-hidden border-2 transition-all ${
-              i === current ? "border-accent" : "border-border opacity-60 hover:opacity-100"
-            }`}
+            className={`flex-shrink-0 w-16 h-16 rounded-sm overflow-hidden border-2 transition-all ${i === current ? "border-accent" : "border-border opacity-60 hover:opacity-100"
+              }`}
           >
             <img src={url} alt={`thumbnail ${i + 1}`} className="w-full h-full object-cover" />
           </button>
@@ -180,8 +178,8 @@ export default function ProductDetail() {
   const imageUrls = product.imageUrls?.length
     ? product.imageUrls
     : product.imageObjectPath
-    ? [product.imageObjectPath]
-    : [];
+      ? [product.imageObjectPath]
+      : [];
 
   return (
     <Layout>

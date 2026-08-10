@@ -39,13 +39,13 @@ router.get("/sitemap.xml", async (req, res) => {
 
     // 静态页面
     const staticPages = [
-      { loc: "/",            changefreq: "weekly",  priority: "1.0" },
-      { loc: "/products",   changefreq: "weekly",  priority: "0.9" },
-      { loc: "/brands",     changefreq: "monthly", priority: "0.7" },
+      { loc: "/", changefreq: "weekly", priority: "1.0" },
+      { loc: "/products", changefreq: "weekly", priority: "0.9" },
+      { loc: "/brands", changefreq: "monthly", priority: "0.7" },
       { loc: "/industries", changefreq: "monthly", priority: "0.7" },
-      { loc: "/articles",   changefreq: "weekly",  priority: "0.8" },
-      { loc: "/about",      changefreq: "monthly", priority: "0.6" },
-      { loc: "/contact",    changefreq: "monthly", priority: "0.6" },
+      { loc: "/articles", changefreq: "weekly", priority: "0.8" },
+      { loc: "/about", changefreq: "monthly", priority: "0.6" },
+      { loc: "/contact", changefreq: "monthly", priority: "0.6" },
     ];
 
     // 动态：所有产品
@@ -61,7 +61,16 @@ router.get("/sitemap.xml", async (req, res) => {
       .where(eq(articlesTable.published, true))
       .orderBy(asc(articlesTable.id));
 
-    const langs = ["", "/id", "/vi", "/ar"];
+    // 读取已启用的语言，只为启用的语言生成 sitemap URL
+    let enabledLangs = ["en", "id", "vi", "ar"];
+    try {
+      const [row] = await db.select().from(settingsTable).where(eq(settingsTable.key, "enabled_languages"));
+      if (row?.value) {
+        enabledLangs = row.value.split(",").map(s => s.trim()).filter(Boolean);
+        if (!enabledLangs.includes("en")) enabledLangs.unshift("en");
+      }
+    } catch { /* use default */ }
+    const langs = enabledLangs.map(l => l === "en" ? "" : `/${l}`);
 
     const urls: string[] = [];
 
