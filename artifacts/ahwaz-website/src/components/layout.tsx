@@ -220,8 +220,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div>
-              <div className="flex items-center gap-4 mb-6">
-                <img src="/images/logo.png" alt={s.company_name} className="h-16 w-auto object-contain rounded-sm bg-white/10 p-1.5" />
+              <div className="mb-6">
                 <div className="flex flex-col">
                   <span className="text-2xl font-bold tracking-tight text-white leading-tight">
                     {s.company_name.toUpperCase().split(" ").map((w, i) => (

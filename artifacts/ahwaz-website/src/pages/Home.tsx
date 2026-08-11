@@ -60,8 +60,6 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Company Logo */}
-              <img src="/images/logo.png" alt={s.company_name} className="h-20 md:h-28 w-auto object-contain mb-4 drop-shadow-lg" />
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
                 {t("home.hero.title1", "Global Industrial")}<br />
                 <span className="text-accent">{t("home.hero.title2", "Instrumentation.")}</span>
