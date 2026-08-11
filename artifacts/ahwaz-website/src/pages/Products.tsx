@@ -43,26 +43,23 @@ const HARDCODED_CATEGORIES = [
     ]
   },
   {
-    id: "temperature",
-    title: "Temperature Instruments",
-    description: "Sensors, transmitters, and thermowells.",
-    image: "/images/cat-temperature.png",
+    id: "domon-valve",
+    title: "Domon Valve",
+    description: "Specialist dome valves for bulk solids, powder, and fly ash conveying.",
+    image: "/images/cat-domon-valve.png",
     models: [
-      { brand: "Rosemount", model: "848T", desc: "Wireless temperature transmitter." },
-      { brand: "Rosemount", model: "214C / 3144P / 114C", desc: "Complete temperature measurement kit." },
-      { brand: "Rosemount", model: "644 Series", desc: "Versatile temperature transmitter." },
+      { brand: "Clyde Bergemann", model: "Dome Valve", desc: "Isolation valves for bulk solids and fly ash systems." },
+      { brand: "Macawber", model: "Dome Valve", desc: "Pneumatic conveying dome valves for powder handling." },
     ]
   },
   {
-    id: "flow",
-    title: "Flow Meters",
-    description: "Accurate measurement of liquid and gas flow rates.",
-    image: "/images/cat-flow.png",
+    id: "soot-blowers",
+    title: "Soot Blowers",
+    description: "Industrial soot blowing equipment for boiler cleaning.",
+    image: "/images/cat-sootblower.png",
     models: [
-      { brand: "Micro Motion", model: "Coriolis", desc: "Elite series mass flow and density meters." },
-      { brand: "Yokogawa", model: "ADMAG", desc: "Magnetic flow meter series." },
-      { brand: "Yokogawa", model: "digitalYEWFLO", desc: "Vortex flow meters." },
-      { brand: "Various", model: "Rotameter", desc: "Metal tube variable area flow meters." },
+      { brand: "Clyde Bergemann", model: "IK-600 / IK-525", desc: "Long retractable soot blowers for large boilers." },
+      { brand: "Clyde Bergemann", model: "PS-SL / PS-T", desc: "Wall blowers and fixed rotary soot blowers." },
     ]
   },
   {

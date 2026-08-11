@@ -39,9 +39,9 @@ export default function Home() {
 
   const categories = [
     { title: t("cat.pressure.title", "Pressure Transmitters"), image: "/images/cat-pressure.png", desc: t("cat.pressure.desc", "Absolute, gauge, and differential pressure measurement.") },
-    { title: t("cat.temp.title", "Temperature Instruments"), image: "/images/cat-temperature.png", desc: t("cat.temp.desc", "Sensors, transmitters, and thermowells for extreme conditions.") },
-    { title: t("cat.flow.title", "Flow Meters"), image: "/images/cat-flow.png", desc: t("cat.flow.desc", "Coriolis, magnetic, and vortex flow measurement systems.") },
     { title: t("cat.valve.title", "Valve Positioners"), image: "/images/cat-valves.png", desc: t("cat.valve.desc", "Digital and smart positioners for precise valve control.") },
+    { title: t("cat.domon.title", "Domon Valve"), image: "/images/cat-domon-valve.png", desc: t("cat.domon.desc", "Specialist dome valves for bulk solids, powder, and fly ash conveying systems.") },
+    { title: t("cat.sootblower.title", "Soot Blowers"), image: "/images/cat-sootblower.png", desc: t("cat.sootblower.desc", "Industrial soot blowing equipment for boiler and heat exchanger cleaning.") },
   ];
 
   return (
@@ -60,29 +60,8 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              {/* Two-color company name — matches header/footer style.
-                  Multi-word: first word white, rest accent.
-                  Single-word (e.g. "Flonexis"): split at midpoint so both colours always show. */}
-              {(() => {
-                const upper = s.company_name.toUpperCase();
-                const parts = upper.split(" ");
-                if (parts.length >= 2) {
-                  return (
-                    <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
-                      <span className="text-primary-foreground">{parts[0]} </span>
-                      <span className="text-accent">{parts.slice(1).join(" ")}</span>
-                    </div>
-                  );
-                }
-                // Single word — split at midpoint
-                const mid = Math.ceil(upper.length / 2);
-                return (
-                  <div className="text-4xl md:text-6xl font-bold leading-tight mb-2 font-sans tracking-tight">
-                    <span className="text-primary-foreground">{upper.slice(0, mid)}</span>
-                    <span className="text-accent">{upper.slice(mid)}</span>
-                  </div>
-                );
-              })()}
+              {/* Company Logo */}
+              <img src="/images/logo.png" alt={s.company_name} className="h-20 md:h-28 w-auto object-contain mb-4 drop-shadow-lg" />
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans">
                 {t("home.hero.title1", "Global Industrial")}<br />
                 <span className="text-accent">{t("home.hero.title2", "Instrumentation.")}</span>

@@ -47,7 +47,15 @@ export default function About() {
             </motion.div>
           </div>
 
-          <div className="w-full lg:w-1/2">
+          <div className="w-full lg:w-1/2 space-y-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-center p-8 bg-secondary/30 rounded-sm border border-border"
+            >
+              <img src="/images/logo.png" alt="Company Logo" className="h-32 md:h-40 w-auto object-contain" />
+            </motion.div>
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }} 
               animate={{ opacity: 1, scale: 1 }} 

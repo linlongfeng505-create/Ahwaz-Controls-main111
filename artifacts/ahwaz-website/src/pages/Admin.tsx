@@ -67,9 +67,9 @@ function parseBrands(raw: string | undefined): BrandItem[] {
 
 const DEFAULT_CATEGORIES = [
   "Pressure Transmitters",
-  "Temperature Instruments",
-  "Flow Meters",
   "Valve Positioners",
+  "Domon Valve",
+  "Soot Blowers",
   "Safety / ESD Devices",
   "Actuators",
   "Field Communicators",
