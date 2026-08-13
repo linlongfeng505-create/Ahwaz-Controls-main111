@@ -125,7 +125,19 @@ function App() {
       sent = true;
       // Clean up all listeners once triggered
       events.forEach(e => document.removeEventListener(e, sendVisit));
-      fetch("/api/visit", { method: "POST" }).catch(() => {
+      fetch("/api/visit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          page: window.location.pathname,
+          referrer: document.referrer || "",
+          screenWidth: window.screen.width,
+          screenHeight: window.screen.height,
+          isMobile: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent),
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
+      }).catch(() => {
         // ignore
       });
     };

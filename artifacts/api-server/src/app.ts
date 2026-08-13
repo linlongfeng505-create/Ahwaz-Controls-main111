@@ -8,6 +8,10 @@ import router from "./routes";
 import { logger } from "./lib/logger";
 import { initDb, db, productsTable, articlesTable, settingsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { notifyGoogleCrawler, getWecomWebhookUrl } from "./lib/notify-visit";
+
+// Regex for Google bots
+const GOOGLE_BOT_REGEX = /Googlebot|Google-Extended|GoogleOther|Storebot-Google|Google-InspectionTool/i;
 
 const app: Express = express();
 app.set("trust proxy", 1);
@@ -62,6 +66,31 @@ if (fs.existsSync(STATIC_DIR)) {
   // Returns HTTP 404 for deleted products/articles so search engines de-index them
   app.get(/.*/, async (req, res, next) => {
     if (req.path.startsWith("/api/")) return next();
+
+    // ── Google crawler detection: send WeCom notification (fire-and-forget) ──
+    const ua = req.headers["user-agent"] || "";
+    if (GOOGLE_BOT_REGEX.test(ua)) {
+      const forwarded = req.headers["x-forwarded-for"];
+      const crawlerIp = typeof forwarded === "string"
+        ? forwarded.split(",")[0].trim()
+        : Array.isArray(forwarded)
+          ? forwarded[0]
+          : req.socket.remoteAddress || "unknown";
+      (async () => {
+        try {
+          const webhookUrl = await getWecomWebhookUrl();
+          if (webhookUrl) {
+            await notifyGoogleCrawler(webhookUrl, {
+              ip: crawlerIp,
+              userAgent: ua,
+              page: req.path,
+            });
+          }
+        } catch (e) {
+          logger.warn({ err: e }, "Failed to send Google crawler notification");
+        }
+      })();
+    }
 
     try {
       let modifiedHtml = indexHtml;
