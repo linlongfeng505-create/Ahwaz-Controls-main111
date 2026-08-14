@@ -84,13 +84,13 @@ function LanguageWrapper({ children }: { children: React.ReactNode }) {
     document.documentElement.dir = initialLang === "ar" ? "rtl" : "ltr";
   }
 
+  // Handle async changes to enabled_languages
   useEffect(() => {
-    // Just in case location changes without unmounting
     const path = window.location.pathname;
     const match = path.match(/^\/(id|vi|ar)(?:\/|$)/);
     let detectedLang = (match ? match[1] : "en") as Language;
     
-    // Enforce enabled languages setting on dynamic navigations
+    // Enforce enabled languages setting on dynamic navigations or async settings load
     if (!enabledArray.includes(detectedLang) && detectedLang !== "en") {
       detectedLang = "en";
       const pathWithoutLang = path.replace(/^\/(id|vi|ar)(\/|$)/, "/");
@@ -101,12 +101,13 @@ function LanguageWrapper({ children }: { children: React.ReactNode }) {
     
     if (lang !== detectedLang) {
       setLang(detectedLang);
-      setBase(match ? `/${detectedLang}` : "");
+      // Correctly set base to "" if detectedLang is "en"
+      setBase(detectedLang !== "en" ? `/${detectedLang}` : "");
       (window as any).__APP_LANG = detectedLang;
       document.documentElement.lang = detectedLang;
       document.documentElement.dir = detectedLang === "ar" ? "rtl" : "ltr";
     }
-  }, [lang]);
+  }, [lang, enabledArray.join(",")]);
 
   return (
     <LanguageContext.Provider value={{ lang }}>
