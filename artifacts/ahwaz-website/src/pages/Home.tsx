@@ -88,7 +88,7 @@ export default function Home() {
           ))}
           {/* Smart Light/Contrast Overlays */}
           <div className="absolute inset-0 z-10 bg-gradient-to-r from-slate-950/85 via-slate-950/50 via-50% to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 inset-x-0 h-24 z-10 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-0 h-24 z-10 bg-gradient-to-t from-black/75 to-transparent pointer-events-none" />
         </div>
         
         <div className="container mx-auto px-4 md:px-8 relative z-20 pt-20 pb-16">
@@ -158,6 +158,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Black Semi-Transparent Divider */}
+      <div className="w-full h-6 md:h-8 bg-black/80 backdrop-blur-md border-y border-white/10 shadow-inner relative z-20" />
 
       {/* Stats Section */}
       <section className="py-12 bg-background border-b border-border">
