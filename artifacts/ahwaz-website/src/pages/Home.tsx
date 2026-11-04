@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout";
 import { Link } from "wouter";
-import { ArrowRight, ShieldCheck, Clock, Globe, Award, ChevronRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Clock, Globe, Award, ChevronRight, Flame, Zap, Factory, Boxes, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
@@ -236,27 +236,135 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Brands Marquee with Frosted Glass Transparency */}
-        <section className="py-20 backdrop-blur-md bg-slate-950/45 text-primary-foreground overflow-hidden relative border-t border-white/20 shadow-inner">
-          <div className="container mx-auto px-4 md:px-8 mb-10 text-center relative z-10">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 drop-shadow-md">{t("home.brands.title")}</h2>
-            <p className="text-white/80 font-medium drop-shadow-sm">{t("home.brands.desc")}</p>
+        {/* Brands Marquee with Bright Frosted Glass Ribbon */}
+        <section className="py-14 backdrop-blur-md bg-white/75 border-t border-b border-white/60 overflow-hidden relative shadow-sm">
+          <div className="container mx-auto px-4 md:px-8 mb-8 text-center relative z-10">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{t("home.brands.title")}</h2>
+            <p className="text-slate-600 font-medium">{t("home.brands.desc")}</p>
           </div>
           
           <div className="relative flex overflow-x-hidden">
             <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
               {brands.map((brand, i) => (
-                <span key={i} className="text-4xl md:text-5xl font-extrabold text-white/60 hover:text-accent transition-colors cursor-default drop-shadow-sm">
+                <span key={i} className="text-4xl md:text-5xl font-black text-slate-800/60 hover:text-accent transition-colors cursor-default">
                   {brand}
                 </span>
               ))}
             </div>
             <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-16 px-8">
                {brands.map((brand, i) => (
-                <span key={`dup-${i}`} className="text-4xl md:text-5xl font-extrabold text-white/60 hover:text-accent transition-colors cursor-default drop-shadow-sm">
+                <span key={`dup-${i}`} className="text-4xl md:text-5xl font-black text-slate-800/60 hover:text-accent transition-colors cursor-default">
                   {brand}
                 </span>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Critical Industry Solutions & Global Supply Assurance Module */}
+        <section className="py-24 relative z-10">
+          <div className="container mx-auto px-4 md:px-8">
+            {/* Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-16 bg-white/80 backdrop-blur-md p-8 rounded-2xl border border-white/60 shadow-lg">
+              <span className="text-accent text-xs font-mono font-bold tracking-widest uppercase mb-3 inline-block">
+                Tailored Field Engineering
+              </span>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
+                Engineered for Severe Service & Critical Plants
+              </h2>
+              <p className="text-slate-700 text-lg leading-relaxed font-medium">
+                From high-temperature power boilers to corrosive petrochemical pipelines, we deliver authenticated instrumentation built to withstand extreme operating conditions.
+              </p>
+            </div>
+
+            {/* 4 Industry Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {[
+                {
+                  icon: <Flame className="w-8 h-8 text-amber-500" />,
+                  title: t("ind.oil.title", "Oil & Gas"),
+                  desc: "Explosion-proof pressure transmitters, high-pressure dome valves, and emergency shutoff positioners for upstream and downstream operations.",
+                  badge: "Explosion-Proof Certified",
+                },
+                {
+                  icon: <Zap className="w-8 h-8 text-blue-500" />,
+                  title: t("ind.power.title", "Power Generation"),
+                  desc: "Boiler soot blowers, superheated steam pressure sensors, and precision control valves for continuous thermal and utility plant operation.",
+                  badge: "High-Temp Endurance",
+                },
+                {
+                  icon: <Factory className="w-8 h-8 text-emerald-500" />,
+                  title: t("ind.chem.title", "Chemical Processing"),
+                  desc: "Corrosion-resistant Hastelloy & Monel wetted parts, smart digital valve positioners, and hermetically sealed instrumentation.",
+                  badge: "Corrosive Media Ready",
+                },
+                {
+                  icon: <Boxes className="w-8 h-8 text-orange-500" />,
+                  title: "Pneumatic & Bulk Solids",
+                  desc: "Heavy-duty dome valves and sealing rings engineered for abrasive fly ash, powders, silica, and dense-phase conveying systems.",
+                  badge: "Abrasive Resistant",
+                },
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-white/85 backdrop-blur-md rounded-xl p-6 border border-white/70 shadow-lg hover:shadow-2xl hover:bg-white/95 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center mb-5 border border-slate-100">
+                      {item.icon}
+                    </div>
+                    <div className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-mono font-medium mb-3">
+                      {item.badge}
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6 font-medium">
+                      {item.desc}
+                    </p>
+                  </div>
+                  <Link href="/industries" className="inline-flex items-center text-sm font-bold text-primary hover:text-accent transition-colors pt-3 border-t border-slate-200/60">
+                    Explore Solutions <ChevronRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Quick Quote / Conversion Consultation Banner */}
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl border border-white/80 p-8 md:p-10 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-emerald-600 uppercase tracking-wider mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  Global Engineering Desk Active
+                </div>
+                <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">
+                  Ready to Procure or Need Technical Selection?
+                </h3>
+                <p className="text-slate-600 font-medium text-base leading-relaxed">
+                  Submit your Bill of Materials (BOM) or specific model numbers. Our instrumentation engineers provide competitive wholesale pricing within 30 minutes.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full lg:w-auto">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 text-base font-bold shadow-lg">
+                    {t("btn.requestQuote")} <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                {s.whatsapp && (
+                  <a
+                    href={`https://wa.me/${s.whatsapp.replace(/[^0-9]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto border-emerald-600 text-emerald-700 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white h-14 px-6 text-base font-bold">
+                      <MessageCircle className="mr-2 w-5 h-5" /> WhatsApp Direct
+                    </Button>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </section>
