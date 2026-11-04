@@ -183,73 +183,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-24 bg-secondary/30">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("home.categories.title")}</h2>
-              <p className="text-muted-foreground max-w-2xl text-lg">{t("home.categories.desc")}</p>
-            </div>
-            <Link href="/products" className="hidden md:flex items-center text-primary font-bold hover:text-accent transition-colors">
-              {t("btn.viewAll")} <ChevronRight className="ml-1 w-5 h-5" />
-            </Link>
-          </div>
+      {/* Fixed Seaside Parallax Baseboard & Frosted Glass Sections */}
+      <div 
+        className="relative bg-fixed bg-cover bg-center bg-no-repeat overflow-hidden border-t border-white/20"
+        style={{ backgroundImage: "url('/images/seaside-bright.jpg')" }}
+      >
+        {/* Soft daylight ambient overlay to harmonize color temperature */}
+        <div className="absolute inset-0 bg-sky-950/15 backdrop-blur-[1px] pointer-events-none" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((cat, i) => (
-              <Link href="/products" key={i}>
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group cursor-pointer bg-card rounded-md border border-border overflow-hidden hover:border-accent transition-all hover:shadow-lg"
-                >
-                  <div className="aspect-[4/3] relative overflow-hidden">
-                    <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-bold text-lg mb-2 group-hover:text-accent transition-colors">{cat.title}</h3>
-                    <p className="text-sm text-muted-foreground">{cat.desc}</p>
-                  </div>
-                </motion.div>
+        {/* Categories Section with Frosted Glass Panels */}
+        <section className="py-24 relative z-10">
+          <div className="container mx-auto px-4 md:px-8">
+            <div className="flex justify-between items-end mb-12 bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-white/60 shadow-lg">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">{t("home.categories.title")}</h2>
+                <p className="text-slate-700 font-medium max-w-2xl text-lg">{t("home.categories.desc")}</p>
+              </div>
+              <Link href="/products" className="hidden md:flex items-center text-primary font-bold hover:text-accent transition-colors bg-white/80 hover:bg-white px-5 py-2.5 rounded-full border border-slate-200 shadow-sm">
+                {t("btn.viewAll")} <ChevronRight className="ml-1 w-5 h-5" />
               </Link>
-            ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((cat, i) => (
+                <Link href="/products" key={i}>
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="group cursor-pointer bg-white/85 backdrop-blur-md rounded-xl border border-white/60 overflow-hidden hover:border-accent hover:bg-white/95 transition-all duration-300 hover:shadow-2xl flex flex-col h-full shadow-lg"
+                  >
+                    <div className="aspect-[4/3] relative overflow-hidden bg-white/40">
+                      <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between bg-white/60 backdrop-blur-sm">
+                      <div>
+                        <h3 className="font-bold text-lg mb-2 text-slate-900 group-hover:text-accent transition-colors">{cat.title}</h3>
+                        <p className="text-sm text-slate-600 leading-relaxed">{cat.desc}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="mt-8 text-center md:hidden">
+              <Link href="/products">
+                <Button variant="outline" className="w-full bg-white/80 backdrop-blur-md">View All Products</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Brands Marquee with Frosted Glass Transparency */}
+        <section className="py-20 backdrop-blur-md bg-slate-950/45 text-primary-foreground overflow-hidden relative border-t border-white/20 shadow-inner">
+          <div className="container mx-auto px-4 md:px-8 mb-10 text-center relative z-10">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 drop-shadow-md">{t("home.brands.title")}</h2>
+            <p className="text-white/80 font-medium drop-shadow-sm">{t("home.brands.desc")}</p>
           </div>
           
-          <div className="mt-8 text-center md:hidden">
-            <Link href="/products">
-              <Button variant="outline" className="w-full">View All Products</Button>
-            </Link>
+          <div className="relative flex overflow-x-hidden">
+            <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
+              {brands.map((brand, i) => (
+                <span key={i} className="text-4xl md:text-5xl font-extrabold text-white/60 hover:text-accent transition-colors cursor-default drop-shadow-sm">
+                  {brand}
+                </span>
+              ))}
+            </div>
+            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-16 px-8">
+               {brands.map((brand, i) => (
+                <span key={`dup-${i}`} className="text-4xl md:text-5xl font-extrabold text-white/60 hover:text-accent transition-colors cursor-default drop-shadow-sm">
+                  {brand}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Brands Marquee */}
-      <section className="py-20 bg-primary text-primary-foreground overflow-hidden">
-        <div className="container mx-auto px-4 md:px-8 mb-10 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">{t("home.brands.title")}</h2>
-          <p className="text-primary-foreground/60">{t("home.brands.desc")}</p>
-        </div>
-        
-        <div className="relative flex overflow-x-hidden">
-          <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
-            {brands.map((brand, i) => (
-              <span key={i} className="text-4xl md:text-5xl font-bold text-primary-foreground/20 hover:text-accent transition-colors cursor-default">
-                {brand}
-              </span>
-            ))}
-          </div>
-          <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-16 px-8">
-             {brands.map((brand, i) => (
-              <span key={`dup-${i}`} className="text-4xl md:text-5xl font-bold text-primary-foreground/20 hover:text-accent transition-colors cursor-default">
-                {brand}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </Layout>
   );
 }
