@@ -98,10 +98,6 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 border border-accent/40 text-accent text-xs font-mono font-semibold mb-6 uppercase tracking-wider backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                {HERO_SLIDES[currentSlide].badge}
-              </div>
 
               <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 font-sans drop-shadow-sm">
                 {t("home.hero.title1", "Global Industrial")}<br />
@@ -187,17 +183,21 @@ export default function Home() {
       </section>
 
       {/* Fixed Maritime Shipping Parallax Baseboard & Frosted Glass Sections */}
-      <div className="relative overflow-hidden border-t border-white/20">
-        {/* Fixed Maritime Industrial Parallax Baseboard with Frosted Glass Blur */}
+      <div 
+        className="relative overflow-hidden border-t border-white/20"
+        style={{ clipPath: "inset(0 0 0 0)" }}
+      >
+        {/* Fixed Maritime Industrial Baseboard (Truly fixed to viewport, zero scroll movement) */}
         <div 
-          className="absolute inset-0 bg-fixed bg-cover bg-center bg-no-repeat scale-105 pointer-events-none"
+          className="fixed inset-0 pointer-events-none -z-10 bg-cover bg-center bg-no-repeat"
           style={{ 
             backgroundImage: "url('/images/maritime-bright.jpg')",
-            filter: "blur(5px)",
+            filter: "blur(6px)",
+            transform: "scale(1.08)",
           }}
         />
         {/* Frosted Glass Ambient Overlay */}
-        <div className="absolute inset-0 bg-sky-900/10 backdrop-blur-[2px] pointer-events-none" />
+        <div className="absolute inset-0 bg-sky-900/10 backdrop-blur-[2px] pointer-events-none -z-10" />
 
         {/* Categories Section with Frosted Glass Panels */}
         <section className="py-24 relative z-10">
