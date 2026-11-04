@@ -183,13 +183,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Fixed Seaside Parallax Baseboard & Frosted Glass Sections */}
-      <div 
-        className="relative bg-fixed bg-cover bg-center bg-no-repeat overflow-hidden border-t border-white/20"
-        style={{ backgroundImage: "url('/images/seaside-bright.jpg')" }}
-      >
-        {/* Soft daylight ambient overlay to harmonize color temperature */}
-        <div className="absolute inset-0 bg-sky-950/15 backdrop-blur-[1px] pointer-events-none" />
+      {/* Fixed Maritime Shipping Parallax Baseboard & Frosted Glass Sections */}
+      <div className="relative overflow-hidden border-t border-white/20">
+        {/* Fixed Maritime Industrial Parallax Baseboard with Frosted Glass Blur */}
+        <div 
+          className="absolute inset-0 bg-fixed bg-cover bg-center bg-no-repeat scale-105 pointer-events-none"
+          style={{ 
+            backgroundImage: "url('/images/maritime-bright.jpg')",
+            filter: "blur(5px)",
+          }}
+        />
+        {/* Frosted Glass Ambient Overlay */}
+        <div className="absolute inset-0 bg-sky-900/10 backdrop-blur-[2px] pointer-events-none" />
 
         {/* Categories Section with Frosted Glass Panels */}
         <section className="py-24 relative z-10">
