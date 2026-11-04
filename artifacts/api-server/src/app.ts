@@ -115,7 +115,7 @@ if (fs.existsSync(STATIC_DIR)) {
 
       // Dynamic SEO
       let title = "Ahwaz Controls | Industrial Instrumentation Supplier";
-      let description = "B2B wholesale supplier of compatible alternatives and surplus stock for discontinued industrial instruments.";
+      let description = "B2B wholesale supplier of industrial instrumentation and process control equipment.";
 
       if (pathParts[0] === "products" && pathParts[1]) {
         const id = parseInt(pathParts[1], 10);
