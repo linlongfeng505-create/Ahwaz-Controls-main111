@@ -114,7 +114,7 @@ if (fs.existsSync(STATIC_DIR)) {
       }
 
       // Dynamic SEO
-      let title = "Ahwaz Controls | Industrial Instrumentation Supplier";
+      let title = "Flonexis | Industrial Instrumentation & Process Control Supplier";
       let description = "B2B wholesale supplier of industrial instrumentation and process control equipment.";
 
       if (pathParts[0] === "products" && pathParts[1]) {
@@ -131,7 +131,7 @@ if (fs.existsSync(STATIC_DIR)) {
             return;
           } else {
             resourceFound = false;
-            title = "Product Not Found | Ahwaz Controls";
+            title = "Product Not Found | Flonexis";
             description = "The product you are looking for does not exist or has been removed.";
           }
         }
@@ -149,11 +149,11 @@ if (fs.existsSync(STATIC_DIR)) {
               aSummary = t[lang].summary || t[lang].content || aSummary;
             }
           }
-          title = `${aTitle} | Ahwaz Controls`;
+          title = `${aTitle} | Flonexis`;
           description = aSummary.slice(0, 160).replace(/<[^>]*>?/gm, '');
         } else {
           resourceFound = false;
-          title = "Article Not Found | Ahwaz Controls";
+          title = "Article Not Found | Flonexis";
           description = "The article you are looking for does not exist or has been removed.";
         }
       } else if (pathParts.length >= 2 && pathParts[0] !== "products" && pathParts[0] !== "articles" && pathParts[0] !== "brands" && pathParts[0] !== "industries" && pathParts[0] !== "about" && pathParts[0] !== "contact" && pathParts[0] !== "admin") {
@@ -176,16 +176,23 @@ if (fs.existsSync(STATIC_DIR)) {
               pDesc = t[lang].description || pDesc;
             }
           }
-          title = `${pName} | Ahwaz Controls`;
+          title = `${pName} | Flonexis`;
           description = pDesc.slice(0, 160).replace(/<[^>]*>?/gm, '');
         } else {
           resourceFound = false;
-          title = "Product Not Found | Ahwaz Controls";
+          title = "Product Not Found | Flonexis";
           description = "The product you are looking for does not exist or has been removed.";
         }
       }
 
-      // Inject Meta Tags
+      // Inject Meta Tags & Canonical
+      const host = req.get('host') || 'flonexis.com';
+      const proto = req.protocol;
+      const baseUri = `${proto}://${host}`;
+      const pathNoLang = "/" + pathParts.join("/");
+      const langPrefix = lang !== "en" ? `/${lang}` : "";
+      const canonicalHref = `${baseUri}${langPrefix}${pathNoLang === '/' ? '' : pathNoLang}`;
+
       modifiedHtml = modifiedHtml.replace(
         /<title>.*?<\/title>/,
         `<title>${title.replace(/"/g, '&quot;')}</title>`
@@ -194,22 +201,29 @@ if (fs.existsSync(STATIC_DIR)) {
         /<meta name="description" content=".*?" \/>/,
         `<meta name="description" content="${description.replace(/"/g, '&quot;')}" />`
       );
+      modifiedHtml = modifiedHtml.replace(
+        /<meta property="og:title" content=".*?" \/>/,
+        `<meta property="og:title" content="${title.replace(/"/g, '&quot;')}" />`
+      );
+      modifiedHtml = modifiedHtml.replace(
+        /<meta property="og:description" content=".*?" \/>/,
+        `<meta property="og:description" content="${description.replace(/"/g, '&quot;')}" />`
+      );
+      modifiedHtml = modifiedHtml.replace(
+        /<link rel="canonical" href=".*?" \/>/,
+        `<link rel="canonical" href="${canonicalHref}" />`
+      );
 
-      // Inject Hreflang (only for pages that exist)
+      // Inject Hreflang & Schema.org (only for pages that exist)
       if (resourceFound !== false) {
-        const host = req.get('host') || 'flonexis.com';
-        const proto = req.protocol;
-        const baseUri = `${proto}://${host}`;
-        const pathNoLang = "/" + pathParts.join("/");
-
-        const hreflangs = `
+        let seoHeadTags = `
     <link rel="alternate" hreflang="en" href="${baseUri}${pathNoLang}" />
     <link rel="alternate" hreflang="id" href="${baseUri}/id${pathNoLang}" />
     <link rel="alternate" hreflang="vi" href="${baseUri}/vi${pathNoLang}" />
     <link rel="alternate" hreflang="ar" href="${baseUri}/ar${pathNoLang}" />
     <link rel="alternate" hreflang="x-default" href="${baseUri}${pathNoLang}" />`;
 
-        modifiedHtml = modifiedHtml.replace("</title>", `</title>${hreflangs}`);
+        modifiedHtml = modifiedHtml.replace("</title>", `</title>${seoHeadTags}`);
       }
 
       // Inject custom favicon if set in settings

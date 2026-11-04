@@ -8,6 +8,7 @@ import { useSiteSettings } from "@/context/SiteSettingsContext";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { useState, useEffect, useCallback } from "react";
+import { useSEO } from "@/lib/seo";
 
 marked.setOptions({ breaks: true, gfm: true });
 
@@ -180,6 +181,70 @@ export default function ProductDetail() {
     : product.imageObjectPath
       ? [product.imageObjectPath]
       : [];
+
+  const mainImage = imageUrls[0] ? (imageUrls[0].startsWith("http") ? imageUrls[0] : `${typeof window !== "undefined" ? window.location.origin : ""}${imageUrls[0]}`) : undefined;
+  const currentUrl = typeof window !== "undefined" ? window.location.href : undefined;
+
+  const productJsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": product.name,
+      "model": product.model || product.name,
+      "description": product.description?.replace(/<[^>]*>?/gm, "").slice(0, 300),
+      "category": product.category,
+      "url": currentUrl,
+      ...(mainImage ? { "image": mainImage } : {}),
+      "brand": {
+        "@type": "Brand",
+        "name": product.category?.split(" ")[0] || s.company_name || "Flonexis",
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "0",
+        "availability": "https://schema.org/InStock",
+        "url": currentUrl,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": typeof window !== "undefined" ? window.location.origin : "https://flonexis.com",
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Products",
+          "item": typeof window !== "undefined" ? `${window.location.origin}/products` : "https://flonexis.com/products",
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": product.category,
+          "item": typeof window !== "undefined" ? `${window.location.origin}/products?category=${encodeURIComponent(product.category)}` : undefined,
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": product.name,
+          "item": currentUrl,
+        },
+      ],
+    },
+  ];
+
+  useSEO({
+    title: `${product.name} (${product.model || product.category}) | ${s.company_name || "Flonexis"}`,
+    description: product.description?.replace(/<[^>]*>?/gm, "").slice(0, 160) || `Buy ${product.name} from Flonexis. Authentic industrial instrumentation with fast quote response.`,
+    ogImage: mainImage,
+    jsonLd: productJsonLd,
+  });
 
   return (
     <Layout>

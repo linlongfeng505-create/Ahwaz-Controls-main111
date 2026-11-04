@@ -1,2 +1,10 @@
 User-agent: *
 Allow: /
+
+# Disallow private admin panels and internal API routes
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location for Googlebot, Bingbot and search engines
+Sitemap: https://flonexis.com/sitemap.xml
